@@ -1,0 +1,14 @@
+{
+    "uuid": "eaefede6-969b-4586-988b-8d20399bca2f",
+    "username": "vstest_0420054507",
+    "deviceUuids": [
+        "74fa930c-7299-4bfe-b288-9da8425c6d84",
+        "b9ca6a8c-daf1-4785-b8ce-9788c54759e8",
+        "a918fa90-881e-4618-b7a0-210826f88a95"
+    ],
+    "metroStatusMap": {
+        "SV": {
+            "status": "ACTIVE"
+        }
+    }
+}

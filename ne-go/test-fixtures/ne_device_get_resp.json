@@ -1,0 +1,305 @@
+{
+    "uuid": "9e7e8409-cb5d-4236-9dda-355415f0f35e",
+    "name": "Mikolaj-Test-Device",
+    "deviceTypeCode": "CSR1000V",
+    "deviceTypeName": "CSR 1000V",
+    "deviceTypeVendor": "Cisco",
+    "deviceTypeCategory": "ROUTER",
+    "status": "PROVISIONED",
+    "licenseStatus": "REGISTERED",
+    "metroCode": "DC",
+    "metroName": "Ashburn",
+    "ibx": "DC6",
+    "region": "AMER",
+    "throughput": "1",
+    "throughputUnit": "Gbps",
+    "hostName": "MTEST",
+    "packageCode": "IPBASE",
+    "packageName": "IP Base",
+    "version": "16.09.05",
+    "licenseType": "Sub",
+    "licenseName": "Subscription",
+    "createdBy": "nfvsit01",
+    "createdDate": "2020-06-08T15:01:15.483Z",
+    "lastUpdatedBy": "nfvsit01",
+    "lastUpdatedDate": "2020-06-08T15:24:14.587Z",
+    "acl": [
+        "10.10.10.1/32"
+    ],
+    "sshIpAddress": "64.191.210.82",
+    "deviceSerialNo": "9GCEQB0OMRX",
+    "sshIpFqdn": "MTEST-82-210-191-64-DC.eis.lab.equinix.com",
+    "accountNumber": "200541",
+    "accountName": "nfv-sit1",
+    "notifications": [
+        "mest@equinix.com",
+        "test@equinix.com"
+    ],
+    "purchaseOrderNumber": "234567",
+    "redundancyType": "PRIMARY",
+    "termLength": 12,
+    "billingCommencementDate": "06/22/2020 15:03:31",
+    "additionalBandwidth": 100,
+    "orderingContact": {
+        "username": "nfvsit01",
+        "email": "kkolla@equinix.com",
+        "firstName": "nfvsit01",
+        "lastName": "nfvsit01"
+    },
+    "interfaces": [
+        {
+            "id": 1,
+            "name": "GigabitEthernet1",
+            "status": null,
+            "operationalStatus": null,
+            "macAddress": null,
+            "ipAddress": null,
+            "assignedType": "Equinix Managed",
+            "type": "MGMT"
+        },
+        {
+            "id": 2,
+            "name": "GigabitEthernet2",
+            "status": null,
+            "operationalStatus": null,
+            "macAddress": null,
+            "ipAddress": null,
+            "assignedType": "Equinix Managed",
+            "type": "SSH"
+        },
+        {
+            "id": 3,
+            "name": "GigabitEthernet3",
+            "status": "RESERVED",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e53.b117",
+            "ipAddress": null,
+            "assignedType": "Connection to Network Service Provider",
+            "type": "DATA"
+        },
+        {
+            "id": 4,
+            "name": "GigabitEthernet4",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e0e.bfba",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 5,
+            "name": "GigabitEthernet5",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e0c.69c4",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 6,
+            "name": "GigabitEthernet6",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3eee.18a4",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 7,
+            "name": "GigabitEthernet7",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3ec5.7368",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 8,
+            "name": "GigabitEthernet8",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3ef3.d5f1",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 9,
+            "name": "GigabitEthernet9",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e59.5eaa",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 10,
+            "name": "GigabitEthernet10",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3ecb.3006",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 11,
+            "name": "GigabitEthernet11",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e4f.307d",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 12,
+            "name": "GigabitEthernet12",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e8b.8b7a",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 13,
+            "name": "GigabitEthernet13",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e1c.f9d8",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 14,
+            "name": "GigabitEthernet14",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e4a.c3f2",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 15,
+            "name": "GigabitEthernet15",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e4c.98ef",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 16,
+            "name": "GigabitEthernet16",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3ea3.3a16",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 17,
+            "name": "GigabitEthernet17",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e4f.a2f8",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 18,
+            "name": "GigabitEthernet18",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3ec0.8c1e",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 19,
+            "name": "GigabitEthernet19",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e9f.f1c4",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 20,
+            "name": "GigabitEthernet20",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3ef1.46c8",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 21,
+            "name": "GigabitEthernet21",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3ed8.6969",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 22,
+            "name": "GigabitEthernet22",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3eb1.7bb1",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 23,
+            "name": "GigabitEthernet23",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3e8f.68c1",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        },
+        {
+            "id": 24,
+            "name": "GigabitEthernet24",
+            "status": "AVAILABLE",
+            "operationalStatus": "down",
+            "macAddress": "fa16.3ea3.3240",
+            "ipAddress": null,
+            "assignedType": "",
+            "type": "DATA"
+        }
+    ],
+    "supportDetails": {
+        "instanceName": "DC-83756-dc6.pod1-4400-1591628475500-vd-MTEST-CSR-dc6.pod1-1",
+        "serviceId": "4400-1591628475500-vd",
+        "deviceOrderNumber": "1-197958925227",
+        "deviceOrderReferenceId": "4443463",
+        "licenseOrderNumber": "NOT AVAILABLE",
+        "licenseOrderReferenceId": "NOT AVAILABLE",
+        "message": "",
+        "tenant": "DC-83756-dc6.pod1"
+    },
+    "vendorConfig": {
+        "systemIpAddress": "1.1.1.1",
+        "siteId": "456"
+    }
+}
