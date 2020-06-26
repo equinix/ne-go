@@ -10,12 +10,14 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+//RestClient describes REST implementation of Network Edge Client
 type RestClient struct {
 	baseURL string
 	ctx     context.Context
 	*resty.Client
 }
 
+//RestError describes Network Edge error specific to REST implementation
 type RestError struct {
 	HTTPCode int
 	Message  string
@@ -26,7 +28,8 @@ func (e RestError) Error() string {
 	return fmt.Sprintf("network edge rest error: httpCode: %v, message: %v", e.HTTPCode, e.Message)
 }
 
-func NewClient(baseURL string, ctx context.Context, httpClient *http.Client) *RestClient {
+//NewClient creates new REST Network Edge client with a given baseURL, context and httpClient
+func NewClient(ctx context.Context, baseURL string, httpClient *http.Client) *RestClient {
 	resty := resty.NewWithClient(httpClient)
 	resty.SetHeader("User-agent", "equinix/ne-go")
 	resty.SetHeader("Accept", "application/json")
@@ -35,6 +38,16 @@ func NewClient(baseURL string, ctx context.Context, httpClient *http.Client) *Re
 		ctx,
 		resty}
 }
+
+//‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+// Unexported package methods
+//_______________________________________________________________________
+
+const (
+	changeTypeCreate = "Add"
+	changeTypeUpdate = "Update"
+	changeTypeDelete = "Delete"
+)
 
 func (c RestClient) execute(req *resty.Request, method string, url string) error {
 	resp, err := req.SetContext(c.ctx).Execute(method, url)

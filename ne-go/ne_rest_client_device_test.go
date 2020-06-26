@@ -12,6 +12,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var testDevice = Device{
+	AdditionalBandwidth: 100,
+	DeviceTypeCode:      "PA-VM",
+	HostName:            "myhostSRmy",
+	LicenseType:         "BYOL",
+	LicenseToken:        "I3372903",
+	MetroCode:           "SV",
+	Notifications:       []string{"test1@example.com", "test2@example.com"},
+	PackageCode:         "VM100",
+	TermLength:          24,
+	Throughput:          1,
+	ThroughputUnit:      "Gbps",
+	Name:                "PaloAltoSRmy",
+	ACL:                 []string{"192.168.1.1/32"},
+	AccountNumber:       "1777643"}
+
 func TestCreateDevice(t *testing.T) {
 	//given
 	resp := api.VirtualDeviceCreateResponse{}
@@ -19,21 +35,7 @@ func TestCreateDevice(t *testing.T) {
 		assert.Fail(t, "Cannont read test response")
 	}
 	baseURL := "http://localhost:8888"
-	device := Device{
-		AdditionalBandwidth: 100,
-		DeviceTypeCode:      "PA-VM",
-		HostName:            "myhostSRmy",
-		LicenseType:         "BYOL",
-		LicenseToken:        "I3372903",
-		MetroCode:           "SV",
-		Notifications:       []string{"test1@example.com", "test2@example.com"},
-		PackageCode:         "VM100",
-		TermLength:          24,
-		Throughput:          1,
-		ThroughputUnit:      "Gbps",
-		Name:                "PaloAltoSRmy",
-		ACL:                 []string{"192.168.1.1/32"},
-		AccountNumber:       "1777643"}
+	device := testDevice
 	req := api.VirtualDeviceRequest{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -49,13 +51,65 @@ func TestCreateDevice(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	c := NewClient(baseURL, context.Background(), testHc)
+	c := NewClient(context.Background(), baseURL, testHc)
 	uuid, err := c.CreateDevice(device)
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
 	assert.Equal(t, uuid, resp.UUID, "UUID matches")
 	verifyDeviceRequest(t, device, req)
+}
+
+func TestCreateRedundantDevice(t *testing.T) {
+	//given
+	resp := api.VirtualDeviceCreateResponseDto{}
+	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
+		assert.Fail(t, "Cannont read test response")
+	}
+	baseURL := "http://localhost:8888"
+	req := api.VirtualDeviceRequest{}
+	primary := testDevice
+	secondary := Device{
+		AccountNumber:       "222222",
+		ACL:                 primary.ACL,
+		AdditionalBandwidth: 500,
+		DeviceTypeCode:      "PA-SEC",
+		HostName:            "secondaryHost",
+		LicenseFileID:       "",
+		LicenseKey:          "licKey",
+		LicenseType:         "",
+		LicenseSecret:       "licSecret",
+		LicenseToken:        "licToken",
+		MetroCode:           "DC",
+		Notifications:       []string{"sec@sec.com", "secTwo@sec.com"},
+		PackageCode:         "VM222",
+		SiteID:              "secSiteId",
+		SystemIPAddress:     "192.168.1.1",
+		Throughput:          5,
+		ThroughputUnit:      "Gbps",
+		Name:                "secondary"}
+	testHc := &http.Client{}
+	httpmock.ActivateNonDefault(testHc)
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/device", baseURL),
+		func(r *http.Request) (*http.Response, error) {
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				return httpmock.NewStringResponse(400, ""), nil
+			}
+			resp, _ := httpmock.NewJsonResponse(202, resp)
+			return resp, nil
+		},
+	)
+	defer httpmock.DeactivateAndReset()
+
+	//when
+	c := NewClient(context.Background(), baseURL, testHc)
+	pUUID, sUUID, err := c.CreateRedundantDevice(primary, secondary)
+
+	//then
+	assert.Nil(t, err, "Error is not returned")
+	assert.Equal(t, resp.UUID, pUUID, "Primary device UUID matches")
+	assert.Equal(t, resp.SecondaryUUID, sUUID, "Secondary device UUID matches")
+	verifyRedundantDeviceRequest(t, primary, secondary, req)
 }
 
 func TestGetDevice(t *testing.T) {
@@ -70,7 +124,7 @@ func TestGetDevice(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	c := NewClient(baseURL, context.Background(), testHc)
+	c := NewClient(context.Background(), baseURL, testHc)
 	dev, err := c.GetDevice(devID)
 
 	//then
@@ -100,7 +154,7 @@ func TestUpdateDeviceBasicFields(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	c := NewClient(baseURL, context.Background(), testHc)
+	c := NewClient(context.Background(), baseURL, testHc)
 	err := c.NewDeviceUpdateRequest(devID).WithDeviceName(newName).
 		WithNotifications(newNotifications).WithTermLength(newTermLength).Execute()
 
@@ -130,7 +184,7 @@ func TestUpdateDeviceACL(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	c := NewClient(baseURL, context.Background(), testHc)
+	c := NewClient(context.Background(), baseURL, testHc)
 	err := c.NewDeviceUpdateRequest(devID).WithACLs(newACLs).Execute()
 
 	//then
@@ -157,7 +211,7 @@ func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	c := NewClient(baseURL, context.Background(), testHc)
+	c := NewClient(context.Background(), baseURL, testHc)
 	err := c.NewDeviceUpdateRequest(devID).WithAdditionalBandwidth(newBandwidth).Execute()
 
 	//then
@@ -176,7 +230,7 @@ func TestDeleteDevice(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	c := NewClient(baseURL, context.Background(), testHc)
+	c := NewClient(context.Background(), baseURL, testHc)
 	err := c.DeleteDevice(devID)
 
 	//then
@@ -211,6 +265,26 @@ func verifyDeviceRequest(t *testing.T, dev Device, req api.VirtualDeviceRequest)
 	assert.Equal(t, req.ThroughputUnit, dev.ThroughputUnit, "ThroughputUnit matches")
 	if dev.Name != "" {
 		assert.Equal(t, *req.VirtualDeviceName, dev.Name, "VirtualDeviceName matches")
+	}
+}
+
+func verifyRedundantDeviceRequest(t *testing.T, primary Device, secondary Device, req api.VirtualDeviceRequest) {
+	verifyDeviceRequest(t, primary, req)
+	assert.Equal(t, secondary.AccountNumber, req.Secondary.AccountNumber, "Account number matches")
+	assert.ElementsMatch(t, secondary.ACL, req.Secondary.ACL, "ACL matches")
+	assert.Equal(t, int32(secondary.AdditionalBandwidth), req.Secondary.AdditionalBandwidth, "AdditionalBandwidth matches")
+	assert.Equal(t, secondary.LicenseFileID, req.Secondary.LicenseFileID, "LicenseFileID matches")
+	assert.Equal(t, secondary.LicenseKey, req.Secondary.LicenseKey, "LicenseKey matches")
+	assert.Equal(t, secondary.LicenseSecret, req.Secondary.LicenseSecret, "LicenseSecret matches")
+	assert.Equal(t, secondary.LicenseToken, req.Secondary.LicenseToken, "LicenseToken matches")
+	if secondary.MetroCode != "" {
+		assert.Equal(t, secondary.MetroCode, *req.Secondary.MetroCode, "MetroCode matches")
+	}
+	assert.ElementsMatch(t, secondary.Notifications, req.Secondary.Notifications, "Notifications match")
+	assert.Equal(t, secondary.SiteID, req.Secondary.SiteID, "SiteID matches")
+	assert.Equal(t, secondary.SystemIPAddress, req.Secondary.SystemIPAddress, "SystemIPAddress matches")
+	if secondary.Name != "" {
+		assert.Equal(t, secondary.Name, *req.Secondary.VirtualDeviceName, "VirtualDeviceName matches")
 	}
 }
 

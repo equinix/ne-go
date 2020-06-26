@@ -1,12 +1,14 @@
+//Package ne implements Network Edge client
 package ne
 
 import (
 	"fmt"
 )
 
+//Client interface describes operations provided by Network Edge client library
 type Client interface {
 	CreateDevice(device Device) (string, error)
-	//create redundant device ? or device create request ?
+	CreateRedundantDevice(primary Device, secondary Device) (string, string, error)
 	GetDevice(uuid string) (*Device, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
@@ -14,9 +16,10 @@ type Client interface {
 	CreateSSHUser(username string, password string, device string) (string, error)
 	GetSSHUser(uuid string) (*SSHUser, error)
 	NewSSHUserUpdateRequest(uuid string) SSHUserUpdateRequest
-	//delete composite operation ?
+	DeleteSSHUser(uuid string) error
 }
 
+//DeviceUpdateRequest describes composite request to update given Network Edge device
 type DeviceUpdateRequest interface {
 	WithDeviceName(deviceName string) DeviceUpdateRequest
 	WithTermLength(termLength int) DeviceUpdateRequest
@@ -26,6 +29,7 @@ type DeviceUpdateRequest interface {
 	Execute() error
 }
 
+//SSHUserUpdateRequest describes composite request to update given Network Edge SSH user
 type SSHUserUpdateRequest interface {
 	WithNewPassword(password string) SSHUserUpdateRequest
 	WithNewDevices(uuids []string) SSHUserUpdateRequest
@@ -41,12 +45,7 @@ type Error struct {
 	ErrorMessage string
 }
 
-const (
-	ChangeTypeCreate = "Add"
-	ChangeTypeUpdate = "Update"
-	ChangeTypeDelete = "Delete"
-)
-
+//ChangeError describes single error that occured during update of selected target property
 type ChangeError struct {
 	Type   string
 	Target string
@@ -58,14 +57,30 @@ func (e ChangeError) Error() string {
 	return fmt.Sprintf("change type '%s', target '%s', value '%s', cause: '%s'", e.Type, e.Target, e.Value, e.Cause)
 }
 
+//UpdateError describes error that occured during composite update request and consists of multiple atomic change errors
 type UpdateError struct {
-	failed []ChangeError
+	Failed []ChangeError
+}
+
+//AddChangeError functions add new atomic change error to update error structure
+func (e *UpdateError) AddChangeError(changeType string, target string, value interface{}, cause error) {
+	e.Failed = append(e.Failed, ChangeError{
+		Type:   changeType,
+		Target: target,
+		Value:  value,
+		Cause:  cause})
+}
+
+//ChangeErrorsCount returns number of atomic change errors in a given composite update error
+func (e UpdateError) ChangeErrorsCount() int {
+	return len(e.Failed)
 }
 
 func (e UpdateError) Error() string {
-	return fmt.Sprintf("update error: %d changes failed", len(e.failed))
+	return fmt.Sprintf("update error: %d changes failed", len(e.Failed))
 }
 
+//Device describes Network Edge device
 type Device struct {
 	AccountName         string
 	AccountNumber       string
@@ -80,7 +95,6 @@ type Device struct {
 	DeviceTypeVendor    string
 	Expiry              string
 	HostName            string
-	//Interfaces          []DeviceInterface
 	LicenseFileID       string
 	LicenseKey          string
 	LicenseName         string
@@ -119,20 +133,7 @@ type Device struct {
 	VendorConfig        DeviceVendorConfig
 }
 
-type DeviceInterface struct {
-	Asn               int
-	AssignedType      string
-	ID                int
-	IPAddress         string
-	IPV4Mask          string
-	IPV4Subnet        string
-	MacAddress        string
-	Name              string
-	OperationalStatus string
-	Status            string
-	Type              string
-}
-
+//DeviceVendorConfig describes vendor specific configuration attrubues of a Network Edge device
 type DeviceVendorConfig struct {
 	SiteID          string
 	SystemIPAddress string
@@ -147,6 +148,7 @@ type DeviceVendorConfig struct {
 	*/
 }
 
+//SSHUser describes Network Edge SSH user
 type SSHUser struct {
 	UUID        string
 	Username    string

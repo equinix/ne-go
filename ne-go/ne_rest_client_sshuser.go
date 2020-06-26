@@ -2,7 +2,7 @@ package ne
 
 import (
 	"fmt"
-	"ne-go/v1/tmp/api"
+	"ne-go/v1/internal/api"
 	"net/url"
 
 	"github.com/go-resty/resty/v2"
@@ -21,6 +21,7 @@ type restSSHUserUpdateRequest struct {
 	c              RestClient
 }
 
+//CreateSSHUser creates new Network Edge SSH user with a given parameters and returns its UUID upon successful creation
 func (c RestClient) CreateSSHUser(username string, password string, device string) (string, error) {
 	u := c.baseURL + "/ne/v1/services/ssh-user"
 	reqBody := api.SSHUserCreateRequest{
@@ -36,6 +37,7 @@ func (c RestClient) CreateSSHUser(username string, password string, device strin
 	return respBody.UUID, nil
 }
 
+//GetSSHUser fetches details of a SSH user with a given UUID
 func (c RestClient) GetSSHUser(uuid string) (*SSHUser, error) {
 	url := c.baseURL + "/ne/v1/services/ssh-user/" + url.PathEscape(uuid)
 	respBody := api.SSHUserInfoVerbose{}
@@ -46,10 +48,29 @@ func (c RestClient) GetSSHUser(uuid string) (*SSHUser, error) {
 	return mapSSHUserAPIToDomain(respBody), nil
 }
 
-func (client RestClient) NewSSHUserUpdateRequest(uuid string) SSHUserUpdateRequest {
+//NewSSHUserUpdateRequest creates new composite update request for a user with a given UUID
+func (c RestClient) NewSSHUserUpdateRequest(uuid string) SSHUserUpdateRequest {
 	return &restSSHUserUpdateRequest{
 		uuid: uuid,
-		c:    client}
+		c:    c}
+}
+
+//DeleteSSHUser deletes ssh user with a given UUID
+func (c RestClient) DeleteSSHUser(uuid string) error {
+	user, err := c.GetSSHUser(uuid)
+	if err != nil {
+		return err
+	}
+	updateErr := UpdateError{}
+	for _, dev := range user.DeviceUUIDs {
+		if err := c.changeDeviceAssociation(unassociateDevice, uuid, dev); err != nil {
+			updateErr.AddChangeError(changeTypeDelete, "devices", dev, err)
+		}
+	}
+	if updateErr.ChangeErrorsCount() > 0 {
+		return updateErr
+	}
+	return nil
 }
 
 func (req *restSSHUserUpdateRequest) WithNewPassword(password string) SSHUserUpdateRequest {
@@ -71,32 +92,20 @@ func (req *restSSHUserUpdateRequest) Execute() error {
 	updateErr := UpdateError{}
 	if req.newPassword != "" {
 		if err := req.c.changeUserPassword(req.uuid, req.newPassword); err != nil {
-			updateErr.failed = append(updateErr.failed, ChangeError{
-				Type:   ChangeTypeUpdate,
-				Target: "password",
-				Value:  req.newPassword,
-				Cause:  err})
+			updateErr.AddChangeError(changeTypeUpdate, "password", req.newPassword, err)
 		}
 	}
 	for _, dev := range req.newDevices {
 		if err := req.c.changeDeviceAssociation(associateDevice, req.uuid, dev); err != nil {
-			updateErr.failed = append(updateErr.failed, ChangeError{
-				Type:   ChangeTypeCreate,
-				Target: "devices",
-				Value:  dev,
-				Cause:  err})
+			updateErr.AddChangeError(changeTypeCreate, "devices", dev, err)
 		}
 	}
 	for _, dev := range req.removedDevices {
 		if err := req.c.changeDeviceAssociation(unassociateDevice, req.uuid, dev); err != nil {
-			updateErr.failed = append(updateErr.failed, ChangeError{
-				Type:   ChangeTypeDelete,
-				Target: "devices",
-				Value:  dev,
-				Cause:  err})
+			updateErr.AddChangeError(changeTypeDelete, "devices", dev, err)
 		}
 	}
-	if len(updateErr.failed) > 0 {
+	if updateErr.ChangeErrorsCount() > 0 {
 		return updateErr
 	}
 	return nil
@@ -133,8 +142,6 @@ func (c RestClient) changeDeviceAssociation(changeType string, userID string, de
 		//due to bug in NE API that requires content type and content len = 0 altough there is no content needed in any case
 		SetHeader("Content-Type", "application/json").
 		SetBody("{}")
-		//SetContentLength(true).
-		//SetHeader("Content-Length", "0")
 	if err := c.execute(req, method, url); err != nil {
 		return err
 	}

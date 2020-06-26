@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"ne-go/v1/tmp/api"
+	"ne-go/v1/internal/api"
 	"net/http"
 	"testing"
 
@@ -24,7 +24,7 @@ func TestSSHUserGet(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	c := NewClient(baseURL, context.Background(), testHc)
+	c := NewClient(context.Background(), baseURL, testHc)
 	user, err := c.GetSSHUser(userID)
 
 	//then
@@ -60,7 +60,7 @@ func TestSSHUserCreate(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	c := NewClient(baseURL, context.Background(), testHc)
+	c := NewClient(context.Background(), baseURL, testHc)
 	uuid, err := c.CreateSSHUser(user.Username, user.Password, user.DeviceUUIDs[0])
 
 	//then
@@ -98,7 +98,7 @@ func TestSSHUserUpdate(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	c := NewClient(baseURL, context.Background(), testHc)
+	c := NewClient(context.Background(), baseURL, testHc)
 	updateReq := c.NewSSHUserUpdateRequest(userID).
 		WithNewPassword(newPass).
 		WithNewDevices(newDevices).
@@ -108,6 +108,39 @@ func TestSSHUserUpdate(t *testing.T) {
 	//then
 	assert.Nil(t, err, "Error is not returned")
 	verifyUserUpdateRequest(t, updateReq.(*restSSHUserUpdateRequest), req)
+	for p, c := range httpmock.GetCallCountInfo() {
+		assert.Equal(t, 1, c, "One request received on mock responder %s", p)
+	}
+}
+
+func TestSSHUserDelete(t *testing.T) {
+	//given
+	baseURL := "http://localhost:8888"
+	userID := "myTestUser"
+	userResp := api.SSHUserInfoVerbose{
+		UUID:        userID,
+		Username:    "user",
+		DeviceUuids: []string{"dev1", "dev2", "dev3"}}
+	testHc := &http.Client{}
+	httpmock.ActivateNonDefault(testHc)
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s", baseURL, userID),
+		func(r *http.Request) (*http.Response, error) {
+			resp, _ := httpmock.NewJsonResponse(200, userResp)
+			return resp, nil
+		},
+	)
+	for _, dev := range userResp.DeviceUuids {
+		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s/association?deviceUuid=%s", baseURL, userID, dev),
+			httpmock.NewStringResponder(200, ""))
+	}
+	defer httpmock.DeactivateAndReset()
+
+	//when
+	c := NewClient(context.Background(), baseURL, testHc)
+	err := c.DeleteSSHUser(userID)
+
+	//then
+	assert.Nil(t, err, "Error is not returned")
 	for p, c := range httpmock.GetCallCountInfo() {
 		assert.Equal(t, 1, c, "One request received on mock responder %s", p)
 	}

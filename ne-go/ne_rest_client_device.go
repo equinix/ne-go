@@ -20,6 +20,7 @@ type restDeviceUpdateRequest struct {
 	c                   RestClient
 }
 
+//CreateDevice creates given Network Edge device and returns its UUID upon successful creation
 func (c RestClient) CreateDevice(device Device) (string, error) {
 	url := fmt.Sprintf("%s/ne/v1/device", c.baseURL)
 	reqBody := createDeviceRequest(device)
@@ -32,6 +33,21 @@ func (c RestClient) CreateDevice(device Device) (string, error) {
 	return respBody.UUID, nil
 }
 
+//CreateRedundantDevice creates HA device setup from given primary and secondary devices and
+//returns their UUIDS upon successful creation
+func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (string, string, error) {
+	url := fmt.Sprintf("%s/ne/v1/device", c.baseURL)
+	reqBody := createRedundantDeviceRequest(primary, secondary)
+	respBody := api.VirtualDeviceCreateResponseDto{}
+	req := c.R().SetBody(&reqBody).SetResult(&respBody)
+
+	if err := c.execute(req, resty.MethodPost, url); err != nil {
+		return "", "", err
+	}
+	return respBody.UUID, respBody.SecondaryUUID, nil
+}
+
+//GetDevice fetches details of a device with a given UUID
 func (c RestClient) GetDevice(uuid string) (*Device, error) {
 	url := fmt.Sprintf("%s/ne/v1/device/%s", c.baseURL, url.PathEscape(uuid))
 	result := api.VirtualDeviceDetailsResponse{}
@@ -46,6 +62,7 @@ func (c RestClient) GetDevice(uuid string) (*Device, error) {
 	return device, nil
 }
 
+//NewDeviceUpdateRequest creates new composite update request for a device with a given UUID
 func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 	return &restDeviceUpdateRequest{
 		uuid:         uuid,
@@ -53,6 +70,7 @@ func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 		c:            c}
 }
 
+//DeleteDevice deletes device with a given UUID
 func (c RestClient) DeleteDevice(uuid string) error {
 	url := fmt.Sprintf("%s/ne/v1/device/%s", c.baseURL, url.PathEscape(uuid))
 	if err := c.execute(c.R(), resty.MethodDelete, url); err != nil {
@@ -61,62 +79,55 @@ func (c RestClient) DeleteDevice(uuid string) error {
 	return nil
 }
 
+//WithDeviceName sets new device name in a composite device update request
 func (req *restDeviceUpdateRequest) WithDeviceName(deviceName string) DeviceUpdateRequest {
 	req.deviceFields["deviceName"] = deviceName
 	return req
 }
 
+//WithTermLength sets new term length in a composite device update request
 func (req *restDeviceUpdateRequest) WithTermLength(termLength int) DeviceUpdateRequest {
 	req.deviceFields["termLength"] = termLength
 	return req
 }
 
+//WithNotifications sets new notifications in a composite device update request
 func (req *restDeviceUpdateRequest) WithNotifications(notifications []string) DeviceUpdateRequest {
 	req.deviceFields["notifications"] = notifications
 	return req
 }
 
+//WithAdditionalBandwidth sets new additional bandwidth in a composite device update request
 func (req *restDeviceUpdateRequest) WithAdditionalBandwidth(additionalBandwidth int) DeviceUpdateRequest {
 	req.additionalBandwidth = additionalBandwidth
 	return req
 }
 
+//WithAdditionalBandwidth sets new ACLs in a composite device update request
 func (req *restDeviceUpdateRequest) WithACLs(acls []string) DeviceUpdateRequest {
 	req.acls = acls
 	return req
 }
 
+//Execute attempts to update device according new data set in composite update request.
+//This is not atomic operation and if any update will fail, other changes won't be reverted.
+//UpdateError will be returned if any of requested data failed to update
 func (req *restDeviceUpdateRequest) Execute() error {
 	updateErr := UpdateError{}
 	if err := req.c.replaceDeviceFields(req.uuid, req.deviceFields); err != nil {
-		updateErr.failed = append(updateErr.failed, ChangeError{
-			Type:   ChangeTypeUpdate,
-			Target: "deviceFields",
-			Value:  req.deviceFields,
-			Cause:  err})
+		updateErr.AddChangeError(changeTypeUpdate, "deviceFields", req.deviceFields, err)
 	}
-
 	if len(req.acls) > 0 {
 		if err := req.c.replaceDeviceACLs(req.uuid, req.acls); err != nil {
-			updateErr.failed = append(updateErr.failed, ChangeError{
-				Type:   ChangeTypeUpdate,
-				Target: "acl",
-				Value:  req.acls,
-				Cause:  err})
+			updateErr.AddChangeError(changeTypeUpdate, "acl", req.acls, err)
 		}
 	}
-
 	if req.additionalBandwidth > 0 {
 		if err := req.c.replaceDeviceAdditionalBandwidth(req.uuid, req.additionalBandwidth); err != nil {
-			updateErr.failed = append(updateErr.failed, ChangeError{
-				Type:   ChangeTypeUpdate,
-				Target: "additionalBandwidth",
-				Value:  req.additionalBandwidth,
-				Cause:  err})
+			updateErr.AddChangeError(changeTypeUpdate, "additionalBandwidth", req.additionalBandwidth, err)
 		}
 	}
-
-	if len(updateErr.failed) > 0 {
+	if updateErr.ChangeErrorsCount() > 0 {
 		return updateErr
 	}
 	return nil
@@ -199,16 +210,41 @@ func createDeviceRequest(device Device) api.VirtualDeviceRequest {
 	req.LicenseMode = &device.LicenseType
 	req.LicenseSecret = device.LicenseSecret
 	req.LicenseToken = device.LicenseToken
-	req.MetroCode = &device.MetroCode
+	if device.MetroCode != "" {
+		req.MetroCode = &device.MetroCode
+	}
 	req.Notifications = device.Notifications
 	req.PackageCode = device.PackageCode
-	//req.Secondary = device.Secondary
 	req.SiteID = device.SiteID
-	//req.SSHUsers = device.SSHUsers
 	req.SystemIPAddress = device.SystemIPAddress
 	req.Throughput = int32(device.Throughput)
 	req.ThroughputUnit = device.ThroughputUnit
-	req.VirtualDeviceName = &device.Name
+	if device.Name != "" {
+		req.VirtualDeviceName = &device.Name
+	}
+	return req
+}
+
+func createRedundantDeviceRequest(primary Device, secondary Device) api.VirtualDeviceRequest {
+	req := createDeviceRequest(primary)
+	secReq := api.VirtualDevicHARequest{}
+	secReq.AccountNumber = secondary.AccountNumber
+	secReq.ACL = secondary.ACL
+	secReq.AdditionalBandwidth = int32(secondary.AdditionalBandwidth)
+	secReq.LicenseFileID = secondary.LicenseFileID
+	secReq.LicenseKey = secondary.LicenseKey
+	secReq.LicenseSecret = secondary.LicenseSecret
+	secReq.LicenseToken = secondary.LicenseToken
+	if secondary.MetroCode != "" {
+		secReq.MetroCode = &secondary.MetroCode
+	}
+	secReq.Notifications = secondary.Notifications
+	secReq.SiteID = secondary.SiteID
+	secReq.SystemIPAddress = secondary.SystemIPAddress
+	if secondary.Name != "" {
+		secReq.VirtualDeviceName = &secondary.Name
+	}
+	req.Secondary = &secReq
 	return req
 }
 

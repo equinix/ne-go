@@ -24,7 +24,7 @@ func TestSingleError(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	cli := NewClient(testURL, context.Background(), testHc)
+	cli := NewClient(context.Background(), testURL, testHc)
 	err := cli.execute(cli.R(), resty.MethodGet, testURL)
 
 	//then
@@ -49,7 +49,7 @@ func TestMultipleError(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	//when
-	cli := NewClient(testURL, context.Background(), testHc)
+	cli := NewClient(context.Background(), testURL, testHc)
 	err := cli.execute(cli.R(), resty.MethodGet, testURL)
 
 	//then
