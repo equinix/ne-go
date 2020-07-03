@@ -73,7 +73,8 @@ func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 //DeleteDevice deletes device with a given UUID
 func (c RestClient) DeleteDevice(uuid string) error {
 	url := fmt.Sprintf("%s/ne/v1/device/%s", c.baseURL, url.PathEscape(uuid))
-	if err := c.execute(c.R(), resty.MethodDelete, url); err != nil {
+	req := c.R().SetQueryParam("deleteRedundantDevice", "true")
+	if err := c.execute(req, resty.MethodDelete, url); err != nil {
 		return err
 	}
 	return nil
@@ -244,7 +245,11 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.VirtualD
 	if secondary.Name != "" {
 		secReq.VirtualDeviceName = &secondary.Name
 	}
+	if secondary.HostName != "" {
+		secReq.HostNamePrefix = secondary.HostName
+	}
 	req.Secondary = &secReq
+
 	return req
 }
 

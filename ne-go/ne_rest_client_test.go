@@ -35,7 +35,6 @@ func TestSingleError(t *testing.T) {
 	assert.Equal(t, 1, len(restErr.Errors), "RestError should have one domain error")
 	neError := restErr.Errors[0]
 	assert.Equal(t, resp.ErrorCode, neError.ErrorCode, "RestError domain error code matches")
-	assert.Equal(t, resp.ErrorMessage, neError.ErrorMessage, "RestError domain error message matches")
 }
 
 func TestMultipleError(t *testing.T) {

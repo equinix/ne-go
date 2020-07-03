@@ -32,6 +32,9 @@ type VirtualDevicHARequest struct {
 	// Secondary additional bandwidth to be configured (in Mbps for HA). Default bandwidth provided is 15 Mbps.
 	AdditionalBandwidth int32 `json:"additionalBandwidth,omitempty"`
 
+	// Host name prefix for identification. Only a-z, A-Z, 0-9 and hyphen(-) are allowed. It should start with a letter and end with a letter or a digit. Also, it should be minimum 2 and maximum 10 characters long.
+	HostNamePrefix string `json:"hostNamePrefix,omitempty"`
+
 	// license file Id
 	LicenseFileID string `json:"licenseFileId,omitempty"`
 

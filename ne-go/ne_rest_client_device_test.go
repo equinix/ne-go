@@ -287,6 +287,7 @@ func verifyRedundantDeviceRequest(t *testing.T, primary Device, secondary Device
 	if secondary.Name != "" {
 		assert.Equal(t, secondary.Name, *req.Secondary.VirtualDeviceName, "VirtualDeviceName matches")
 	}
+	assert.Equal(t, secondary.HostName, req.Secondary.HostNamePrefix, "HostName matches")
 }
 
 func verifyDevice(t *testing.T, dev Device, resp api.VirtualDeviceDetailsResponse) {
