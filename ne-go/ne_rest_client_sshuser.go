@@ -2,7 +2,7 @@ package ne
 
 import (
 	"fmt"
-	"ne-go/v1/internal/api"
+	"ne-go/internal/api"
 	"net/url"
 
 	"github.com/go-resty/resty/v2"
@@ -14,11 +14,11 @@ const (
 )
 
 type restSSHUserUpdateRequest struct {
-	uuid           string
-	newPassword    string
-	newDevices     []string
-	removedDevices []string
-	c              RestClient
+	uuid        string
+	newPassword string
+	oldDevices  []string
+	newDevices  []string
+	c           RestClient
 }
 
 //CreateSSHUser creates new Network Edge SSH user with a given parameters and returns its UUID upon successful creation
@@ -78,13 +78,9 @@ func (req *restSSHUserUpdateRequest) WithNewPassword(password string) SSHUserUpd
 	return req
 }
 
-func (req *restSSHUserUpdateRequest) WithNewDevices(uuids []string) SSHUserUpdateRequest {
-	req.newDevices = uuids
-	return req
-}
-
-func (req *restSSHUserUpdateRequest) WithRemovedDevices(uuids []string) SSHUserUpdateRequest {
-	req.removedDevices = uuids
+func (req *restSSHUserUpdateRequest) WithDeviceChange(old []string, new []string) SSHUserUpdateRequest {
+	req.oldDevices = old
+	req.newDevices = new
 	return req
 }
 
@@ -95,12 +91,13 @@ func (req *restSSHUserUpdateRequest) Execute() error {
 			updateErr.AddChangeError(changeTypeUpdate, "password", req.newPassword, err)
 		}
 	}
-	for _, dev := range req.newDevices {
+	removed, added := diffStringSlices(req.oldDevices, req.newDevices)
+	for _, dev := range added {
 		if err := req.c.changeDeviceAssociation(associateDevice, req.uuid, dev); err != nil {
 			updateErr.AddChangeError(changeTypeCreate, "devices", dev, err)
 		}
 	}
-	for _, dev := range req.removedDevices {
+	for _, dev := range removed {
 		if err := req.c.changeDeviceAssociation(unassociateDevice, req.uuid, dev); err != nil {
 			updateErr.AddChangeError(changeTypeDelete, "devices", dev, err)
 		}
@@ -154,4 +151,31 @@ func mapSSHUserAPIToDomain(apiUser api.SSHUserInfoVerbose) *SSHUser {
 		Username:    apiUser.Username,
 		DeviceUUIDs: apiUser.DeviceUuids,
 		MetroCodes:  apiUser.Metros}
+}
+
+func diffStringSlices(a, b []string) (extraA, extraB []string) {
+	visited := make([]bool, len(b))
+	for i := range a {
+		found := false
+		for j := range b {
+			if visited[j] {
+				continue
+			}
+			if a[i] == b[j] {
+				visited[j] = true
+				found = true
+				break
+			}
+		}
+		if !found {
+			extraA = append(extraA, a[i])
+		}
+	}
+	for j := range b {
+		if visited[j] {
+			continue
+		}
+		extraB = append(extraB, b[j])
+	}
+	return
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
-	"ne-go/v1/internal/api"
+	"ne-go/internal/api"
 	"net/http"
 	"testing"
 

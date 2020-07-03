@@ -37,6 +37,7 @@
     ],
     "purchaseOrderNumber": "234567",
     "redundancyType": "PRIMARY",
+    "redundantUUID": "57fb5d09-d8fe-4fb9-9ab5-dbca25b3357b",
     "termLength": 12,
     "billingCommencementDate": "06/22/2020 15:03:31",
     "additionalBandwidth": 100,

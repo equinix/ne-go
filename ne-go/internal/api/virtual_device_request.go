@@ -84,6 +84,9 @@ type VirtualDeviceRequest struct {
 	// Throughput unit. This is required for Cisco and Juniper devices.
 	ThroughputUnit string `json:"throughputUnit,omitempty"`
 
+	// version
+	Version string `json:"version,omitempty"`
+
 	// Virtual device name for identification. This should be minimum 3 and maximum 50 characters long.
 	// Required: true
 	VirtualDeviceName *string `json:"virtualDeviceName"`

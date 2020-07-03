@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"ne-go/v1/internal/api"
+	"ne-go/internal/api"
 	"net/http"
 	"testing"
 
@@ -74,8 +74,8 @@ func TestSSHUserUpdate(t *testing.T) {
 	baseURL := "http://localhost:8888"
 	userID := "myTestUser"
 	newPass := "myNewPassword"
-	newDevices := []string{"nDev1", "nDev2"}
-	delDevices := []string{"rDev1", "rDev2"}
+	oldDevices := []string{"Dev1", "Dev2"}
+	newDevices := []string{"Dev3", "Dev4"}
 	req := api.SSHUserUpdateRequest{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -87,11 +87,12 @@ func TestSSHUserUpdate(t *testing.T) {
 			return httpmock.NewStringResponse(201, ""), nil
 		},
 	)
-	for _, dev := range newDevices {
+	removed, added := diffStringSlices(oldDevices, newDevices)
+	for _, dev := range added {
 		httpmock.RegisterResponder("PATCH", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s/association?deviceUuid=%s", baseURL, userID, dev),
 			httpmock.NewStringResponder(201, ""))
 	}
-	for _, dev := range delDevices {
+	for _, dev := range removed {
 		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s/association?deviceUuid=%s", baseURL, userID, dev),
 			httpmock.NewStringResponder(200, ""))
 	}
@@ -101,8 +102,7 @@ func TestSSHUserUpdate(t *testing.T) {
 	c := NewClient(context.Background(), baseURL, testHc)
 	updateReq := c.NewSSHUserUpdateRequest(userID).
 		WithNewPassword(newPass).
-		WithNewDevices(newDevices).
-		WithRemovedDevices(delDevices)
+		WithDeviceChange(oldDevices, newDevices)
 	err := updateReq.Execute()
 
 	//then

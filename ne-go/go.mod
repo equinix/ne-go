@@ -1,4 +1,4 @@
-module ne-go/v1
+module ne-go
 
 go 1.14
 
@@ -10,7 +10,4 @@ require (
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/jarcoal/httpmock v1.0.5
 	github.com/stretchr/testify v1.6.0
-	oauth2-go v1.0.0
 )
-
-replace oauth2-go v1.0.0 => ../oauth2-go

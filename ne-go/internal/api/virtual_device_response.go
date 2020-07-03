@@ -146,6 +146,9 @@ type VirtualDeviceResponse struct {
 
 	// uuid
 	UUID string `json:"uuid,omitempty"`
+
+	// version
+	Version string `json:"version,omitempty"`
 }
 
 // Validate validates this virtual device response

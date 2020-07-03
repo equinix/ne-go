@@ -32,8 +32,7 @@ type DeviceUpdateRequest interface {
 //SSHUserUpdateRequest describes composite request to update given Network Edge SSH user
 type SSHUserUpdateRequest interface {
 	WithNewPassword(password string) SSHUserUpdateRequest
-	WithNewDevices(uuids []string) SSHUserUpdateRequest
-	WithRemovedDevices(uuids []string) SSHUserUpdateRequest
+	WithDeviceChange(old []string, new []string) SSHUserUpdateRequest
 	Execute() error
 }
 
@@ -77,7 +76,11 @@ func (e UpdateError) ChangeErrorsCount() int {
 }
 
 func (e UpdateError) Error() string {
-	return fmt.Sprintf("update error: %d changes failed", len(e.Failed))
+	str := fmt.Sprintf("update error: %d changes failed.", len(e.Failed))
+	for _, err := range e.Failed {
+		str = fmt.Sprintf("%s [%s]", str, err.Error())
+	}
+	return str
 }
 
 //Device describes Network Edge device
@@ -130,7 +133,8 @@ type Device struct {
 	Throughput          int
 	ThroughputUnit      string
 	UUID                string
-	VendorConfig        DeviceVendorConfig
+	VendorConfig        *DeviceVendorConfig
+	Version             string
 }
 
 //DeviceVendorConfig describes vendor specific configuration attrubues of a Network Edge device

@@ -2905,6 +2905,9 @@ definitions:
       systemIpAddress:
         type: string
         example: 192.168.2.5
+      version:
+        type: string
+        example: "6.0.4"
   PageResponseDto-VirtualDeviceType:
     type: object
     properties:
@@ -3213,6 +3216,9 @@ definitions:
       licenseSecret:
         type: string
         example: "h5j0i45e83324pblbfca764532c4a640e7801f0"
+      version:
+        type: string
+        example: "6.0.4"
       secondary:
         $ref: "#/definitions/VirtualDevicHARequest"
   VirtualDevicHARequest:
@@ -3515,6 +3521,9 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/InterfaceBasicInfoResponse"
+      version:
+        type: string
+        example: "6.0.4"
   InterfaceBasicInfoResponse:
     type: object
     properties:

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"ne-go/v1/internal/api"
+	"ne-go/internal/api"
 	"net/http"
 
 	"github.com/go-resty/resty/v2"
@@ -88,11 +88,13 @@ func mapErrorAPIToDomain(apiError api.ErrorMessageResponse) RestError {
 
 func mapErrorsAPIToDomain(apiErrors api.FieldErrorResponse) RestError {
 	errors := make([]Error, len(apiErrors))
+	msg := ""
 	for i, v := range apiErrors {
 		errors[i] = Error{v.ErrorCode, v.ErrorMessage}
+		msg = msg + fmt.Sprintf(" [Error %v: %v]", i+1, v.ErrorMessage)
 	}
 	return RestError{
-		Message: "Multiple errors occured",
+		Message: "Multiple errors occured: " + msg,
 		Errors:  errors,
 	}
 }

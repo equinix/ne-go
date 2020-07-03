@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"ne-go/v1/internal/api"
+	"ne-go/internal/api"
 	"net/http"
 	"testing"
 
@@ -239,7 +239,7 @@ func TestDeleteDevice(t *testing.T) {
 
 func verifyDeviceRequest(t *testing.T, dev Device, req api.VirtualDeviceRequest) {
 	assert.Equal(t, req.AccountNumber, dev.AccountNumber, "AccountNumber matches")
-	assert.Equal(t, req.ACL, dev.ACL, "ACL matches")
+	assert.ElementsMatch(t, req.ACL, dev.ACL, "ACL matches")
 	assert.Equal(t, req.AdditionalBandwidth, int32(dev.AdditionalBandwidth), "AdditionalBandwidth matches")
 	if dev.DeviceTypeCode != "" {
 		assert.Equal(t, *req.DeviceTypeCode, dev.DeviceTypeCode, "DeviceTypeCode matches")
@@ -257,7 +257,7 @@ func verifyDeviceRequest(t *testing.T, dev Device, req api.VirtualDeviceRequest)
 	if dev.MetroCode != "" {
 		assert.Equal(t, *req.MetroCode, dev.MetroCode, "MetroCode matches")
 	}
-	assert.Equal(t, req.Notifications, dev.Notifications, "Notifications matches")
+	assert.ElementsMatch(t, req.Notifications, dev.Notifications, "Notifications matches")
 	assert.Equal(t, req.PackageCode, dev.PackageCode, "PackageCode matches")
 	assert.Equal(t, req.SiteID, dev.SiteID, "SiteID matches")
 	assert.Equal(t, req.SystemIPAddress, dev.SystemIPAddress, "SystemIPAddress matches")
@@ -266,6 +266,7 @@ func verifyDeviceRequest(t *testing.T, dev Device, req api.VirtualDeviceRequest)
 	if dev.Name != "" {
 		assert.Equal(t, *req.VirtualDeviceName, dev.Name, "VirtualDeviceName matches")
 	}
+	assert.Equal(t, req.Version, dev.Version, "Version matches")
 }
 
 func verifyRedundantDeviceRequest(t *testing.T, primary Device, secondary Device, req api.VirtualDeviceRequest) {
@@ -290,7 +291,7 @@ func verifyRedundantDeviceRequest(t *testing.T, primary Device, secondary Device
 
 func verifyDevice(t *testing.T, dev Device, resp api.VirtualDeviceDetailsResponse) {
 	assert.Equal(t, resp.AccountNumber, dev.AccountNumber, "AccountNumber matches")
-	assert.Equal(t, resp.ACL, dev.ACL, "ACL matches")
+	assert.ElementsMatch(t, resp.ACL, dev.ACL, "ACL matches")
 	assert.Equal(t, resp.AdditionalBandwidth, int32(dev.AdditionalBandwidth), "AdditionalBandwidth matches")
 	assert.Equal(t, resp.Controller1, dev.Controller1, "Controller1 matches")
 	assert.Equal(t, resp.Controller2, dev.Controller2, "Controller2 matches")
@@ -313,7 +314,7 @@ func verifyDevice(t *testing.T, dev Device, resp api.VirtualDeviceDetailsRespons
 	assert.Equal(t, resp.MetroCode, dev.MetroCode, "MetroCode matches")
 	assert.Equal(t, resp.MetroName, dev.MetroName, "MetroName matches")
 	assert.Equal(t, resp.Name, dev.Name, "Name matches")
-	assert.Equal(t, resp.Notifications, dev.Notifications, "Notifications matches")
+	assert.ElementsMatch(t, resp.Notifications, dev.Notifications, "Notifications matches")
 	assert.Equal(t, resp.PackageCode, dev.PackageCode, "PackageCode matches")
 	assert.Equal(t, resp.PackageName, dev.PackageName, "PackageName matches")
 	assert.Equal(t, resp.PrimaryDNSName, dev.PrimaryDNSName, "PrimaryDNSName matches")
@@ -335,4 +336,5 @@ func verifyDevice(t *testing.T, dev Device, resp api.VirtualDeviceDetailsRespons
 	assert.Equal(t, resp.Throughput, fmt.Sprintf("%d", dev.Throughput), "Throughput matches")
 	assert.Equal(t, resp.ThroughputUnit, dev.ThroughputUnit, "ThroughputUnit matches")
 	assert.Equal(t, resp.UUID, dev.UUID, "UUID matches")
+	assert.Equal(t, resp.Version, dev.Version, "Version matches")
 }

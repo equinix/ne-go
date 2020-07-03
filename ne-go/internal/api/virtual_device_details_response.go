@@ -176,6 +176,9 @@ type VirtualDeviceDetailsResponse struct {
 
 	// vendor config
 	VendorConfig *VendorConfig `json:"vendorConfig,omitempty"`
+
+	// version
+	Version string `json:"version,omitempty"`
 }
 
 // Validate validates this virtual device details response

@@ -2,7 +2,7 @@ package ne
 
 import (
 	"fmt"
-	"ne-go/v1/internal/api"
+	"ne-go/internal/api"
 	"net/url"
 	"strconv"
 
@@ -193,14 +193,13 @@ func mapDeviceAPIToDomain(apiDevice api.VirtualDeviceDetailsResponse) (*Device, 
 	if apiDevice.VendorConfig != nil {
 		dev.VendorConfig = mapDeviceVendorConfigAPIToDomain(*apiDevice.VendorConfig)
 	}
+	dev.Version = apiDevice.Version
 	return &dev, nil
 }
 
 func createDeviceRequest(device Device) api.VirtualDeviceRequest {
 	req := api.VirtualDeviceRequest{}
 	req.AccountNumber = device.AccountNumber
-	//seems to be not needed if account is already there
-	//req.AccountReferenceID = device.AccountReferenceID
 	req.ACL = device.ACL
 	req.AdditionalBandwidth = int32(device.AdditionalBandwidth)
 	req.DeviceTypeCode = &device.DeviceTypeCode
@@ -222,6 +221,7 @@ func createDeviceRequest(device Device) api.VirtualDeviceRequest {
 	if device.Name != "" {
 		req.VirtualDeviceName = &device.Name
 	}
+	req.Version = device.Version
 	return req
 }
 
@@ -248,8 +248,8 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.VirtualD
 	return req
 }
 
-func mapDeviceVendorConfigAPIToDomain(api api.VendorConfig) DeviceVendorConfig {
-	return DeviceVendorConfig{
+func mapDeviceVendorConfigAPIToDomain(api api.VendorConfig) *DeviceVendorConfig {
+	return &DeviceVendorConfig{
 		SiteID:          api.SiteID,
 		SystemIPAddress: api.SystemIPAddress,
 	}
