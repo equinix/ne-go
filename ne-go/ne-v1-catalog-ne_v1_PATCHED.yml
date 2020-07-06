@@ -3284,6 +3284,10 @@ definitions:
       licenseSecret:
         type: string
         example: "h5j0i45e83324pblbfca764532c4a640e7801f0"
+      hostNamePrefix:
+        type: string
+        example: mySR
+        description: Host name prefix for identification. Only a-z, A-Z, 0-9 and hyphen(-) are allowed. It should start with a letter and end with a letter or a digit. Also, it should be minimum 2 and maximum 10 characters long.
   SshUserOperationRequest:
     type: object
     required:
