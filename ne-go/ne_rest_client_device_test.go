@@ -239,7 +239,7 @@ func TestDeleteDevice(t *testing.T) {
 
 func verifyDeviceRequest(t *testing.T, dev Device, req api.VirtualDeviceRequest) {
 	assert.Equal(t, req.AccountNumber, dev.AccountNumber, "AccountNumber matches")
-	assert.ElementsMatch(t, req.ACL, dev.ACL, "ACL matches")
+	assert.ElementsMatch(t, req.FqdnACL, mapACLsDomainToAPI(dev.ACL), "ACL matches")
 	assert.Equal(t, req.AdditionalBandwidth, int32(dev.AdditionalBandwidth), "AdditionalBandwidth matches")
 	if dev.DeviceTypeCode != "" {
 		assert.Equal(t, *req.DeviceTypeCode, dev.DeviceTypeCode, "DeviceTypeCode matches")

@@ -36,11 +36,17 @@ type VirtualDeviceDetailsResponse struct {
 	// controller2
 	Controller2 string `json:"controller2,omitempty"`
 
+	// core
+	Core int32 `json:"core,omitempty"`
+
 	// created by
 	CreatedBy string `json:"createdBy,omitempty"`
 
 	// created date
 	CreatedDate string `json:"createdDate,omitempty"`
+
+	// device management type
+	DeviceManagementType string `json:"deviceManagementType,omitempty"`
 
 	// device serial no
 	DeviceSerialNo string `json:"deviceSerialNo,omitempty"`
@@ -62,6 +68,9 @@ type VirtualDeviceDetailsResponse struct {
 
 	// host name
 	HostName string `json:"hostName,omitempty"`
+
+	// interface count
+	InterfaceCount int32 `json:"interfaceCount,omitempty"`
 
 	// interfaces
 	Interfaces []*InterfaceBasicInfoResponse `json:"interfaces"`

@@ -25,19 +25,28 @@ type VirtualDeviceRequest struct {
 	// AccountReferenceId. This is a temporary ID that can be used to create a device when the account status is still pending, not active. Either an account number or accountReferenceId is required.
 	AccountReferenceID string `json:"accountReferenceId,omitempty"`
 
-	// IP addresses, no more than 50, in CIDR format
-	ACL []string `json:"acl"`
-
 	// Secondary additional bandwidth to be configured (in Mbps for HA). Default bandwidth provided is 15 Mbps.
 	AdditionalBandwidth int32 `json:"additionalBandwidth,omitempty"`
+
+	// core
+	Core int32 `json:"core,omitempty"`
+
+	// device management type
+	DeviceManagementType string `json:"deviceManagementType,omitempty"`
 
 	// Virtual device type (device type code)
 	// Required: true
 	DeviceTypeCode *string `json:"deviceTypeCode"`
 
+	// fqdn Acl
+	FqdnACL []*FqdnACL `json:"fqdnAcl"`
+
 	// Host name prefix for identification. Only a-z, A-Z, 0-9 and hyphen(-) are allowed. It should start with a letter and end with a letter or a digit. Also, it should be minimum 2 and maximum 10 characters long.
 	// Required: true
 	HostNamePrefix *string `json:"hostNamePrefix"`
+
+	// interface count
+	InterfaceCount int32 `json:"interfaceCount,omitempty"`
 
 	// For Juniper devices you need to provide a licenseFileId if you want to BYOL (Bring Your Own License). You get a licenseFileId when you upload a license file by calling license upload API (Upload a license file before creating a virtual device). For Cisco devices, you do not need to provide a licenseFileId at the time of device creation. Once the device is provisioned, you can get the deviceSerialNo by calling Get virtual device by UUID API. With the deviceSerialNo you can generate a license file on Cisco site. Afterward, you can upload the license file by calling license upload API (Upload a license file after creating a virtual device).
 	LicenseFileID string `json:"licenseFileId,omitempty"`
@@ -100,6 +109,10 @@ func (m *VirtualDeviceRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateFqdnACL(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateHostNamePrefix(formats); err != nil {
 		res = append(res, err)
 	}
@@ -138,6 +151,31 @@ func (m *VirtualDeviceRequest) validateDeviceTypeCode(formats strfmt.Registry) e
 
 	if err := validate.Required("deviceTypeCode", "body", m.DeviceTypeCode); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *VirtualDeviceRequest) validateFqdnACL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.FqdnACL) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.FqdnACL); i++ {
+		if swag.IsZero(m.FqdnACL[i]) { // not required
+			continue
+		}
+
+		if m.FqdnACL[i] != nil {
+			if err := m.FqdnACL[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("fqdnAcl" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil

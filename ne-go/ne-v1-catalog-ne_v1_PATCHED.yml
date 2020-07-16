@@ -3191,12 +3191,10 @@ definitions:
           type: string
         example: [test1@equinix.com, test2@equinix.com]
         description: Email addresses for notification. We need a minimum of 1 and no more than 5 email addresses.
-      acl:
+      fqdnAcl:
         type: array
-        description: IP addresses, no more than 50, in CIDR format
         items:
-          type: string
-        example: [192.168.1.1/32, 192.168.10.0/24]
+          $ref: "#/definitions/FqdnAcl"
       additionalBandwidth:
         type: integer
         format: int32
@@ -3219,6 +3217,17 @@ definitions:
       version:
         type: string
         example: "6.0.4"
+      interfaceCount:
+        type: integer
+        format: int32
+        example: 2
+      core:
+        type: integer
+        format: int32
+        example: 2
+      deviceManagementType:
+        type: string
+        example: EQUINIX-CONFIGURED
       secondary:
         $ref: "#/definitions/VirtualDevicHARequest"
   VirtualDevicHARequest:
@@ -3528,6 +3537,17 @@ definitions:
       version:
         type: string
         example: "6.0.4"
+      interfaceCount:
+        type: integer
+        format: int32
+        example: 2
+      core:
+        type: integer
+        format: int32
+        example: 2
+      deviceManagementType:
+        type: string
+        example: EQUINIX-CONFIGURED
   InterfaceBasicInfoResponse:
     type: object
     properties:
@@ -5105,6 +5125,17 @@ definitions:
       uuid:
         type: string
         example: 877a3aa2-c49a-4af1-98a6-007424e737ae
+  FqdnAcl:
+    type: object
+    properties:
+      cidrs:
+        type: array
+        items:
+          type: string
+          example: ["192.168.0.0/16", "10.10.1.24/32"]
+      type:
+        type: string
+        example: SUBNET
 parameters:
   authorizationHeader:
     name: Authorization

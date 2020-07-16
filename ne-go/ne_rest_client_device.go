@@ -195,13 +195,16 @@ func mapDeviceAPIToDomain(apiDevice api.VirtualDeviceDetailsResponse) (*Device, 
 		dev.VendorConfig = mapDeviceVendorConfigAPIToDomain(*apiDevice.VendorConfig)
 	}
 	dev.Version = apiDevice.Version
+	dev.ManagementType = apiDevice.DeviceManagementType
+	dev.CoreCount = int(apiDevice.Core)
+	dev.InterfaceCount = int(apiDevice.InterfaceCount)
 	return &dev, nil
 }
 
 func createDeviceRequest(device Device) api.VirtualDeviceRequest {
 	req := api.VirtualDeviceRequest{}
 	req.AccountNumber = device.AccountNumber
-	req.ACL = device.ACL
+	req.FqdnACL = mapACLsDomainToAPI(device.ACL)
 	req.AdditionalBandwidth = int32(device.AdditionalBandwidth)
 	req.DeviceTypeCode = &device.DeviceTypeCode
 	req.HostNamePrefix = &device.HostName
@@ -223,6 +226,9 @@ func createDeviceRequest(device Device) api.VirtualDeviceRequest {
 		req.VirtualDeviceName = &device.Name
 	}
 	req.Version = device.Version
+	req.DeviceManagementType = device.ManagementType
+	req.Core = int32(device.CoreCount)
+	req.InterfaceCount = int32(device.InterfaceCount)
 	return req
 }
 
@@ -258,6 +264,17 @@ func mapDeviceVendorConfigAPIToDomain(api api.VendorConfig) *DeviceVendorConfig 
 		SiteID:          api.SiteID,
 		SystemIPAddress: api.SystemIPAddress,
 	}
+}
+
+func mapACLsDomainToAPI(acls []string) []*api.FqdnACL {
+	transformed := make([]*api.FqdnACL, len(acls))
+	for i := range acls {
+		transformed[i] = &api.FqdnACL{
+			Cidrs: []string{acls[i]},
+			Type:  "SUBNET",
+		}
+	}
+	return transformed
 }
 
 func (c RestClient) replaceDeviceACLs(uuid string, acls []string) error {

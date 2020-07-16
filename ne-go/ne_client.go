@@ -140,6 +140,9 @@ type Device struct {
 	UUID                string
 	VendorConfig        *DeviceVendorConfig
 	Version             string
+	ManagementType      string
+	CoreCount           int
+	InterfaceCount      int
 }
 
 //DeviceVendorConfig describes vendor specific configuration attrubues of a Network Edge device
