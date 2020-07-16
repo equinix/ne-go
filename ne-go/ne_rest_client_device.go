@@ -278,8 +278,9 @@ func mapACLsDomainToAPI(acls []string) []*api.FqdnACL {
 }
 
 func (c RestClient) replaceDeviceACLs(uuid string, acls []string) error {
-	url := fmt.Sprintf("%s/ne/v1/device/%s/acl", c.baseURL, url.PathEscape(uuid))
-	req := c.R().SetBody(acls)
+	url := fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", c.baseURL, url.PathEscape(uuid))
+	reqBody := mapACLsDomainToAPI(acls)
+	req := c.R().SetBody(reqBody)
 	if err := c.execute(req, resty.MethodPut, url); err != nil {
 		return err
 	}

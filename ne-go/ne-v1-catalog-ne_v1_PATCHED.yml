@@ -914,7 +914,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: "#/definitions/ErrorMessageResponse"
-  /ne/v1/device/{uuid}/acl:
+  /ne/v1/device/{uuid}/fqdn-acl:
     put:
       tags:
         - Virtual Device & Licensing
@@ -933,8 +933,7 @@ paths:
           schema:
             type: array
             items:
-              type: string
-            example: [129.250.35.250, 219.20.135.51]
+              $ref: "#/definitions/FqdnAcl"
         - name: uuid
           in: path
           description: uuid
