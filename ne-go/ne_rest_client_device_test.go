@@ -171,9 +171,9 @@ func TestUpdateDeviceACL(t *testing.T) {
 	devID := "myDevice"
 	newACLs := []string{"127.0.0.1/32", "192.168.0.0/24"}
 	testHc := &http.Client{}
-	req := make([]string, 0)
+	req := make([]*api.FqdnACL, 0)
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/device/%s/acl", baseURL, devID),
+	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", baseURL, devID),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -189,7 +189,7 @@ func TestUpdateDeviceACL(t *testing.T) {
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.ElementsMatch(t, newACLs, req, "ACLs match")
+	assert.ElementsMatch(t, req, mapACLsDomainToAPI(newACLs), "ACL matches")
 }
 
 func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
