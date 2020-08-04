@@ -90,74 +90,48 @@ func (e UpdateError) Error() string {
 
 //Device describes Network Edge device
 type Device struct {
-	AccountName         string
-	AccountNumber       string
-	ACL                 []string
-	AdditionalBandwidth int
-	Controller1         string
-	Controller2         string
-	DeviceSerialNo      string
-	DeviceTypeCategory  string
-	DeviceTypeCode      string
-	DeviceTypeName      string
-	DeviceTypeVendor    string
-	Expiry              string
-	HostName            string
-	LicenseFileID       string
-	LicenseKey          string
-	LicenseName         string
-	LicenseSecret       string
-	LicenseStatus       string
-	LicenseType         string
-	LicenseToken        string
-	LocalID             string
-	ManagementGatewayIP string
-	ManagementIP        string
-	MetroCode           string
-	MetroName           string
+	UUID                string
 	Name                string
-	Notifications       []string
+	TypeCode            string
+	Status              string
+	LicenseStatus       string
+	MetroCode           string
+	IBX                 string
+	Region              string
+	Throughput          int
+	ThroughputUnit      string
+	HostName            string
 	PackageCode         string
-	PackageName         string
-	PrimaryDNSName      string
-	PublicGatewayIP     string
-	PublicIP            string
+	Version             string
+	IsBYOL              bool
+	LicenseToken        string
+	ACLs                []string
+	SSHIPAddress        string
+	SSHIPFqdn           string
+	AccountNumber       string
+	Notifications       []string
 	PurchaseOrderNumber string
 	RedundancyType      string
 	RedundantUUID       string
-	Region              string
-	RemoteID            string
-	SecondaryDNSName    string
-	SerialNumber        string
-	SiteID              string
-	SSHIPAddress        string
-	SSHIPFqdn           string
-	Status              string
-	SystemIPAddress     string
 	TermLength          int
-	Throughput          int
-	ThroughputUnit      string
-	UUID                string
-	VendorConfig        *DeviceVendorConfig
-	Version             string
-	ManagementType      string
-	CoreCount           int
+	AdditionalBandwidth int
+	OrderReference      string
 	InterfaceCount      int
+	CoreCount           int
+	IsSelfManaged       bool
+	Interfaces          []DeviceInterface
 }
 
-//DeviceVendorConfig describes vendor specific configuration attrubues of a Network Edge device
-type DeviceVendorConfig struct {
-	SiteID          string
-	SystemIPAddress string
-	/* Controller1     string
-	Controller2     string
-	AdminPassword   string
-	LocalID         string
-	RemoteID        string
-	SerialNumber    string
-	LicenseKey string
-	LicenseSecret string
-	*/
+//DeviceInterface describes Network Edge device interface
+type DeviceInterface struct {
+	ID                int
+	Name              string
+	Status            string
+	OperationalStatus string
+	MACAddress        string
+	IPAddress         string
+	AssignedType      string
+	Type              string
 }
 
 //SSHUser describes Network Edge SSH user
@@ -165,7 +139,6 @@ type SSHUser struct {
 	UUID        string
 	Username    string
 	Password    string
-	MetroCodes  []string
 	DeviceUUIDs []string
 }
 

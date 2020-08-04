@@ -9,6 +9,13 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+const (
+	deviceManagementTypeSelf      = "SELF-CONFIGURED"
+	deviceManagementTypeEquinix   = "EQUINIX-CONFIGURED"
+	deviceLicenseModeSubscription = "Sub"
+	deviceLicenseModeBYOL         = "BYOL"
+)
+
 type restDeviceUpdateRequest struct {
 	uuid                string
 	deviceFields        map[string]interface{}
@@ -24,7 +31,7 @@ type restDeviceUpdateRequest struct {
 func (c RestClient) CreateDevice(device Device) (string, error) {
 	url := fmt.Sprintf("%s/ne/v1/device", c.baseURL)
 	reqBody := createDeviceRequest(device)
-	respBody := api.VirtualDeviceCreateResponse{}
+	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
 
 	if err := c.execute(req, resty.MethodPost, url); err != nil {
@@ -38,7 +45,7 @@ func (c RestClient) CreateDevice(device Device) (string, error) {
 func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (string, string, error) {
 	url := fmt.Sprintf("%s/ne/v1/device", c.baseURL)
 	reqBody := createRedundantDeviceRequest(primary, secondary)
-	respBody := api.VirtualDeviceCreateResponseDto{}
+	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
 
 	if err := c.execute(req, resty.MethodPost, url); err != nil {
@@ -50,7 +57,7 @@ func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (str
 //GetDevice fetches details of a device with a given UUID
 func (c RestClient) GetDevice(uuid string) (*Device, error) {
 	url := fmt.Sprintf("%s/ne/v1/device/%s", c.baseURL, url.PathEscape(uuid))
-	result := api.VirtualDeviceDetailsResponse{}
+	result := api.Device{}
 	request := c.R().SetResult(&result)
 	if err := c.execute(request, resty.MethodGet, url); err != nil {
 		return nil, err
@@ -138,148 +145,124 @@ func (req *restDeviceUpdateRequest) Execute() error {
 // Unexported package methods
 //_______________________________________________________________________
 
-func mapDeviceAPIToDomain(apiDevice api.VirtualDeviceDetailsResponse) (*Device, error) {
-	dev := Device{}
-	dev.AccountName = apiDevice.UUID
-	dev.AccountNumber = apiDevice.AccountNumber
-	dev.ACL = apiDevice.ACL
-	dev.AdditionalBandwidth = int(apiDevice.AdditionalBandwidth)
-	dev.Controller1 = apiDevice.Controller1
-	dev.Controller2 = apiDevice.Controller2
-	dev.DeviceSerialNo = apiDevice.DeviceSerialNo
-	dev.DeviceTypeCategory = apiDevice.DeviceTypeCategory
-	dev.DeviceTypeCode = apiDevice.DeviceTypeCode
-	dev.DeviceTypeName = apiDevice.DeviceTypeName
-	dev.DeviceTypeVendor = apiDevice.DeviceTypeVendor
-	dev.Expiry = apiDevice.Expiry
-	dev.HostName = apiDevice.HostName
-	dev.LicenseFileID = apiDevice.LicenseFileID
-	dev.LicenseKey = apiDevice.LicenseKey
-	dev.LicenseName = apiDevice.LicenseName
-	dev.LicenseSecret = apiDevice.LicenseSecret
-	dev.LicenseStatus = apiDevice.LicenseStatus
-	dev.LicenseType = apiDevice.LicenseType
-	dev.LocalID = apiDevice.LocalID
-	dev.ManagementGatewayIP = apiDevice.ManagementGatewayIP
-	dev.ManagementIP = apiDevice.ManagementIP
-	dev.MetroCode = apiDevice.MetroCode
-	dev.MetroName = apiDevice.MetroName
-	dev.Name = apiDevice.Name
-	dev.Notifications = apiDevice.Notifications
-	dev.PackageCode = apiDevice.PackageCode
-	dev.PackageName = apiDevice.PackageName
-	dev.PrimaryDNSName = apiDevice.PrimaryDNSName
-	dev.PublicGatewayIP = apiDevice.PublicGatewayIP
-	dev.PublicIP = apiDevice.PublicIP
-	dev.PurchaseOrderNumber = apiDevice.PublicIP
-	dev.RedundancyType = apiDevice.RedundancyType
-	dev.RedundantUUID = apiDevice.RedundantUUID
-	dev.Region = apiDevice.Region
-	dev.RemoteID = apiDevice.RemoteID
-	dev.SecondaryDNSName = apiDevice.SecondaryDNSName
-	dev.SerialNumber = apiDevice.SerialNumber
-	dev.SiteID = apiDevice.SiteID
-	dev.SSHIPAddress = apiDevice.SSHIPAddress
-	dev.SSHIPFqdn = apiDevice.SSHIPFqdn
-	dev.Status = apiDevice.Status
-	dev.SystemIPAddress = apiDevice.SystemIPAddress
-	dev.TermLength = int(apiDevice.TermLength)
+func mapDeviceAPIToDomain(apiDevice api.Device) (*Device, error) {
+	device := Device{}
+	device.UUID = apiDevice.UUID
+	device.Name = apiDevice.Name
+	device.TypeCode = apiDevice.DeviceTypeCode
+	device.Status = apiDevice.Status
+	device.LicenseStatus = apiDevice.LicenseStatus
+	device.MetroCode = apiDevice.MetroCode
+	device.IBX = apiDevice.IBX
+	device.Region = apiDevice.Region
 	if val, err := strconv.Atoi(apiDevice.Throughput); err == nil {
-		dev.Throughput = val
+		device.Throughput = val
 	} else {
 		return nil, fmt.Errorf("can't parse throughput: %v", err)
 	}
-	dev.ThroughputUnit = apiDevice.ThroughputUnit
-	dev.UUID = apiDevice.UUID
-	if apiDevice.VendorConfig != nil {
-		dev.VendorConfig = mapDeviceVendorConfigAPIToDomain(*apiDevice.VendorConfig)
+	device.ThroughputUnit = apiDevice.ThroughputUnit
+	device.HostName = apiDevice.HostName
+	device.PackageCode = apiDevice.PackageCode
+	device.Version = apiDevice.Version
+	if apiDevice.LicenseType == deviceLicenseModeBYOL {
+		device.IsBYOL = true
 	}
-	dev.Version = apiDevice.Version
-	dev.ManagementType = apiDevice.DeviceManagementType
-	dev.CoreCount = int(apiDevice.Core)
-	dev.InterfaceCount = int(apiDevice.InterfaceCount)
-	return &dev, nil
+	device.ACLs = apiDevice.ACL
+	device.SSHIPAddress = apiDevice.SSHIPAddress
+	device.SSHIPFqdn = apiDevice.SSHIPFqdn
+	device.AccountNumber = apiDevice.AccountNumber
+	device.Notifications = apiDevice.Notifications
+	device.PurchaseOrderNumber = apiDevice.PurchaseOrderNumber
+	device.RedundancyType = apiDevice.RedundancyType
+	device.RedundantUUID = apiDevice.RedundantUUID
+	device.TermLength = apiDevice.TermLength
+	device.AdditionalBandwidth = apiDevice.AdditionalBandwidth
+	device.OrderReference = apiDevice.OrderReference
+	device.InterfaceCount = apiDevice.InterfaceCount
+	device.CoreCount = apiDevice.Core.Core
+	if apiDevice.DeviceManagementType == deviceManagementTypeSelf {
+		device.IsSelfManaged = true
+	}
+	device.Interfaces = mapDeviceInterfacesAPIToDomain(apiDevice.Interfaces)
+	return &device, nil
 }
 
-func createDeviceRequest(device Device) api.VirtualDeviceRequest {
-	req := api.VirtualDeviceRequest{}
-	req.AccountNumber = device.AccountNumber
-	req.FqdnACL = mapACLsDomainToAPI(device.ACL)
-	req.AdditionalBandwidth = int32(device.AdditionalBandwidth)
-	req.DeviceTypeCode = &device.DeviceTypeCode
-	req.HostNamePrefix = &device.HostName
-	req.LicenseFileID = device.LicenseFileID
-	req.LicenseKey = device.LicenseKey
-	req.LicenseMode = &device.LicenseType
-	req.LicenseSecret = device.LicenseSecret
-	req.LicenseToken = device.LicenseToken
-	if device.MetroCode != "" {
-		req.MetroCode = &device.MetroCode
+func mapDeviceInterfacesAPIToDomain(apiInterfaces []api.DeviceInterface) []DeviceInterface {
+	transformed := make([]DeviceInterface, len(apiInterfaces))
+	for i := range apiInterfaces {
+		transformed[i] = DeviceInterface{
+			ID:                apiInterfaces[i].ID,
+			Name:              apiInterfaces[i].Name,
+			Status:            apiInterfaces[i].Status,
+			OperationalStatus: apiInterfaces[i].OperationalStatus,
+			MACAddress:        apiInterfaces[i].MACAddress,
+			IPAddress:         apiInterfaces[i].IPAddress,
+			AssignedType:      apiInterfaces[i].AssignedType,
+			Type:              apiInterfaces[i].Type,
+		}
 	}
-	req.Notifications = device.Notifications
-	req.PackageCode = device.PackageCode
-	req.SiteID = device.SiteID
-	req.SystemIPAddress = device.SystemIPAddress
-	req.Throughput = int32(device.Throughput)
+	return transformed
+}
+
+func createDeviceRequest(device Device) api.DeviceRequest {
+	req := api.DeviceRequest{}
+	req.Throughput = strconv.Itoa(device.Throughput)
 	req.ThroughputUnit = device.ThroughputUnit
-	if device.Name != "" {
-		req.VirtualDeviceName = &device.Name
+	req.MetroCode = device.MetroCode
+	req.DeviceTypeCode = device.TypeCode
+	req.TermLength = strconv.Itoa(device.TermLength)
+	req.LicenseMode = deviceLicenseModeSubscription
+	if device.IsBYOL {
+		req.LicenseMode = deviceLicenseModeBYOL
 	}
+	req.LicenseToken = device.LicenseToken
+	req.PackageCode = device.PackageCode
+	req.VirtualDeviceName = device.Name
+	req.Notifications = device.Notifications
+	req.HostNamePrefix = device.HostName
+	req.OrderReference = device.OrderReference
+	req.PurchaseOrderNumber = device.PurchaseOrderNumber
+	req.AccountNumber = device.AccountNumber
 	req.Version = device.Version
-	req.DeviceManagementType = device.ManagementType
-	req.Core = int32(device.CoreCount)
-	req.InterfaceCount = int32(device.InterfaceCount)
+	req.InterfaceCount = device.InterfaceCount
+	req.DeviceManagementType = deviceManagementTypeEquinix
+	if device.IsSelfManaged {
+		req.DeviceManagementType = deviceManagementTypeSelf
+	}
+	req.Core = device.CoreCount
+	req.AdditionalBandwidth = strconv.Itoa(device.AdditionalBandwidth)
+	req.FqdnACL = mapDeviceACLsToFQDNACLs(device.ACLs)
 	return req
 }
 
-func createRedundantDeviceRequest(primary Device, secondary Device) api.VirtualDeviceRequest {
-	req := createDeviceRequest(primary)
-	secReq := api.VirtualDevicHARequest{}
-	secReq.AccountNumber = secondary.AccountNumber
-	secReq.ACL = secondary.ACL
-	secReq.AdditionalBandwidth = int32(secondary.AdditionalBandwidth)
-	secReq.LicenseFileID = secondary.LicenseFileID
-	secReq.LicenseKey = secondary.LicenseKey
-	secReq.LicenseSecret = secondary.LicenseSecret
-	secReq.LicenseToken = secondary.LicenseToken
-	if secondary.MetroCode != "" {
-		secReq.MetroCode = &secondary.MetroCode
-	}
-	secReq.Notifications = secondary.Notifications
-	secReq.SiteID = secondary.SiteID
-	secReq.SystemIPAddress = secondary.SystemIPAddress
-	if secondary.Name != "" {
-		secReq.VirtualDeviceName = &secondary.Name
-	}
-	if secondary.HostName != "" {
-		secReq.HostNamePrefix = secondary.HostName
-	}
-	req.Secondary = &secReq
-
-	return req
-}
-
-func mapDeviceVendorConfigAPIToDomain(api api.VendorConfig) *DeviceVendorConfig {
-	return &DeviceVendorConfig{
-		SiteID:          api.SiteID,
-		SystemIPAddress: api.SystemIPAddress,
-	}
-}
-
-func mapACLsDomainToAPI(acls []string) []*api.FqdnACL {
-	transformed := make([]*api.FqdnACL, len(acls))
+func mapDeviceACLsToFQDNACLs(acls []string) []api.DeviceFqdnACL {
+	transformed := make([]api.DeviceFqdnACL, len(acls))
 	for i := range acls {
-		transformed[i] = &api.FqdnACL{
-			Cidrs: []string{acls[i]},
+		transformed[i] = api.DeviceFqdnACL{
+			CIDRs: []string{acls[i]},
 			Type:  "SUBNET",
 		}
 	}
 	return transformed
 }
 
+func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRequest {
+	req := createDeviceRequest(primary)
+	secReq := api.SecondaryDeviceRequest{}
+	secReq.MetroCode = secondary.MetroCode
+	secReq.VirtualDeviceName = secondary.Name
+	secReq.Notifications = secondary.Notifications
+	secReq.HostNamePrefix = secondary.HostName
+	secReq.AccountNumber = secondary.AccountNumber
+	secReq.AdditionalBandwidth = strconv.Itoa(secondary.AdditionalBandwidth)
+	secReq.FqdnACL = mapDeviceACLsToFQDNACLs(secondary.ACLs)
+	req.Secondary = &secReq
+	return req
+}
+
 func (c RestClient) replaceDeviceACLs(uuid string, acls []string) error {
 	url := fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", c.baseURL, url.PathEscape(uuid))
-	reqBody := mapACLsDomainToAPI(acls)
+	reqBody := mapDeviceACLsToFQDNACLs(acls)
 	req := c.R().SetBody(reqBody)
 	if err := c.execute(req, resty.MethodPut, url); err != nil {
 		return err
@@ -289,8 +272,7 @@ func (c RestClient) replaceDeviceACLs(uuid string, acls []string) error {
 
 func (c RestClient) replaceDeviceAdditionalBandwidth(uuid string, bandwidth int) error {
 	url := fmt.Sprintf("%s/ne/v1/device/additionalbandwidth/%s", c.baseURL, url.PathEscape(uuid))
-	bandwidthConv := int32(bandwidth)
-	reqBody := api.AdditionalBandwidthUpdateRequest{AdditionalBandwidth: &bandwidthConv}
+	reqBody := api.DeviceAdditionalBandwidthUpdateRequest{AdditionalBandwidth: bandwidth}
 	req := c.R().SetBody(reqBody)
 	if err := c.execute(req, resty.MethodPut, url); err != nil {
 		return err
@@ -299,14 +281,14 @@ func (c RestClient) replaceDeviceAdditionalBandwidth(uuid string, bandwidth int)
 }
 
 func (c RestClient) replaceDeviceFields(uuid string, fields map[string]interface{}) error {
-	reqBody := api.VirtualDeviceInternalPatchRequestDto{}
+	reqBody := api.DeviceUpdateRequest{}
 	okToSend := false
 	if v, ok := fields["deviceName"]; ok {
 		reqBody.VirtualDeviceName = v.(string)
 		okToSend = true
 	}
 	if v, ok := fields["termLength"]; ok {
-		reqBody.TermLength = int64(v.(int))
+		reqBody.TermLength = v.(int)
 		okToSend = true
 	}
 	if v, ok := fields["notifications"]; ok {

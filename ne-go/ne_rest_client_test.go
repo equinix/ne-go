@@ -15,7 +15,7 @@ import (
 
 func TestSingleError(t *testing.T) {
 	//given
-	resp := api.ErrorMessageResponse{}
+	resp := api.ErrorResponse{}
 	if err := readJSONData("./test-fixtures/ne_error_resp.json", &resp); err != nil {
 		assert.Fail(t, "Cannont read test response")
 	}
@@ -39,7 +39,7 @@ func TestSingleError(t *testing.T) {
 
 func TestMultipleError(t *testing.T) {
 	//given
-	resp := api.FieldErrorResponse{}
+	resp := api.ErrorResponses{}
 	if err := readJSONData("./test-fixtures/ne_errors_resp.json", &resp); err != nil {
 		assert.Fail(t, "Cannont read test response")
 	}

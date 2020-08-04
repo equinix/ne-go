@@ -67,11 +67,11 @@ func (c RestClient) execute(req *resty.Request, method string, url string) error
 }
 
 func transformErrorBody(body []byte) RestError {
-	apiError := api.ErrorMessageResponse{}
+	apiError := api.ErrorResponse{}
 	if err := json.Unmarshal(body, &apiError); err == nil {
 		return mapErrorAPIToDomain(apiError)
 	}
-	apiErrors := api.FieldErrorResponse{}
+	apiErrors := api.ErrorResponses{}
 	if err := json.Unmarshal(body, &apiErrors); err == nil {
 		return mapErrorsAPIToDomain(apiErrors)
 	}
@@ -79,7 +79,7 @@ func transformErrorBody(body []byte) RestError {
 		Message: string(body)}
 }
 
-func mapErrorAPIToDomain(apiError api.ErrorMessageResponse) RestError {
+func mapErrorAPIToDomain(apiError api.ErrorResponse) RestError {
 	return RestError{
 		Message: apiError.ErrorMessage,
 		Errors: []Error{{
@@ -89,7 +89,7 @@ func mapErrorAPIToDomain(apiError api.ErrorMessageResponse) RestError {
 	}
 }
 
-func mapErrorsAPIToDomain(apiErrors api.FieldErrorResponse) RestError {
+func mapErrorsAPIToDomain(apiErrors api.ErrorResponses) RestError {
 	errors := make([]Error, len(apiErrors))
 	msg := ""
 	for i, v := range apiErrors {

@@ -24,12 +24,12 @@ type restSSHUserUpdateRequest struct {
 //CreateSSHUser creates new Network Edge SSH user with a given parameters and returns its UUID upon successful creation
 func (c RestClient) CreateSSHUser(username string, password string, device string) (string, error) {
 	u := c.baseURL + "/ne/v1/services/ssh-user"
-	reqBody := api.SSHUserCreateRequest{
-		Username:   &username,
-		Password:   &password,
-		DeviceUUID: &device,
+	reqBody := api.SSHUserRequest{
+		Username:   username,
+		Password:   password,
+		DeviceUUID: device,
 	}
-	respBody := api.SSHUserCreateResponse{}
+	respBody := api.SSHUserRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
 	if err := c.execute(req, resty.MethodPost, u); err != nil {
 		return "", err
@@ -40,7 +40,7 @@ func (c RestClient) CreateSSHUser(username string, password string, device strin
 //GetSSHUser fetches details of a SSH user with a given UUID
 func (c RestClient) GetSSHUser(uuid string) (*SSHUser, error) {
 	url := c.baseURL + "/ne/v1/services/ssh-user/" + url.PathEscape(uuid)
-	respBody := api.SSHUserInfoVerbose{}
+	respBody := api.SSHUser{}
 	req := c.R().SetResult(&respBody)
 	if err := c.execute(req, resty.MethodGet, url); err != nil {
 		return nil, err
@@ -115,7 +115,7 @@ func (req *restSSHUserUpdateRequest) Execute() error {
 func (c RestClient) changeUserPassword(userID string, newPassword string) error {
 	url := fmt.Sprintf("%s/ne/v1/services/ssh-user/%s",
 		c.baseURL, url.PathEscape(userID))
-	reqBody := api.SSHUserUpdateRequest{Password: &newPassword}
+	reqBody := api.SSHUserUpdateRequest{Password: newPassword}
 	req := c.R().SetBody(&reqBody)
 	if err := c.execute(req, resty.MethodPut, url); err != nil {
 		return err
@@ -145,12 +145,11 @@ func (c RestClient) changeDeviceAssociation(changeType string, userID string, de
 	return nil
 }
 
-func mapSSHUserAPIToDomain(apiUser api.SSHUserInfoVerbose) *SSHUser {
+func mapSSHUserAPIToDomain(apiUser api.SSHUser) *SSHUser {
 	return &SSHUser{
 		UUID:        apiUser.UUID,
 		Username:    apiUser.Username,
-		DeviceUUIDs: apiUser.DeviceUuids,
-		MetroCodes:  apiUser.Metros}
+		DeviceUUIDs: apiUser.DeviceUUIDs}
 }
 
 func diffStringSlices(a, b []string) (extraA, extraB []string) {

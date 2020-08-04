@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"ne-go/internal/api"
 	"net/http"
+	"strconv"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -14,10 +15,10 @@ import (
 
 var testDevice = Device{
 	AdditionalBandwidth: 100,
-	DeviceTypeCode:      "PA-VM",
+	TypeCode:            "PA-VM",
 	HostName:            "myhostSRmy",
-	LicenseType:         "BYOL",
-	LicenseToken:        "I3372903",
+	IsBYOL:              true,
+	LicenseToken:        "somelicensetokenaaaaazzzzz",
 	MetroCode:           "SV",
 	Notifications:       []string{"test1@example.com", "test2@example.com"},
 	PackageCode:         "VM100",
@@ -25,18 +26,24 @@ var testDevice = Device{
 	Throughput:          1,
 	ThroughputUnit:      "Gbps",
 	Name:                "PaloAltoSRmy",
-	ACL:                 []string{"192.168.1.1/32"},
-	AccountNumber:       "1777643"}
+	ACLs:                []string{"192.168.1.1/32"},
+	AccountNumber:       "1777643",
+	OrderReference:      "orderRef",
+	PurchaseOrderNumber: "PO123456789",
+	InterfaceCount:      10,
+	CoreCount:           2,
+	Version:             "10.09.05",
+	IsSelfManaged:       true}
 
 func TestCreateDevice(t *testing.T) {
 	//given
-	resp := api.VirtualDeviceCreateResponse{}
+	resp := api.DeviceRequestResponse{}
 	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
 		assert.Fail(t, "Cannont read test response")
 	}
 	baseURL := "http://localhost:8888"
 	device := testDevice
-	req := api.VirtualDeviceRequest{}
+	req := api.DeviceRequest{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/device", baseURL),
@@ -62,32 +69,21 @@ func TestCreateDevice(t *testing.T) {
 
 func TestCreateRedundantDevice(t *testing.T) {
 	//given
-	resp := api.VirtualDeviceCreateResponseDto{}
+	resp := api.DeviceRequestResponse{}
 	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
 		assert.Fail(t, "Cannont read test response")
 	}
 	baseURL := "http://localhost:8888"
-	req := api.VirtualDeviceRequest{}
+	req := api.DeviceRequest{}
 	primary := testDevice
 	secondary := Device{
-		AccountNumber:       "222222",
-		ACL:                 primary.ACL,
-		AdditionalBandwidth: 500,
-		DeviceTypeCode:      "PA-SEC",
-		HostName:            "secondaryHost",
-		LicenseFileID:       "",
-		LicenseKey:          "licKey",
-		LicenseType:         "",
-		LicenseSecret:       "licSecret",
-		LicenseToken:        "licToken",
 		MetroCode:           "DC",
-		Notifications:       []string{"sec@sec.com", "secTwo@sec.com"},
-		PackageCode:         "VM222",
-		SiteID:              "secSiteId",
-		SystemIPAddress:     "192.168.1.1",
-		Throughput:          5,
-		ThroughputUnit:      "Gbps",
-		Name:                "secondary"}
+		Name:                "secondary",
+		Notifications:       []string{"secondary@secondary.com"},
+		HostName:            "secondaryHostname",
+		AccountNumber:       "99999",
+		AdditionalBandwidth: 200,
+		ACLs:                []string{"2.2.2.2/32"}}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/device", baseURL),
@@ -114,7 +110,7 @@ func TestCreateRedundantDevice(t *testing.T) {
 
 func TestGetDevice(t *testing.T) {
 	//given
-	resp := api.VirtualDeviceDetailsResponse{}
+	resp := api.Device{}
 	if err := readJSONData("./test-fixtures/ne_device_get_resp.json", &resp); err != nil {
 		assert.Fail(t, "Cannont read test response")
 	}
@@ -140,7 +136,7 @@ func TestUpdateDeviceBasicFields(t *testing.T) {
 	newName := "myNewName"
 	newNotifications := []string{"new@new.com", "new2@new.com"}
 	newTermLength := 24
-	req := api.VirtualDeviceInternalPatchRequestDto{}
+	req := api.DeviceUpdateRequest{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("PATCH", fmt.Sprintf("%s/ne/v1/device/%s", baseURL, devID),
@@ -162,7 +158,7 @@ func TestUpdateDeviceBasicFields(t *testing.T) {
 	assert.Nil(t, err, "Error is not returned")
 	assert.Equal(t, newName, req.VirtualDeviceName, "DeviceName matches")
 	assert.ElementsMatch(t, newNotifications, req.Notifications, "Notifications match")
-	assert.Equal(t, int64(newTermLength), req.TermLength, "TermLength match")
+	assert.Equal(t, newTermLength, req.TermLength, "TermLength match")
 }
 
 func TestUpdateDeviceACL(t *testing.T) {
@@ -171,7 +167,7 @@ func TestUpdateDeviceACL(t *testing.T) {
 	devID := "myDevice"
 	newACLs := []string{"127.0.0.1/32", "192.168.0.0/24"}
 	testHc := &http.Client{}
-	req := make([]*api.FqdnACL, 0)
+	req := make([]api.DeviceFqdnACL, 0)
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", baseURL, devID),
 		func(r *http.Request) (*http.Response, error) {
@@ -189,7 +185,7 @@ func TestUpdateDeviceACL(t *testing.T) {
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.ElementsMatch(t, req, mapACLsDomainToAPI(newACLs), "ACL matches")
+	assert.ElementsMatch(t, req, mapDeviceACLsToFQDNACLs(newACLs), "ACL matches")
 }
 
 func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
@@ -198,7 +194,7 @@ func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
 	devID := "myDevice"
 	newBandwidth := 1000
 	testHc := &http.Client{}
-	req := api.AdditionalBandwidthUpdateRequest{}
+	req := api.DeviceAdditionalBandwidthUpdateRequest{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/device/additionalbandwidth/%s", baseURL, devID),
 		func(r *http.Request) (*http.Response, error) {
@@ -216,7 +212,7 @@ func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.Equal(t, int32(newBandwidth), *req.AdditionalBandwidth, "AdditionalBandwidth match")
+	assert.Equal(t, newBandwidth, req.AdditionalBandwidth, "AdditionalBandwidth match")
 }
 
 func TestDeleteDevice(t *testing.T) {
@@ -237,105 +233,98 @@ func TestDeleteDevice(t *testing.T) {
 	assert.Nil(t, err, "Error is not returned")
 }
 
-func verifyDeviceRequest(t *testing.T, dev Device, req api.VirtualDeviceRequest) {
-	assert.Equal(t, req.AccountNumber, dev.AccountNumber, "AccountNumber matches")
-	assert.ElementsMatch(t, req.FqdnACL, mapACLsDomainToAPI(dev.ACL), "ACL matches")
-	assert.Equal(t, req.AdditionalBandwidth, int32(dev.AdditionalBandwidth), "AdditionalBandwidth matches")
-	if dev.DeviceTypeCode != "" {
-		assert.Equal(t, *req.DeviceTypeCode, dev.DeviceTypeCode, "DeviceTypeCode matches")
+func verifyDevice(t *testing.T, device Device, resp api.Device) {
+	assert.Equal(t, resp.UUID, device.UUID, "UUID matches")
+	assert.Equal(t, resp.Name, device.Name, "Name matches")
+	assert.Equal(t, resp.DeviceTypeCode, device.TypeCode, "DeviceTypeCode matches")
+	assert.Equal(t, resp.Status, device.Status, "Status matches")
+	assert.Equal(t, resp.LicenseStatus, device.LicenseStatus, "LicenseStatus matches")
+	assert.Equal(t, resp.MetroCode, device.MetroCode, "MetroCode matches")
+	assert.Equal(t, resp.IBX, device.IBX, "IBX matches")
+	assert.Equal(t, resp.Region, device.Region, "Region matches")
+	assert.Equal(t, resp.Throughput, strconv.Itoa(device.Throughput), "Throughput matches")
+	assert.Equal(t, resp.ThroughputUnit, device.ThroughputUnit, "ThroughputUnit matches")
+	assert.Equal(t, resp.HostName, device.HostName, "HostName matches")
+	assert.Equal(t, resp.PackageCode, device.PackageCode, "PackageCode matches")
+	assert.Equal(t, resp.Version, device.Version, "Version matches")
+	if resp.LicenseType == deviceLicenseModeSubscription {
+		assert.False(t, device.IsBYOL, "LicenseType matches")
+	} else {
+		assert.True(t, device.IsBYOL, "LicenseType matches")
 	}
-	if dev.HostName != "" {
-		assert.Equal(t, *req.HostNamePrefix, dev.HostName, "HostNamePrefix matches")
+	assert.ElementsMatch(t, resp.ACL, device.ACLs, "ACLs matches")
+	assert.Equal(t, resp.SSHIPAddress, device.SSHIPAddress, "SSHIPAddress matches")
+	assert.Equal(t, resp.SSHIPFqdn, device.SSHIPFqdn, "SSHIPFqdn matches")
+	assert.Equal(t, resp.AccountNumber, device.AccountNumber, "AccountNumber matches")
+	assert.ElementsMatch(t, resp.Notifications, device.Notifications, "Notifications matches")
+	assert.Equal(t, resp.PurchaseOrderNumber, device.PurchaseOrderNumber, "PurchaseOrderNumber matches")
+	assert.Equal(t, resp.RedundancyType, device.RedundancyType, "RedundancyType matches")
+	assert.Equal(t, resp.RedundantUUID, device.RedundantUUID, "RedundantUUID matches")
+	assert.Equal(t, resp.TermLength, device.TermLength, "TermLength matches")
+	assert.Equal(t, resp.AdditionalBandwidth, device.AdditionalBandwidth, "AdditionalBandwidth matches")
+	assert.Equal(t, resp.OrderReference, device.OrderReference, "OrderReference matches")
+	assert.Equal(t, resp.InterfaceCount, device.InterfaceCount, "InterfaceCount matches")
+	assert.Equal(t, resp.Core.Core, device.CoreCount, "Core.Core matches")
+	if resp.DeviceManagementType == deviceManagementTypeEquinix {
+		assert.False(t, device.IsSelfManaged, "DeviceManagementType matches")
+	} else {
+		assert.True(t, device.IsSelfManaged, "DeviceManagementType matches")
 	}
-	assert.Equal(t, req.LicenseFileID, dev.LicenseFileID, "LicenseFileID matches")
-	assert.Equal(t, req.LicenseKey, dev.LicenseKey, "LicenseKey matches")
-	if dev.LicenseType != "" {
-		assert.Equal(t, *req.LicenseMode, dev.LicenseType, "LicenseMode matches")
+	assert.Equal(t, len(resp.Interfaces), len(device.Interfaces), "Number of interfaces matches")
+	for i := range resp.Interfaces {
+		verifyDeviceInterface(t, device.Interfaces[i], resp.Interfaces[i])
 	}
-	assert.Equal(t, req.LicenseSecret, dev.LicenseSecret, "LicenseSecret matches")
-	assert.Equal(t, req.LicenseToken, dev.LicenseToken, "LicenseToken matches")
-	if dev.MetroCode != "" {
-		assert.Equal(t, *req.MetroCode, dev.MetroCode, "MetroCode matches")
-	}
-	assert.ElementsMatch(t, req.Notifications, dev.Notifications, "Notifications matches")
-	assert.Equal(t, req.PackageCode, dev.PackageCode, "PackageCode matches")
-	assert.Equal(t, req.SiteID, dev.SiteID, "SiteID matches")
-	assert.Equal(t, req.SystemIPAddress, dev.SystemIPAddress, "SystemIPAddress matches")
-	assert.Equal(t, req.Throughput, int32(dev.Throughput), "Throughput matches")
-	assert.Equal(t, req.ThroughputUnit, dev.ThroughputUnit, "ThroughputUnit matches")
-	if dev.Name != "" {
-		assert.Equal(t, *req.VirtualDeviceName, dev.Name, "VirtualDeviceName matches")
-	}
-	assert.Equal(t, req.Version, dev.Version, "Version matches")
 }
 
-func verifyRedundantDeviceRequest(t *testing.T, primary Device, secondary Device, req api.VirtualDeviceRequest) {
+func verifyDeviceInterface(t *testing.T, inf DeviceInterface, apiInf api.DeviceInterface) {
+	assert.Equal(t, apiInf.ID, inf.ID, "ID matches")
+	assert.Equal(t, apiInf.Name, inf.Name, "Name matches")
+	assert.Equal(t, apiInf.Status, inf.Status, "Status matches")
+	assert.Equal(t, apiInf.OperationalStatus, inf.OperationalStatus, "OperationalStatus matches")
+	assert.Equal(t, apiInf.MACAddress, inf.MACAddress, "MACAddress matches")
+	assert.Equal(t, apiInf.IPAddress, inf.IPAddress, "IPAddress matches")
+	assert.Equal(t, apiInf.AssignedType, inf.AssignedType, "AssignedType matches")
+	assert.Equal(t, apiInf.Type, inf.Type, "Type matches")
+}
+
+func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
+	assert.Equal(t, strconv.Itoa(device.Throughput), req.Throughput, "Throughput matches")
+	assert.Equal(t, device.ThroughputUnit, req.ThroughputUnit, "ThroughputUnit matches")
+	assert.Equal(t, device.MetroCode, req.MetroCode, "MetroCode matches")
+	assert.Equal(t, device.TypeCode, req.DeviceTypeCode, "TypeCode matches")
+	assert.Equal(t, strconv.Itoa(device.TermLength), req.TermLength, "TermLength matches")
+	if device.IsBYOL {
+		assert.Equal(t, deviceLicenseModeBYOL, req.LicenseMode, "LicenseMode matches")
+	} else {
+		assert.Equal(t, deviceLicenseModeSubscription, req.LicenseMode, "LicenseMode matches")
+	}
+	assert.Equal(t, device.LicenseToken, req.LicenseToken, "LicenseToken matches")
+	assert.Equal(t, device.PackageCode, req.PackageCode, "PackageCode matches")
+	assert.Equal(t, device.Name, req.VirtualDeviceName, "Name matches")
+	assert.ElementsMatch(t, device.Notifications, req.Notifications, "Notifications matches")
+	assert.Equal(t, device.HostName, req.HostNamePrefix, "HostName matches")
+	assert.Equal(t, device.OrderReference, req.OrderReference, "OrderReference matches")
+	assert.Equal(t, device.PurchaseOrderNumber, req.PurchaseOrderNumber, "PurchaseOrderNumber matches")
+	assert.Equal(t, device.AccountNumber, req.AccountNumber, "AccountNumber matches")
+	assert.Equal(t, device.Version, req.Version, "Version matches")
+	assert.Equal(t, device.InterfaceCount, req.InterfaceCount, "InterfaceCount matches")
+	if device.IsSelfManaged {
+		assert.Equal(t, deviceManagementTypeSelf, req.DeviceManagementType, "DeviceManagementType matches")
+	} else {
+		assert.Equal(t, deviceManagementTypeEquinix, req.DeviceManagementType, "DeviceManagementType matches")
+	}
+	assert.Equal(t, device.CoreCount, req.Core, "Core matches")
+	assert.Equal(t, strconv.Itoa(device.AdditionalBandwidth), req.AdditionalBandwidth, "AdditionalBandwidth matches")
+	assert.ElementsMatch(t, mapDeviceACLsToFQDNACLs(device.ACLs), req.FqdnACL, "ACLs matches")
+}
+
+func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req api.DeviceRequest) {
 	verifyDeviceRequest(t, primary, req)
-	assert.Equal(t, secondary.AccountNumber, req.Secondary.AccountNumber, "Account number matches")
-	assert.ElementsMatch(t, secondary.ACL, req.Secondary.ACL, "ACL matches")
-	assert.Equal(t, int32(secondary.AdditionalBandwidth), req.Secondary.AdditionalBandwidth, "AdditionalBandwidth matches")
-	assert.Equal(t, secondary.LicenseFileID, req.Secondary.LicenseFileID, "LicenseFileID matches")
-	assert.Equal(t, secondary.LicenseKey, req.Secondary.LicenseKey, "LicenseKey matches")
-	assert.Equal(t, secondary.LicenseSecret, req.Secondary.LicenseSecret, "LicenseSecret matches")
-	assert.Equal(t, secondary.LicenseToken, req.Secondary.LicenseToken, "LicenseToken matches")
-	if secondary.MetroCode != "" {
-		assert.Equal(t, secondary.MetroCode, *req.Secondary.MetroCode, "MetroCode matches")
-	}
-	assert.ElementsMatch(t, secondary.Notifications, req.Secondary.Notifications, "Notifications match")
-	assert.Equal(t, secondary.SiteID, req.Secondary.SiteID, "SiteID matches")
-	assert.Equal(t, secondary.SystemIPAddress, req.Secondary.SystemIPAddress, "SystemIPAddress matches")
-	if secondary.Name != "" {
-		assert.Equal(t, secondary.Name, *req.Secondary.VirtualDeviceName, "VirtualDeviceName matches")
-	}
-	assert.Equal(t, secondary.HostName, req.Secondary.HostNamePrefix, "HostName matches")
-}
-
-func verifyDevice(t *testing.T, dev Device, resp api.VirtualDeviceDetailsResponse) {
-	assert.Equal(t, resp.AccountNumber, dev.AccountNumber, "AccountNumber matches")
-	assert.ElementsMatch(t, resp.ACL, dev.ACL, "ACL matches")
-	assert.Equal(t, resp.AdditionalBandwidth, int32(dev.AdditionalBandwidth), "AdditionalBandwidth matches")
-	assert.Equal(t, resp.Controller1, dev.Controller1, "Controller1 matches")
-	assert.Equal(t, resp.Controller2, dev.Controller2, "Controller2 matches")
-	assert.Equal(t, resp.DeviceSerialNo, dev.DeviceSerialNo, "DeviceSerialNo matches")
-	assert.Equal(t, resp.DeviceTypeCategory, dev.DeviceTypeCategory, "DeviceTypeCategory matches")
-	assert.Equal(t, resp.DeviceTypeCode, dev.DeviceTypeCode, "DeviceTypeCode matches")
-	assert.Equal(t, resp.DeviceTypeName, dev.DeviceTypeName, "DeviceTypeName matches")
-	assert.Equal(t, resp.DeviceTypeVendor, dev.DeviceTypeVendor, "DeviceTypeVendor matches")
-	assert.Equal(t, resp.Expiry, dev.Expiry, "Expiry matches")
-	assert.Equal(t, resp.HostName, dev.HostName, "HostName matches")
-	assert.Equal(t, resp.LicenseFileID, dev.LicenseFileID, "LicenseFileID matches")
-	assert.Equal(t, resp.LicenseKey, dev.LicenseKey, "LicenseKey matches")
-	assert.Equal(t, resp.LicenseName, dev.LicenseName, "LicenseName matches")
-	assert.Equal(t, resp.LicenseSecret, dev.LicenseSecret, "LicenseSecret matches")
-	assert.Equal(t, resp.LicenseStatus, dev.LicenseStatus, "LicenseStatus matches")
-	assert.Equal(t, resp.LicenseType, dev.LicenseType, "LicenseType matches")
-	assert.Equal(t, resp.LocalID, dev.LocalID, "LocalID matches")
-	assert.Equal(t, resp.ManagementGatewayIP, dev.ManagementGatewayIP, "ManagementGatewayIP matches")
-	assert.Equal(t, resp.ManagementIP, dev.ManagementIP, "ManagementIP matches")
-	assert.Equal(t, resp.MetroCode, dev.MetroCode, "MetroCode matches")
-	assert.Equal(t, resp.MetroName, dev.MetroName, "MetroName matches")
-	assert.Equal(t, resp.Name, dev.Name, "Name matches")
-	assert.ElementsMatch(t, resp.Notifications, dev.Notifications, "Notifications matches")
-	assert.Equal(t, resp.PackageCode, dev.PackageCode, "PackageCode matches")
-	assert.Equal(t, resp.PackageName, dev.PackageName, "PackageName matches")
-	assert.Equal(t, resp.PrimaryDNSName, dev.PrimaryDNSName, "PrimaryDNSName matches")
-	assert.Equal(t, resp.PublicGatewayIP, dev.PublicGatewayIP, "PublicGatewayIP matches")
-	assert.Equal(t, resp.PublicIP, dev.PublicIP, "PublicIP matches")
-	assert.Equal(t, resp.PublicIP, dev.PurchaseOrderNumber, "PublicIP matches")
-	assert.Equal(t, resp.RedundancyType, dev.RedundancyType, "RedundancyType matches")
-	assert.Equal(t, resp.RedundantUUID, dev.RedundantUUID, "RedundantUUID matches")
-	assert.Equal(t, resp.Region, dev.Region, "Region matches")
-	assert.Equal(t, resp.RemoteID, dev.RemoteID, "RemoteID matches")
-	assert.Equal(t, resp.SecondaryDNSName, dev.SecondaryDNSName, "SecondaryDNSName matches")
-	assert.Equal(t, resp.SerialNumber, dev.SerialNumber, "SerialNumber matches")
-	assert.Equal(t, resp.SiteID, dev.SiteID, "SiteID matches")
-	assert.Equal(t, resp.SSHIPAddress, dev.SSHIPAddress, "SSHIPAddress matches")
-	assert.Equal(t, resp.SSHIPFqdn, dev.SSHIPFqdn, "SSHIPFqdn matches")
-	assert.Equal(t, resp.Status, dev.Status, "Status matches")
-	assert.Equal(t, resp.SystemIPAddress, dev.SystemIPAddress, "SystemIPAddress matches")
-	assert.Equal(t, resp.TermLength, int32(dev.TermLength), "TermLength matches")
-	assert.Equal(t, resp.Throughput, fmt.Sprintf("%d", dev.Throughput), "Throughput matches")
-	assert.Equal(t, resp.ThroughputUnit, dev.ThroughputUnit, "ThroughputUnit matches")
-	assert.Equal(t, resp.UUID, dev.UUID, "UUID matches")
-	assert.Equal(t, resp.Version, dev.Version, "Version matches")
+	assert.Equal(t, secondary.MetroCode, req.Secondary.MetroCode, "Secondary MetroCode matches")
+	assert.Equal(t, secondary.Name, req.Secondary.VirtualDeviceName, "Secondary Name matches")
+	assert.ElementsMatch(t, secondary.Notifications, req.Secondary.Notifications, "Secondary Notifications matches")
+	assert.Equal(t, secondary.HostName, req.Secondary.HostNamePrefix, "Secondary HostName matches")
+	assert.Equal(t, secondary.AccountNumber, req.Secondary.AccountNumber, "Secondary AccountNumber matches")
+	assert.Equal(t, strconv.Itoa(secondary.AdditionalBandwidth), req.Secondary.AdditionalBandwidth, "Secondary AdditionalBandwidth matches")
+	assert.ElementsMatch(t, mapDeviceACLsToFQDNACLs(secondary.ACLs), req.Secondary.FqdnACL, "Secondary ACLs matches")
 }

@@ -14,7 +14,7 @@ import (
 
 func TestSSHUserGet(t *testing.T) {
 	//given
-	resp := api.SSHUserInfoVerbose{}
+	resp := api.SSHUser{}
 	if err := readJSONData("./test-fixtures/ne_sshuser_get_resp.json", &resp); err != nil {
 		assert.Failf(t, "Cannont read test response due to %s", err.Error())
 	}
@@ -35,7 +35,7 @@ func TestSSHUserGet(t *testing.T) {
 
 func TestSSHUserCreate(t *testing.T) {
 	//given
-	resp := api.SSHUserCreateResponse{}
+	resp := api.SSHUserRequestResponse{}
 	if err := readJSONData("./test-fixtures/ne_sshuser_create_resp.json", &resp); err != nil {
 		assert.Failf(t, "Cannont read test response due to %s", err.Error())
 	}
@@ -45,7 +45,7 @@ func TestSSHUserCreate(t *testing.T) {
 		Password:    "myPassword",
 		DeviceUUIDs: []string{"deviceOne"},
 	}
-	req := api.SSHUserCreateRequest{}
+	req := api.SSHUserRequest{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/services/ssh-user", baseURL),
@@ -117,10 +117,10 @@ func TestSSHUserDelete(t *testing.T) {
 	//given
 	baseURL := "http://localhost:8888"
 	userID := "myTestUser"
-	userResp := api.SSHUserInfoVerbose{
+	userResp := api.SSHUser{
 		UUID:        userID,
 		Username:    "user",
-		DeviceUuids: []string{"dev1", "dev2", "dev3"}}
+		DeviceUUIDs: []string{"dev1", "dev2", "dev3"}}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s", baseURL, userID),
@@ -129,7 +129,7 @@ func TestSSHUserDelete(t *testing.T) {
 			return resp, nil
 		},
 	)
-	for _, dev := range userResp.DeviceUuids {
+	for _, dev := range userResp.DeviceUUIDs {
 		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s/association?deviceUuid=%s", baseURL, userID, dev),
 			httpmock.NewStringResponder(200, ""))
 	}
@@ -146,19 +146,18 @@ func TestSSHUserDelete(t *testing.T) {
 	}
 }
 
-func verifyUser(t *testing.T, user SSHUser, resp api.SSHUserInfoVerbose) {
+func verifyUser(t *testing.T, user SSHUser, resp api.SSHUser) {
 	assert.Equal(t, resp.UUID, user.UUID, "UUID matches")
 	assert.Equal(t, resp.Username, user.Username, "Username matches")
-	assert.ElementsMatch(t, resp.DeviceUuids, user.DeviceUUIDs, "DeviceUUIDs match")
-	assert.ElementsMatch(t, resp.Metros, user.MetroCodes, "Metros match")
+	assert.ElementsMatch(t, resp.DeviceUUIDs, user.DeviceUUIDs, "DeviceUUIDs match")
 }
 
-func verifyUserRequest(t *testing.T, user SSHUser, req api.SSHUserCreateRequest) {
-	assert.Equal(t, user.Username, *req.Username, "Username matches")
-	assert.Equal(t, user.Password, *req.Password, "Password matches")
-	assert.Equal(t, user.DeviceUUIDs[0], *req.DeviceUUID, "First DeviceUUID matches")
+func verifyUserRequest(t *testing.T, user SSHUser, req api.SSHUserRequest) {
+	assert.Equal(t, user.Username, req.Username, "Username matches")
+	assert.Equal(t, user.Password, req.Password, "Password matches")
+	assert.Equal(t, user.DeviceUUIDs[0], req.DeviceUUID, "First DeviceUUID matches")
 }
 
 func verifyUserUpdateRequest(t *testing.T, updateReq *restSSHUserUpdateRequest, req api.SSHUserUpdateRequest) {
-	assert.Equal(t, updateReq.newPassword, *req.Password, "Password matches")
+	assert.Equal(t, updateReq.newPassword, req.Password, "Password matches")
 }
