@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
-	"ne-go/internal/api"
 	"net/http"
 	"testing"
 
+	"github.com/equinix/ne-go/internal/api"
 	"github.com/go-resty/resty/v2"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"

@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"ne-go/internal/api"
 	"net/http"
 
+	"github.com/equinix/ne-go/internal/api"
 	"github.com/go-resty/resty/v2"
 )
 

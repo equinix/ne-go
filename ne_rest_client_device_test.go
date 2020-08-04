@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"ne-go/internal/api"
 	"net/http"
 	"strconv"
 	"testing"
 
+	"github.com/equinix/ne-go/internal/api"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 )

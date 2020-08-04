@@ -2,10 +2,10 @@ package ne
 
 import (
 	"fmt"
-	"ne-go/internal/api"
 	"net/url"
 	"strconv"
 
+	"github.com/equinix/ne-go/internal/api"
 	"github.com/go-resty/resty/v2"
 )
 
