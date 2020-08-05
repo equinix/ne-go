@@ -66,7 +66,7 @@ type SecondaryDeviceRequest struct {
 	HostNamePrefix      string          `json:"hostNamePrefix,omitempty"`
 	AccountNumber       string          `json:"accountNumber,omitempty"`
 	AdditionalBandwidth string          `json:"additionalBandwidth,omitempty"`
-	FqdnACL             []DeviceFqdnACL `json:"fqdnACL,omitempty"`
+	FqdnACL             []DeviceFqdnACL `json:"fqdnAcl,omitempty"`
 }
 
 //DeviceFqdnACL describes device ACL FQDN format
