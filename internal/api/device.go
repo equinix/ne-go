@@ -54,7 +54,7 @@ type DeviceRequest struct {
 	DeviceManagementType string                  `json:"deviceManagementType,omitempty"`
 	Core                 int                     `json:"core,omitempty"`
 	AdditionalBandwidth  string                  `json:"additionalBandwidth,omitempty"`
-	FqdnACL              []DeviceFqdnACL         `json:"fqdnACL,omitempty"`
+	FqdnACL              []DeviceFqdnACL         `json:"fqdnAcl,omitempty"`
 	Secondary            *SecondaryDeviceRequest `json:"secondary,omitempty"`
 }
 

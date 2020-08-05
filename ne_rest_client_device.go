@@ -179,7 +179,9 @@ func mapDeviceAPIToDomain(apiDevice api.Device) (*Device, error) {
 	device.AdditionalBandwidth = apiDevice.AdditionalBandwidth
 	device.OrderReference = apiDevice.OrderReference
 	device.InterfaceCount = apiDevice.InterfaceCount
-	device.CoreCount = apiDevice.Core.Core
+	if apiDevice.Core != nil {
+		device.CoreCount = apiDevice.Core.Core
+	}
 	if apiDevice.DeviceManagementType == deviceManagementTypeSelf {
 		device.IsSelfManaged = true
 	}
