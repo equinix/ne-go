@@ -33,7 +33,12 @@ var testDevice = Device{
 	InterfaceCount:      10,
 	CoreCount:           2,
 	Version:             "10.09.05",
-	IsSelfManaged:       true}
+	IsSelfManaged:       true,
+	VendorConfiguration: map[string]string{
+		"serialNumber": "12312312",
+		"controller1":  "1.1.1.1",
+	},
+}
 
 func TestCreateDevice(t *testing.T) {
 	//given
@@ -83,7 +88,11 @@ func TestCreateRedundantDevice(t *testing.T) {
 		HostName:            "secondaryHostname",
 		AccountNumber:       "99999",
 		AdditionalBandwidth: 200,
-		ACLs:                []string{"2.2.2.2/32"}}
+		ACLs:                []string{"2.2.2.2/32"},
+		VendorConfiguration: map[string]string{
+			"serialNumber": "2222222",
+			"controller1":  "2.2.2.2",
+		}}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/device", baseURL),
@@ -274,6 +283,7 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	for i := range resp.Interfaces {
 		verifyDeviceInterface(t, device.Interfaces[i], resp.Interfaces[i])
 	}
+	assert.Equal(t, resp.VendorConfig, device.VendorConfiguration, "VendorConfigurations match")
 }
 
 func verifyDeviceInterface(t *testing.T, inf DeviceInterface, apiInf api.DeviceInterface) {
@@ -316,6 +326,7 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.CoreCount, req.Core, "Core matches")
 	assert.Equal(t, strconv.Itoa(device.AdditionalBandwidth), req.AdditionalBandwidth, "AdditionalBandwidth matches")
 	assert.ElementsMatch(t, mapDeviceACLsToFQDNACLs(device.ACLs), req.FqdnACL, "ACLs matches")
+	assert.Equal(t, device.VendorConfiguration, req.VendorConfig, "VendorConfigurations match")
 }
 
 func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req api.DeviceRequest) {
@@ -327,4 +338,5 @@ func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req a
 	assert.Equal(t, secondary.AccountNumber, req.Secondary.AccountNumber, "Secondary AccountNumber matches")
 	assert.Equal(t, strconv.Itoa(secondary.AdditionalBandwidth), req.Secondary.AdditionalBandwidth, "Secondary AdditionalBandwidth matches")
 	assert.ElementsMatch(t, mapDeviceACLsToFQDNACLs(secondary.ACLs), req.Secondary.FqdnACL, "Secondary ACLs matches")
+	assert.Equal(t, secondary.VendorConfiguration, req.Secondary.VendorConfig, "Secondary VendorConfigurations match")
 }

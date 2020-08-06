@@ -120,6 +120,7 @@ type Device struct {
 	CoreCount           int
 	IsSelfManaged       bool
 	Interfaces          []DeviceInterface
+	VendorConfiguration map[string]string
 }
 
 //DeviceInterface describes Network Edge device interface

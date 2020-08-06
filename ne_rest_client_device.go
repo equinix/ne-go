@@ -186,6 +186,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) (*Device, error) {
 		device.IsSelfManaged = true
 	}
 	device.Interfaces = mapDeviceInterfacesAPIToDomain(apiDevice.Interfaces)
+	device.VendorConfiguration = apiDevice.VendorConfig
 	return &device, nil
 }
 
@@ -234,6 +235,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.Core = device.CoreCount
 	req.AdditionalBandwidth = strconv.Itoa(device.AdditionalBandwidth)
 	req.FqdnACL = mapDeviceACLsToFQDNACLs(device.ACLs)
+	req.VendorConfig = device.VendorConfiguration
 	return req
 }
 
@@ -258,6 +260,7 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.AccountNumber = secondary.AccountNumber
 	secReq.AdditionalBandwidth = strconv.Itoa(secondary.AdditionalBandwidth)
 	secReq.FqdnACL = mapDeviceACLsToFQDNACLs(secondary.ACLs)
+	secReq.VendorConfig = secondary.VendorConfiguration
 	req.Secondary = &secReq
 	return req
 }

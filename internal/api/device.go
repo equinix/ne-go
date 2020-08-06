@@ -31,6 +31,7 @@ type Device struct {
 	Core                 *DeviceCoreInformation `json:"core,omitempty"`
 	DeviceManagementType string                 `json:"deviceManagementType,omitempty"`
 	Interfaces           []DeviceInterface      `json:"interfaces,omitempty"`
+	VendorConfig         map[string]string      `json:"vendorConfig,omitempty"`
 }
 
 //DeviceRequest describes network edge device creation request
@@ -55,18 +56,20 @@ type DeviceRequest struct {
 	Core                 int                     `json:"core,omitempty"`
 	AdditionalBandwidth  string                  `json:"additionalBandwidth,omitempty"`
 	FqdnACL              []DeviceFqdnACL         `json:"fqdnAcl,omitempty"`
+	VendorConfig         map[string]string       `json:"vendorConfig,omitempty"`
 	Secondary            *SecondaryDeviceRequest `json:"secondary,omitempty"`
 }
 
 //SecondaryDeviceRequest describes secondary device part of device creation request
 type SecondaryDeviceRequest struct {
-	MetroCode           string          `json:"metroCode,omitempty"`
-	VirtualDeviceName   string          `json:"virtualDeviceName,omitempty"`
-	Notifications       []string        `json:"notifications,omitempty"`
-	HostNamePrefix      string          `json:"hostNamePrefix,omitempty"`
-	AccountNumber       string          `json:"accountNumber,omitempty"`
-	AdditionalBandwidth string          `json:"additionalBandwidth,omitempty"`
-	FqdnACL             []DeviceFqdnACL `json:"fqdnAcl,omitempty"`
+	MetroCode           string            `json:"metroCode,omitempty"`
+	VirtualDeviceName   string            `json:"virtualDeviceName,omitempty"`
+	Notifications       []string          `json:"notifications,omitempty"`
+	HostNamePrefix      string            `json:"hostNamePrefix,omitempty"`
+	AccountNumber       string            `json:"accountNumber,omitempty"`
+	AdditionalBandwidth string            `json:"additionalBandwidth,omitempty"`
+	FqdnACL             []DeviceFqdnACL   `json:"fqdnAcl,omitempty"`
+	VendorConfig        map[string]string `json:"vendorConfig,omitempty"`
 }
 
 //DeviceFqdnACL describes device ACL FQDN format
@@ -104,7 +107,7 @@ type DeviceRequestResponse struct {
 type DeviceUpdateRequest struct {
 	Notifications     []string `json:"notifications"`
 	TermLength        int      `json:"termLength,omitempty"`
-	VirtualDeviceName string   `json:"virtualDeviceName,omitempty"`
+	VirtualDeviceName string   `json:"dfsdirtualDeviceName,omitempty"`
 }
 
 //DeviceAdditionalBandwidthUpdateRequest describes network device additional bandwidth update request
