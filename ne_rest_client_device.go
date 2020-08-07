@@ -209,7 +209,9 @@ func mapDeviceInterfacesAPIToDomain(apiInterfaces []api.DeviceInterface) []Devic
 
 func createDeviceRequest(device Device) api.DeviceRequest {
 	req := api.DeviceRequest{}
-	req.Throughput = strconv.Itoa(device.Throughput)
+	if device.Throughput > 0 {
+		req.Throughput = strconv.Itoa(device.Throughput)
+	}
 	req.ThroughputUnit = device.ThroughputUnit
 	req.MetroCode = device.MetroCode
 	req.DeviceTypeCode = device.TypeCode
@@ -233,7 +235,9 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 		req.DeviceManagementType = deviceManagementTypeSelf
 	}
 	req.Core = device.CoreCount
-	req.AdditionalBandwidth = strconv.Itoa(device.AdditionalBandwidth)
+	if device.AdditionalBandwidth > 0 {
+		req.AdditionalBandwidth = strconv.Itoa(device.AdditionalBandwidth)
+	}
 	req.FqdnACL = mapDeviceACLsToFQDNACLs(device.ACLs)
 	req.VendorConfig = device.VendorConfiguration
 	return req
@@ -258,7 +262,9 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.Notifications = secondary.Notifications
 	secReq.HostNamePrefix = secondary.HostName
 	secReq.AccountNumber = secondary.AccountNumber
-	secReq.AdditionalBandwidth = strconv.Itoa(secondary.AdditionalBandwidth)
+	if secondary.AdditionalBandwidth > 0 {
+		secReq.AdditionalBandwidth = strconv.Itoa(secondary.AdditionalBandwidth)
+	}
 	secReq.FqdnACL = mapDeviceACLsToFQDNACLs(secondary.ACLs)
 	secReq.VendorConfig = secondary.VendorConfiguration
 	req.Secondary = &secReq
