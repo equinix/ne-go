@@ -251,7 +251,7 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.MetroCode, device.MetroCode, "MetroCode matches")
 	assert.Equal(t, resp.IBX, device.IBX, "IBX matches")
 	assert.Equal(t, resp.Region, device.Region, "Region matches")
-	assert.Equal(t, resp.Throughput, strconv.Itoa(device.Throughput), "Throughput matches")
+	assert.Equal(t, resp.Throughput, device.Throughput, "Throughput matches")
 	assert.Equal(t, resp.ThroughputUnit, device.ThroughputUnit, "ThroughputUnit matches")
 	assert.Equal(t, resp.HostName, device.HostName, "HostName matches")
 	assert.Equal(t, resp.PackageCode, device.PackageCode, "PackageCode matches")
@@ -298,7 +298,7 @@ func verifyDeviceInterface(t *testing.T, inf DeviceInterface, apiInf api.DeviceI
 }
 
 func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
-	assert.Equal(t, strconv.Itoa(device.Throughput), req.Throughput, "Throughput matches")
+	assert.Equal(t, device.Throughput, req.Throughput, "Throughput matches")
 	assert.Equal(t, device.ThroughputUnit, req.ThroughputUnit, "ThroughputUnit matches")
 	assert.Equal(t, device.MetroCode, req.MetroCode, "MetroCode matches")
 	assert.Equal(t, device.TypeCode, req.DeviceTypeCode, "TypeCode matches")
@@ -324,7 +324,7 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 		assert.Equal(t, deviceManagementTypeEquinix, req.DeviceManagementType, "DeviceManagementType matches")
 	}
 	assert.Equal(t, device.CoreCount, req.Core, "Core matches")
-	assert.Equal(t, strconv.Itoa(device.AdditionalBandwidth), req.AdditionalBandwidth, "AdditionalBandwidth matches")
+	assert.Equal(t, device.AdditionalBandwidth, req.AdditionalBandwidth, "AdditionalBandwidth matches")
 	assert.ElementsMatch(t, mapDeviceACLsToFQDNACLs(device.ACLs), req.FqdnACL, "ACLs matches")
 	assert.Equal(t, device.VendorConfiguration, req.VendorConfig, "VendorConfigurations match")
 }
@@ -336,7 +336,7 @@ func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req a
 	assert.ElementsMatch(t, secondary.Notifications, req.Secondary.Notifications, "Secondary Notifications matches")
 	assert.Equal(t, secondary.HostName, req.Secondary.HostNamePrefix, "Secondary HostName matches")
 	assert.Equal(t, secondary.AccountNumber, req.Secondary.AccountNumber, "Secondary AccountNumber matches")
-	assert.Equal(t, strconv.Itoa(secondary.AdditionalBandwidth), req.Secondary.AdditionalBandwidth, "Secondary AdditionalBandwidth matches")
+	assert.Equal(t, secondary.AdditionalBandwidth, req.Secondary.AdditionalBandwidth, "Secondary AdditionalBandwidth matches")
 	assert.ElementsMatch(t, mapDeviceACLsToFQDNACLs(secondary.ACLs), req.Secondary.FqdnACL, "Secondary ACLs matches")
 	assert.Equal(t, secondary.VendorConfiguration, req.Secondary.VendorConfig, "Secondary VendorConfigurations match")
 }

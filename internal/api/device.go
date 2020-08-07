@@ -10,7 +10,7 @@ type Device struct {
 	MetroCode            string                 `json:"metroCode,omitempty"`
 	IBX                  string                 `json:"ibx,omitempty"`
 	Region               string                 `json:"region,omitempty"`
-	Throughput           string                 `json:"throughput,omitempty"`
+	Throughput           int                    `json:"throughput,omitempty,string"`
 	ThroughputUnit       string                 `json:"throughputUnit,omitempty"`
 	HostName             string                 `json:"hostName,omitempty"`
 	PackageCode          string                 `json:"packageCode,omitempty"`
@@ -36,7 +36,7 @@ type Device struct {
 
 //DeviceRequest describes network edge device creation request
 type DeviceRequest struct {
-	Throughput           string                  `json:"throughput,omitempty"`
+	Throughput           int                     `json:"throughput,omitempty,string"`
 	ThroughputUnit       string                  `json:"throughputUnit,omitempty"`
 	MetroCode            string                  `json:"metroCode,omitempty"`
 	DeviceTypeCode       string                  `json:"deviceTypeCode,omitempty"`
@@ -54,7 +54,7 @@ type DeviceRequest struct {
 	InterfaceCount       int                     `json:"interfaceCount,omitempty"`
 	DeviceManagementType string                  `json:"deviceManagementType,omitempty"`
 	Core                 int                     `json:"core,omitempty"`
-	AdditionalBandwidth  string                  `json:"additionalBandwidth,omitempty"`
+	AdditionalBandwidth  int                     `json:"additionalBandwidth,omitempty,string"`
 	FqdnACL              []DeviceFqdnACL         `json:"fqdnAcl,omitempty"`
 	VendorConfig         map[string]string       `json:"vendorConfig,omitempty"`
 	Secondary            *SecondaryDeviceRequest `json:"secondary,omitempty"`
@@ -67,7 +67,7 @@ type SecondaryDeviceRequest struct {
 	Notifications       []string          `json:"notifications,omitempty"`
 	HostNamePrefix      string            `json:"hostNamePrefix,omitempty"`
 	AccountNumber       string            `json:"accountNumber,omitempty"`
-	AdditionalBandwidth string            `json:"additionalBandwidth,omitempty"`
+	AdditionalBandwidth int               `json:"additionalBandwidth,omitempty,string"`
 	FqdnACL             []DeviceFqdnACL   `json:"fqdnAcl,omitempty"`
 	VendorConfig        map[string]string `json:"vendorConfig,omitempty"`
 }

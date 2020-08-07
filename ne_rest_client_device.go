@@ -155,11 +155,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) (*Device, error) {
 	device.MetroCode = apiDevice.MetroCode
 	device.IBX = apiDevice.IBX
 	device.Region = apiDevice.Region
-	if val, err := strconv.Atoi(apiDevice.Throughput); err == nil {
-		device.Throughput = val
-	} else {
-		return nil, fmt.Errorf("can't parse throughput: %v", err)
-	}
+	device.Throughput = apiDevice.Throughput
 	device.ThroughputUnit = apiDevice.ThroughputUnit
 	device.HostName = apiDevice.HostName
 	device.PackageCode = apiDevice.PackageCode
@@ -209,9 +205,7 @@ func mapDeviceInterfacesAPIToDomain(apiInterfaces []api.DeviceInterface) []Devic
 
 func createDeviceRequest(device Device) api.DeviceRequest {
 	req := api.DeviceRequest{}
-	if device.Throughput > 0 {
-		req.Throughput = strconv.Itoa(device.Throughput)
-	}
+	req.Throughput = device.Throughput
 	req.ThroughputUnit = device.ThroughputUnit
 	req.MetroCode = device.MetroCode
 	req.DeviceTypeCode = device.TypeCode
@@ -235,9 +229,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 		req.DeviceManagementType = deviceManagementTypeSelf
 	}
 	req.Core = device.CoreCount
-	if device.AdditionalBandwidth > 0 {
-		req.AdditionalBandwidth = strconv.Itoa(device.AdditionalBandwidth)
-	}
+	req.AdditionalBandwidth = device.AdditionalBandwidth
 	req.FqdnACL = mapDeviceACLsToFQDNACLs(device.ACLs)
 	req.VendorConfig = device.VendorConfiguration
 	return req
@@ -262,9 +254,7 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.Notifications = secondary.Notifications
 	secReq.HostNamePrefix = secondary.HostName
 	secReq.AccountNumber = secondary.AccountNumber
-	if secondary.AdditionalBandwidth > 0 {
-		secReq.AdditionalBandwidth = strconv.Itoa(secondary.AdditionalBandwidth)
-	}
+	secReq.AdditionalBandwidth = secondary.AdditionalBandwidth
 	secReq.FqdnACL = mapDeviceACLsToFQDNACLs(secondary.ACLs)
 	secReq.VendorConfig = secondary.VendorConfiguration
 	req.Secondary = &secReq
