@@ -143,14 +143,17 @@ func (req *restDeviceUpdateRequest) Execute() error {
 
 //GetDeviceACLs fetches details of ACLs for a device with a given UUID.
 //In addition to list of ACL CIDRs, provisioning status is returned.
-func (c RestClient) GetDeviceACLs(uuid string) ([]string, string, error) {
+func (c RestClient) GetDeviceACLs(uuid string) (*DeviceACLs, error) {
 	url := fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", c.baseURL, url.PathEscape(uuid))
 	result := api.DeviceFqdnACLResponse{}
 	req := c.R().SetResult(&result)
 	if err := c.execute(req, resty.MethodGet, url); err != nil {
-		return nil, "", err
+		return nil, err
 	}
-	return mapDeviceFQDNACLsToACLs(result.FqdnACLs), result.Status, nil
+	return &DeviceACLs{
+		ACLs:   mapDeviceFQDNACLsToACLs(result.FqdnACLs),
+		Status: result.Status,
+	}, nil
 }
 
 //‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾

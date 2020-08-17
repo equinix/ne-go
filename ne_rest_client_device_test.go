@@ -255,7 +255,7 @@ func TestGetFqdnACLs(t *testing.T) {
 
 	//when
 	c := NewClient(context.Background(), baseURL, testHc)
-	acls, status, err := c.GetDeviceACLs(devID)
+	acls, err := c.GetDeviceACLs(devID)
 
 	//then
 	assert.NotNil(t, acls, "Returned device is not nil")
@@ -265,8 +265,8 @@ func TestGetFqdnACLs(t *testing.T) {
 	for i := range resp.FqdnACLs {
 		cnt += len(resp.FqdnACLs[i].CIDRs)
 	}
-	assert.Equal(t, cnt, len(acls), "Number of CIDRS and ACLs matches")
-	assert.Equal(t, resp.Status, status, "Status matches")
+	assert.Equal(t, cnt, len(acls.ACLs), "Number of CIDRS and ACLs matches")
+	assert.Equal(t, resp.Status, acls.Status, "Status matches")
 }
 
 func verifyDevice(t *testing.T, device Device, resp api.Device) {

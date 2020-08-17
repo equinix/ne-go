@@ -12,7 +12,7 @@ type Client interface {
 	GetDevice(uuid string) (*Device, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
-	GetDeviceACLs(uuid string) ([]string, string, error)
+	GetDeviceACLs(uuid string) (*DeviceACLs, error)
 
 	CreateSSHUser(username string, password string, device string) (string, error)
 	GetSSHUser(uuid string) (*SSHUser, error)
@@ -134,6 +134,12 @@ type DeviceInterface struct {
 	IPAddress         string
 	AssignedType      string
 	Type              string
+}
+
+//DeviceACLs describes device ACLs - list of CIDRs along with their current provisioning status
+type DeviceACLs struct {
+	ACLs   []string
+	Status string
 }
 
 //SSHUser describes Network Edge SSH user
