@@ -1,0 +1,29 @@
+{
+    "fqdnAcl": [
+        {
+            "type": "SUBNET",
+            "domain": null,
+            "cidrs": [
+                "10.0.0.0/24"
+            ],
+            "defaultAcl": false
+        },
+        {
+            "type": "SUBNET",
+            "domain": null,
+            "cidrs": [
+                "192.168.0.0/24"
+            ],
+            "defaultAcl": false
+        },
+        {
+            "type": "SUBNET",
+            "domain": null,
+            "cidrs": [
+                "1.1.1.1/32"
+            ],
+            "defaultAcl": false
+        }
+    ],
+    "status": "PROVISIONED"
+}

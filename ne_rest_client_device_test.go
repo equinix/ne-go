@@ -242,6 +242,33 @@ func TestDeleteDevice(t *testing.T) {
 	assert.Nil(t, err, "Error is not returned")
 }
 
+func TestGetFqdnACLs(t *testing.T) {
+	//given
+	resp := api.DeviceFqdnACLResponse{}
+	if err := readJSONData("./test-fixtures/ne_device_fqdnAcls_get_resp.json", &resp); err != nil {
+		assert.Fail(t, "Cannont read test response")
+	}
+	baseURL := "http://localhost:8888"
+	devID := "myDevice"
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", baseURL, devID), 200, resp)
+	defer httpmock.DeactivateAndReset()
+
+	//when
+	c := NewClient(context.Background(), baseURL, testHc)
+	acls, status, err := c.GetDeviceACLs(devID)
+
+	//then
+	assert.NotNil(t, acls, "Returned device is not nil")
+	assert.Nil(t, err, "Error is not returned")
+
+	cnt := 0
+	for i := range resp.FqdnACLs {
+		cnt += len(resp.FqdnACLs[i].CIDRs)
+	}
+	assert.Equal(t, cnt, len(acls), "Number of CIDRS and ACLs matches")
+	assert.Equal(t, resp.Status, status, "Status matches")
+}
+
 func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.UUID, device.UUID, "UUID matches")
 	assert.Equal(t, resp.Name, device.Name, "Name matches")

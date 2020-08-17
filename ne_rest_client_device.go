@@ -141,6 +141,18 @@ func (req *restDeviceUpdateRequest) Execute() error {
 	return nil
 }
 
+//GetDeviceACLs fetches details of ACLs for a device with a given UUID.
+//In addition to list of ACL CIDRs, provisioning status is returned.
+func (c RestClient) GetDeviceACLs(uuid string) ([]string, string, error) {
+	url := fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", c.baseURL, url.PathEscape(uuid))
+	result := api.DeviceFqdnACLResponse{}
+	req := c.R().SetResult(&result)
+	if err := c.execute(req, resty.MethodGet, url); err != nil {
+		return nil, "", err
+	}
+	return mapDeviceFQDNACLsToACLs(result.FqdnACLs), result.Status, nil
+}
+
 //‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 // Unexported package methods
 //_______________________________________________________________________
@@ -241,6 +253,16 @@ func mapDeviceACLsToFQDNACLs(acls []string) []api.DeviceFqdnACL {
 		transformed[i] = api.DeviceFqdnACL{
 			CIDRs: []string{acls[i]},
 			Type:  "SUBNET",
+		}
+	}
+	return transformed
+}
+
+func mapDeviceFQDNACLsToACLs(fqdnACLs []api.DeviceFqdnACL) []string {
+	transformed := make([]string, 0, len(fqdnACLs)*10) //assuming that one FQDN ACL will have max 10 CIDRs
+	for i := range fqdnACLs {
+		for j := range fqdnACLs[i].CIDRs {
+			transformed = append(transformed, fqdnACLs[i].CIDRs[j])
 		}
 	}
 	return transformed

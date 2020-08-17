@@ -78,6 +78,12 @@ type DeviceFqdnACL struct {
 	Type  string   `json:"type,omitempty"`
 }
 
+//DeviceFqdnACLResponse describes respone for device FQDN ACLs fetch request
+type DeviceFqdnACLResponse struct {
+	FqdnACLs []DeviceFqdnACL `json:"fqdnAcl,omitempty"`
+	Status   string          `json:"status,omitempty"`
+}
+
 //DeviceInterface describes device network interface
 type DeviceInterface struct {
 	ID                int    `json:"id,omitempty"`

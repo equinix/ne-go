@@ -13,6 +13,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestClientImplementation(t *testing.T) {
+	//given
+	cli := NewClient(context.Background(), "http://localhost:8888", &http.Client{})
+	//then
+	assert.Implements(t, (*Client)(nil), cli, "Rest client implements Client interface")
+}
+
 func TestSingleError(t *testing.T) {
 	//given
 	resp := api.ErrorResponse{}
