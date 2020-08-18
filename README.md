@@ -3,6 +3,13 @@ Equinix Network Edge Go client
 
 Equinix Network Edge (NE) client library written in Go.
 
+[![Build Status](https://travis-ci.com/equinix/ne-go.svg?branch=master)](https://travis-ci.com/github/equinix/ne-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/equinix/ne-go)](https://goreportcard.com/report/github.com/equinix/ne-go)
+[![GoDoc](https://godoc.org/github.com/equinix/ne-go?status.svg)](https://godoc.org/github.com/equinix/ne-go)
+![GitHub](https://img.shields.io/github/license/equinix/ne-go)
+
+---
+
 Purpose
 ------------------
 Equinix Network Edge client library was written in Go for purpose of managing NE resources from Terraform provider plugin.
