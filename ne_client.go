@@ -5,6 +5,35 @@ import (
 	"fmt"
 )
 
+const (
+	//DeviceStateInitializing Equinix is allocating resources and creating new device
+	DeviceStateInitializing = "INITIALIZING"
+	//DeviceStateProvisioning Network Edge device is booting
+	DeviceStateProvisioning = "PROVISIONING"
+	//DeviceStateWaitingPrimary secondary Network Edge device is waiting for provisioning of its redundant (primary) device
+	DeviceStateWaitingPrimary = "WAITING_FOR_PRIMARY"
+	//DeviceStateWaitingSecondary primary Network Edge device is waiting for provisioning of its redundant (secondary) device
+	DeviceStateWaitingSecondary = "WAITING_FOR_SECONDARY"
+	//DeviceStateFailed Network Edge device creation and provisioning have failed
+	DeviceStateFailed = "FAILED"
+	//DeviceStateProvisioned Network Edge device was successfully provisioned and is fully operational
+	DeviceStateProvisioned = "PROVISIONED"
+	//DeviceStateDeprovisioning Network Edge device is in process of deprovisioning
+	DeviceStateDeprovisioning = "DEPROVISIONING"
+	//DeviceStateDeprovisioned Network Edge device was successfully deprovisioned
+	DeviceStateDeprovisioned = "DEPROVISIONED"
+
+	//DeviceLicenseStateApplying license is in registration process
+	DeviceLicenseStateApplying = "APPLYING_LICENSE"
+	//DeviceLicenseStateRegistered license was successfully registered
+	DeviceLicenseStateRegistered = "REGISTERED"
+	//DeviceLicenseStateFailed license registration has failed
+	DeviceLicenseStateFailed = "REGISTRATION_FAILED"
+
+	//ErrorCodeDeviceRemoved is used on attempt to remove device that is deprovisioning or already deprovisioned
+	ErrorCodeDeviceRemoved = "IC-NE-VD-030"
+)
+
 //Client interface describes operations provided by Network Edge client library
 type Client interface {
 	CreateDevice(device Device) (string, error)
@@ -50,7 +79,7 @@ type Error struct {
 	ErrorMessage string
 }
 
-//ChangeError describes single error that occured during update of selected target property
+//ChangeError describes single error that occurred during update of selected target property
 type ChangeError struct {
 	Type   string
 	Target string
@@ -62,7 +91,7 @@ func (e ChangeError) Error() string {
 	return fmt.Sprintf("change type '%s', target '%s', value '%s', cause: '%s'", e.Type, e.Target, e.Value, e.Cause)
 }
 
-//UpdateError describes error that occured during composite update request and consists of multiple atomic change errors
+//UpdateError describes error that occurred during composite update request and consists of multiple atomic change errors
 type UpdateError struct {
 	Failed []ChangeError
 }

@@ -16,7 +16,7 @@ func TestSSHUserGet(t *testing.T) {
 	//given
 	resp := api.SSHUser{}
 	if err := readJSONData("./test-fixtures/ne_sshuser_get_resp.json", &resp); err != nil {
-		assert.Failf(t, "Cannont read test response due to %s", err.Error())
+		assert.Failf(t, "Cannot read test response due to %s", err.Error())
 	}
 	baseURL := "http://localhost:8888"
 	userID := "myTestUser"

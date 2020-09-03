@@ -97,7 +97,7 @@ func mapErrorsAPIToDomain(apiErrors api.ErrorResponses) RestError {
 		msg = msg + fmt.Sprintf(" [Error %v: Property: %v, %v]", i+1, v.Property, v.ErrorMessage)
 	}
 	return RestError{
-		Message: "Multiple errors occured: " + msg,
+		Message: "Multiple errors occurred: " + msg,
 		Errors:  errors,
 	}
 }

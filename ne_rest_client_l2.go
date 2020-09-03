@@ -35,7 +35,7 @@ func (c RestClient) CreateL2Connection(l2connection L2Connection) (*L2Connection
 }
 
 //CreateL2RedundantConnection operation creates redundant layer2 connection with given connection structures.
-//Primary connection structure is used as a baseline for underlaying API call, whereas secondary connection strucutre provices
+//Primary connection structure is used as a baseline for underlaying API call, whereas secondary connection structure provices
 //supplementary information only.
 //Upon successful creation, primary connection structure, enriched with assigned UUID and redundant connection UUID, will be returned
 func (c RestClient) CreateL2RedundantConnection(primary L2Connection, secondary L2Connection) (*L2Connection, error) {

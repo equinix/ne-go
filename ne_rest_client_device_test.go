@@ -44,7 +44,7 @@ func TestCreateDevice(t *testing.T) {
 	//given
 	resp := api.DeviceRequestResponse{}
 	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
-		assert.Fail(t, "Cannont read test response")
+		assert.Fail(t, "Cannot read test response")
 	}
 	baseURL := "http://localhost:8888"
 	device := testDevice
@@ -76,7 +76,7 @@ func TestCreateRedundantDevice(t *testing.T) {
 	//given
 	resp := api.DeviceRequestResponse{}
 	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
-		assert.Fail(t, "Cannont read test response")
+		assert.Fail(t, "Cannot read test response")
 	}
 	baseURL := "http://localhost:8888"
 	req := api.DeviceRequest{}
@@ -121,7 +121,7 @@ func TestGetDevice(t *testing.T) {
 	//given
 	resp := api.Device{}
 	if err := readJSONData("./test-fixtures/ne_device_get_resp.json", &resp); err != nil {
-		assert.Fail(t, "Cannont read test response")
+		assert.Fail(t, "Cannot read test response")
 	}
 	baseURL := "http://localhost:8888"
 	devID := "myDevice"
@@ -246,7 +246,7 @@ func TestGetFqdnACLs(t *testing.T) {
 	//given
 	resp := api.DeviceFqdnACLResponse{}
 	if err := readJSONData("./test-fixtures/ne_device_fqdnAcls_get_resp.json", &resp); err != nil {
-		assert.Fail(t, "Cannont read test response")
+		assert.Fail(t, "Cannot read test response")
 	}
 	baseURL := "http://localhost:8888"
 	devID := "myDevice"

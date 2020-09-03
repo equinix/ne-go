@@ -59,7 +59,7 @@ func TestCreateL2Connection(t *testing.T) {
 	//Given
 	respBody := api.PostConnectionResponse{}
 	if err := readJSONData("./test-fixtures/ne_connection_create_resp.json", &respBody); err != nil {
-		assert.Failf(t, "Cannont read test response due to %s", err.Error())
+		assert.Failf(t, "Cannot read test response due to %s", err.Error())
 	}
 	reqBody := api.PostConnectionRequest{}
 	testHc := &http.Client{}
@@ -91,7 +91,7 @@ func TestCreateRedundantL2Connection(t *testing.T) {
 	//Given
 	respBody := api.PostConnectionResponse{}
 	if err := readJSONData("./test-fixtures/ne_connection_create_resp.json", &respBody); err != nil {
-		assert.Failf(t, "Cannont read test response due to %s", err.Error())
+		assert.Failf(t, "Cannot read test response due to %s", err.Error())
 	}
 	reqBody := api.PostConnectionRequest{}
 	testHc := &http.Client{}
