@@ -96,7 +96,7 @@ type DeviceInterface struct {
 	Type              string `json:"type,omitempty"`
 }
 
-//DeviceCoreInformation describes device core and memmory information
+//DeviceCoreInformation describes device core and memory information
 type DeviceCoreInformation struct {
 	Core   int    `json:"core,omitempty"`
 	Memory int    `json:"memory,omitempty"`
@@ -113,7 +113,7 @@ type DeviceRequestResponse struct {
 type DeviceUpdateRequest struct {
 	Notifications     []string `json:"notifications"`
 	TermLength        int      `json:"termLength,omitempty"`
-	VirtualDeviceName string   `json:"dfsdirtualDeviceName,omitempty"`
+	VirtualDeviceName string   `json:"virtualDeviceName,omitempty"`
 }
 
 //DeviceAdditionalBandwidthUpdateRequest describes network device additional bandwidth update request
