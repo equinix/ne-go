@@ -33,6 +33,41 @@ func TestSSHUserGet(t *testing.T) {
 	verifyUser(t, *user, resp)
 }
 
+func TestSSHUsersGet(t *testing.T) {
+	//Given
+	var respBodyOne, respBodyTwo api.SSHUsersResponse
+	if err := readJSONData("./test-fixtures/ne_sshusers_get_p0.json", &respBodyOne); err != nil {
+		assert.Failf(t, "cannot read test response due to %s", err.Error())
+	}
+	if err := readJSONData("./test-fixtures/ne_sshusers_get_p1.json", &respBodyTwo); err != nil {
+		assert.Failf(t, "cannot read test response due to %s", err.Error())
+	}
+	pageSize := respBodyOne.PageSize
+	testHc := &http.Client{}
+	httpmock.ActivateNonDefault(testHc)
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user?pageSize=%d&verbose=true", baseURL, pageSize),
+		func(r *http.Request) (*http.Response, error) {
+			resp, _ := httpmock.NewJsonResponse(200, respBodyOne)
+			return resp, nil
+		},
+	)
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user?pageNumber=1&pageSize=%d&verbose=true", baseURL, pageSize),
+		func(r *http.Request) (*http.Response, error) {
+			resp, _ := httpmock.NewJsonResponse(200, respBodyTwo)
+			return resp, nil
+		},
+	)
+	//When
+	c := NewClient(context.Background(), baseURL, testHc)
+	c.PageSize = pageSize
+	users, err := c.GetSSHUsers()
+
+	//Then
+	assert.Nil(t, err, "Client should not return an error")
+	assert.NotNil(t, users, "Client should return a response")
+	assert.Equal(t, respBodyOne.TotalCount, len(users))
+}
+
 func TestSSHUserCreate(t *testing.T) {
 	//given
 	resp := api.SSHUserRequestResponse{}

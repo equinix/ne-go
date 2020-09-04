@@ -1,0 +1,33 @@
+{
+    "totalCount": 3,
+    "pageNumber": 0,
+    "pageSize": 2,
+    "list": [
+        {
+            "uuid": "a2227c80-8227-4f77-9df0-f69e4379aec0",
+            "username": "plOzmO",
+            "deviceUuids": [
+                "e0d67071-d0ce-4e6d-a3a0-ebe06ec488e2",
+                "73a73e63-4b89-4281-8efb-dc2d3e0ec1b4",
+                "08ddbb8c-fce0-48d4-aebe-416f9a58bec9"
+            ],
+            "metroStatusMap": {
+                "DC": {
+                    "status": "ACTIVE"
+                }
+            }
+        },
+        {
+            "uuid": "c68f6392-2fc0-4562-a860-2432118aeba6",
+            "username": "kekEkx",
+            "deviceUuids": [
+                "dd63e20d-5baa-4f9a-9b89-52d255c0854f"
+            ],
+            "metroStatusMap": {
+                "DC": {
+                    "status": "ACTIVE"
+                }
+            }
+        }
+    ]
+}

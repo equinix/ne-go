@@ -150,7 +150,7 @@ func TestGetDevices(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_devices_get_p3.json", &respBodyThree); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := 1
+	pageSize := respBodyOne.PageSize
 	status := DeviceStateProvisioning
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)

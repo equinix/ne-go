@@ -71,7 +71,8 @@ func (c RestClient) GetDevices(statuses []string) ([]Device, error) {
 	url := fmt.Sprintf("%s/ne/v1/device", c.baseURL)
 	respBody := api.DevicesResponse{}
 	req := c.R().SetResult(&respBody)
-	req.SetQueryParam("status", strings.Join(statuses, ","))
+	statusesQueryVal := buildQueryParamValueString(statuses)
+	req.SetQueryParam("status", statusesQueryVal)
 	req.SetQueryParam("size", strconv.Itoa(c.PageSize))
 	if err := c.execute(req, resty.MethodGet, url); err != nil {
 		return nil, err
@@ -86,7 +87,7 @@ func (c RestClient) GetDevices(statuses []string) ([]Device, error) {
 	}
 	for pageNum := 2; !isLast; pageNum++ {
 		req := c.R().SetResult(&respBody).
-			SetQueryParam("status", strings.Join(statuses, ",")).
+			SetQueryParam("status", statusesQueryVal).
 			SetQueryParam("size", strconv.Itoa(c.PageSize)).
 			SetQueryParam("page", strconv.Itoa(pageNum))
 		if err := c.execute(req, resty.MethodGet, url); err != nil {
@@ -369,4 +370,15 @@ func (c RestClient) replaceDeviceFields(uuid string, fields map[string]interface
 		}
 	}
 	return nil
+}
+
+func buildQueryParamValueString(values []string) string {
+	var sb strings.Builder
+	for i := range values {
+		sb.WriteString(url.QueryEscape(values[i]))
+		if i < len(values)-1 {
+			sb.WriteString(",")
+		}
+	}
+	return sb.String()
 }

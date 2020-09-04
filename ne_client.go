@@ -45,6 +45,7 @@ type Client interface {
 	GetDeviceACLs(uuid string) (*DeviceACLs, error)
 
 	CreateSSHUser(username string, password string, device string) (string, error)
+	GetSSHUsers() ([]SSHUser, error)
 	GetSSHUser(uuid string) (*SSHUser, error)
 	NewSSHUserUpdateRequest(uuid string) SSHUserUpdateRequest
 	DeleteSSHUser(uuid string) error

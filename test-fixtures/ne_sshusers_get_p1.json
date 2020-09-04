@@ -1,0 +1,19 @@
+{
+    "totalCount": 3,
+    "pageNumber": 1,
+    "pageSize": 2,
+    "list": [
+        {
+            "uuid": "b8b12b06-a57a-45bf-a399-bf787df5fec1",
+            "username": "DIGXkg",
+            "deviceUuids": [
+                "8eec22fd-228d-43af-879a-dffe04185357"
+            ],
+            "metroStatusMap": {
+                "DC": {
+                    "status": "ACTIVE"
+                }
+            }
+        }
+    ]
+}
