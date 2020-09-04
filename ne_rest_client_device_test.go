@@ -138,6 +138,51 @@ func TestGetDevice(t *testing.T) {
 	verifyDevice(t, *dev, resp)
 }
 
+func TestGetDevices(t *testing.T) {
+	//Given
+	var respBodyOne, respBodyTwo, respBodyThree api.DevicesResponse
+	if err := readJSONData("./test-fixtures/ne_devices_get_p1.json", &respBodyOne); err != nil {
+		assert.Failf(t, "cannot read test response due to %s", err.Error())
+	}
+	if err := readJSONData("./test-fixtures/ne_devices_get_p2.json", &respBodyTwo); err != nil {
+		assert.Failf(t, "cannot read test response due to %s", err.Error())
+	}
+	if err := readJSONData("./test-fixtures/ne_devices_get_p3.json", &respBodyThree); err != nil {
+		assert.Failf(t, "cannot read test response due to %s", err.Error())
+	}
+	pageSize := 1
+	status := DeviceStateProvisioning
+	testHc := &http.Client{}
+	httpmock.ActivateNonDefault(testHc)
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device?size=%d&status=%s", baseURL, pageSize, status),
+		func(r *http.Request) (*http.Response, error) {
+			resp, _ := httpmock.NewJsonResponse(200, respBodyOne)
+			return resp, nil
+		},
+	)
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device?page=2&size=%d&status=%s", baseURL, pageSize, status),
+		func(r *http.Request) (*http.Response, error) {
+			resp, _ := httpmock.NewJsonResponse(200, respBodyTwo)
+			return resp, nil
+		},
+	)
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device?page=3&size=%d&status=%s", baseURL, pageSize, status),
+		func(r *http.Request) (*http.Response, error) {
+			resp, _ := httpmock.NewJsonResponse(200, respBodyThree)
+			return resp, nil
+		},
+	)
+	//When
+	c := NewClient(context.Background(), baseURL, testHc)
+	c.PageSize = pageSize
+	devices, err := c.GetDevices([]string{status})
+
+	//Then
+	assert.Nil(t, err, "Client should not return an error")
+	assert.NotNil(t, devices, "Client should return a response")
+	assert.Equal(t, respBodyOne.TotalCount, len(devices))
+}
+
 func TestUpdateDeviceBasicFields(t *testing.T) {
 	//given
 	baseURL := "http://localhost:8888"

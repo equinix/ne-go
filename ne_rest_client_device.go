@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/equinix/ne-go/internal/api"
 	"github.com/go-resty/resty/v2"
@@ -62,11 +63,42 @@ func (c RestClient) GetDevice(uuid string) (*Device, error) {
 	if err := c.execute(request, resty.MethodGet, url); err != nil {
 		return nil, err
 	}
-	device, err := mapDeviceAPIToDomain(result)
-	if err != nil {
-		return nil, fmt.Errorf("error when reading device data: %s", err)
+	return mapDeviceAPIToDomain(result), nil
+}
+
+//GetDevices retrieves list of devices (along with their details) with given list of statuses
+func (c RestClient) GetDevices(statuses []string) ([]Device, error) {
+	url := fmt.Sprintf("%s/ne/v1/device", c.baseURL)
+	respBody := api.DevicesResponse{}
+	req := c.R().SetResult(&respBody)
+	req.SetQueryParam("status", strings.Join(statuses, ","))
+	req.SetQueryParam("size", strconv.Itoa(c.PageSize))
+	if err := c.execute(req, resty.MethodGet, url); err != nil {
+		return nil, err
 	}
-	return device, nil
+	content := make([]api.Device, 0, respBody.TotalCount)
+	content = append(content, respBody.Content...)
+
+	recordsAsked := c.PageSize
+	isLast := false
+	if recordsAsked >= respBody.TotalCount {
+		isLast = true
+	}
+	for pageNum := 2; !isLast; pageNum++ {
+		req := c.R().SetResult(&respBody).
+			SetQueryParam("status", strings.Join(statuses, ",")).
+			SetQueryParam("size", strconv.Itoa(c.PageSize)).
+			SetQueryParam("page", strconv.Itoa(pageNum))
+		if err := c.execute(req, resty.MethodGet, url); err != nil {
+			return nil, err
+		}
+		content = append(content, respBody.Content...)
+		recordsAsked += c.PageSize
+		if recordsAsked >= respBody.TotalCount {
+			isLast = true
+		}
+	}
+	return mapDevicesAPIToDomain(content), nil
 }
 
 //NewDeviceUpdateRequest creates new composite update request for a device with a given UUID
@@ -160,7 +192,7 @@ func (c RestClient) GetDeviceACLs(uuid string) (*DeviceACLs, error) {
 // Unexported package methods
 //_______________________________________________________________________
 
-func mapDeviceAPIToDomain(apiDevice api.Device) (*Device, error) {
+func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device := Device{}
 	device.UUID = apiDevice.UUID
 	device.Name = apiDevice.Name
@@ -198,7 +230,15 @@ func mapDeviceAPIToDomain(apiDevice api.Device) (*Device, error) {
 	}
 	device.Interfaces = mapDeviceInterfacesAPIToDomain(apiDevice.Interfaces)
 	device.VendorConfiguration = apiDevice.VendorConfig
-	return &device, nil
+	return &device
+}
+
+func mapDevicesAPIToDomain(apiDevices []api.Device) []Device {
+	transformed := make([]Device, len(apiDevices))
+	for i := range apiDevices {
+		transformed[i] = *mapDeviceAPIToDomain(apiDevices[i])
+	}
+	return transformed
 }
 
 func mapDeviceInterfacesAPIToDomain(apiInterfaces []api.DeviceInterface) []DeviceInterface {

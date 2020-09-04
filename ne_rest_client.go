@@ -12,8 +12,10 @@ import (
 
 //RestClient describes REST implementation of Network Edge Client
 type RestClient struct {
-	baseURL string
-	ctx     context.Context
+	//PageSize determines default page size for GET requests on resource collections
+	PageSize int
+	baseURL  string
+	ctx      context.Context
 	*resty.Client
 }
 
@@ -34,6 +36,7 @@ func NewClient(ctx context.Context, baseURL string, httpClient *http.Client) *Re
 	resty.SetHeader("User-agent", "equinix/ne-go")
 	resty.SetHeader("Accept", "application/json")
 	return &RestClient{
+		100,
 		baseURL,
 		ctx,
 		resty}

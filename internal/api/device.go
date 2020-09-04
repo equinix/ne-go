@@ -120,3 +120,10 @@ type DeviceUpdateRequest struct {
 type DeviceAdditionalBandwidthUpdateRequest struct {
 	AdditionalBandwidth int `json:"additionalBandwidth"`
 }
+
+//DevicesResponse describes response for a get device list request
+type DevicesResponse struct {
+	TotalCount int      `json:"totalCount,omitempty"`
+	PageSize   int      `json:"pageSize,omitempty"`
+	Content    []Device `json:"content,omitempty"`
+}

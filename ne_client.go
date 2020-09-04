@@ -39,6 +39,7 @@ type Client interface {
 	CreateDevice(device Device) (string, error)
 	CreateRedundantDevice(primary Device, secondary Device) (string, string, error)
 	GetDevice(uuid string) (*Device, error)
+	GetDevices(statuses []string) ([]Device, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
 	GetDeviceACLs(uuid string) (*DeviceACLs, error)
