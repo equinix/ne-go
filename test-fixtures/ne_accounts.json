@@ -1,0 +1,23 @@
+{
+    "accountCreateUrl": null,
+    "accounts": [
+        {
+            "accountName": "Account1",
+            "accountNumber": "200481",
+            "accountUcmId": "0A62209D-2DBE-48f5-B862-5F497654A789",
+            "accountStatus": "Active"
+        },
+        {
+            "accountName": "Account2",
+            "accountStatus": "STAGED",
+            "referenceId": "730524"
+        },
+        {
+            "accountName": "Account3",
+            "accountStatus": "PROCESSING",
+            "referenceId": "215948"
+        }
+    ],
+    "errorMessage": null,
+    "errorCode": null
+}

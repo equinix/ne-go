@@ -36,6 +36,8 @@ const (
 
 //Client interface describes operations provided by Network Edge client library
 type Client interface {
+	GetAccounts(metroCode string) ([]Account, error)
+
 	CreateDevice(device Device) (string, error)
 	CreateRedundantDevice(primary Device, secondary Device) (string, string, error)
 	GetDevice(uuid string) (*Device, error)
@@ -113,6 +115,14 @@ func (e UpdateError) Error() string {
 		str = fmt.Sprintf("%s [%s]", str, err.Error())
 	}
 	return str
+}
+
+//Account describes Network Edge customer account details
+type Account struct {
+	Name   string
+	Number string
+	Status string
+	UCMID  string
 }
 
 //Device describes Network Edge device
