@@ -13,6 +13,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	baseURL = "http://localhost:8888"
+)
+
 func TestClientImplementation(t *testing.T) {
 	//given
 	cli := NewClient(context.Background(), "http://localhost:8888", &http.Client{})

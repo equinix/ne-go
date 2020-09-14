@@ -49,11 +49,6 @@ type Client interface {
 	GetSSHUser(uuid string) (*SSHUser, error)
 	NewSSHUserUpdateRequest(uuid string) SSHUserUpdateRequest
 	DeleteSSHUser(uuid string) error
-
-	GetL2Connection(uuid string) (*L2Connection, error)
-	CreateL2Connection(conn L2Connection) (*L2Connection, error)
-	CreateL2RedundantConnection(priConn L2Connection, secConn L2Connection) (*L2Connection, error)
-	DeleteL2Connection(uuid string) error
 }
 
 //DeviceUpdateRequest describes composite request to update given Network Edge device
@@ -179,27 +174,4 @@ type SSHUser struct {
 	Username    string
 	Password    string
 	DeviceUUIDs []string
-}
-
-//L2Connection describes layer 2 connection from a Network Edge device
-type L2Connection struct {
-	UUID                     string
-	AuthorizationKey         string
-	Name                     string
-	NamedTag                 string
-	Notifications            []string
-	ProfileUUID              string
-	PurchaseOrderNumber      string
-	RedundantUUID            string
-	SellerRegion             string
-	SellerMetroCode          string
-	SellerHostedConnectionID string
-	Speed                    int
-	SpeedUnit                string
-	Status                   string
-	VirtualDeviceUUID        string
-	VlanSTag                 int
-	ZSidePortUUID            string
-	ZSideVlanSTag            int
-	ZSideVlanCTag            int
 }
