@@ -37,6 +37,7 @@ const (
 //Client interface describes operations provided by Network Edge client library
 type Client interface {
 	GetAccounts(metroCode string) ([]Account, error)
+	GetDeviceTypes() ([]DeviceType, error)
 
 	CreateDevice(device Device) (string, error)
 	CreateRedundantDevice(primary Device, secondary Device) (string, string, error)
@@ -176,6 +177,16 @@ type DeviceInterface struct {
 type DeviceACLs struct {
 	ACLs   []string
 	Status string
+}
+
+//DeviceType describes Network Edge device type
+type DeviceType struct {
+	Name        string
+	Code        string
+	Description string
+	Vendor      string
+	Category    string
+	MetroCodes  []string
 }
 
 //SSHUser describes Network Edge SSH user

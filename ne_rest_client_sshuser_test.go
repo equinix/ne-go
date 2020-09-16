@@ -35,28 +35,21 @@ func TestSSHUserGet(t *testing.T) {
 
 func TestSSHUsersGet(t *testing.T) {
 	//Given
-	var respBodyOne, respBodyTwo api.SSHUsersResponse
-	if err := readJSONData("./test-fixtures/ne_sshusers_get_p0.json", &respBodyOne); err != nil {
+	var respBody api.SSHUsersResponse
+	if err := readJSONData("./test-fixtures/ne_sshusers_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	if err := readJSONData("./test-fixtures/ne_sshusers_get_p1.json", &respBodyTwo); err != nil {
-		assert.Failf(t, "cannot read test response due to %s", err.Error())
-	}
-	pageSize := respBodyOne.PageSize
+	pageSize := 100
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user?pageSize=%d&verbose=true", baseURL, pageSize),
 		func(r *http.Request) (*http.Response, error) {
-			resp, _ := httpmock.NewJsonResponse(200, respBodyOne)
+			resp, _ := httpmock.NewJsonResponse(200, respBody)
 			return resp, nil
 		},
 	)
-	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user?pageNumber=1&pageSize=%d&verbose=true", baseURL, pageSize),
-		func(r *http.Request) (*http.Response, error) {
-			resp, _ := httpmock.NewJsonResponse(200, respBodyTwo)
-			return resp, nil
-		},
-	)
+	defer httpmock.DeactivateAndReset()
+
 	//When
 	c := NewClient(context.Background(), baseURL, testHc)
 	c.PageSize = pageSize
@@ -65,14 +58,17 @@ func TestSSHUsersGet(t *testing.T) {
 	//Then
 	assert.Nil(t, err, "Client should not return an error")
 	assert.NotNil(t, users, "Client should return a response")
-	assert.Equal(t, respBodyOne.TotalCount, len(users))
+	assert.Equal(t, respBody.TotalCount, len(users))
+	for i := range users {
+		verifyUser(t, users[i], respBody.List[i])
+	}
 }
 
 func TestSSHUserCreate(t *testing.T) {
 	//given
 	resp := api.SSHUserRequestResponse{}
 	if err := readJSONData("./test-fixtures/ne_sshuser_create_resp.json", &resp); err != nil {
-		assert.Failf(t, "Cannont read test response due to %s", err.Error())
+		assert.Failf(t, "Cannot read test response due to %s", err.Error())
 	}
 	baseURL := "http://localhost:8888"
 	user := SSHUser{

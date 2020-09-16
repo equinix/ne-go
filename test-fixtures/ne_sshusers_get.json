@@ -1,7 +1,7 @@
 {
     "totalCount": 3,
     "pageNumber": 0,
-    "pageSize": 2,
+    "pageSize": 100,
     "list": [
         {
             "uuid": "a2227c80-8227-4f77-9df0-f69e4379aec0",
@@ -22,6 +22,18 @@
             "username": "kekEkx",
             "deviceUuids": [
                 "dd63e20d-5baa-4f9a-9b89-52d255c0854f"
+            ],
+            "metroStatusMap": {
+                "DC": {
+                    "status": "ACTIVE"
+                }
+            }
+        },
+        {
+            "uuid": "b8b12b06-a57a-45bf-a399-bf787df5fec1",
+            "username": "DIGXkg",
+            "deviceUuids": [
+                "8eec22fd-228d-43af-879a-dffe04185357"
             ],
             "metroStatusMap": {
                 "DC": {

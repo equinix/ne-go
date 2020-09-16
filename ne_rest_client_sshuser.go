@@ -3,7 +3,6 @@ package ne
 import (
 	"fmt"
 	"net/url"
-	"strconv"
 
 	"github.com/equinix/ne-go/internal/api"
 	"github.com/go-resty/resty/v2"
@@ -41,36 +40,21 @@ func (c RestClient) CreateSSHUser(username string, password string, device strin
 //GetSSHUsers retrieves list of all SSH users (with details)
 func (c RestClient) GetSSHUsers() ([]SSHUser, error) {
 	url := fmt.Sprintf("%s/ne/v1/services/ssh-user", c.baseURL)
-	respBody := api.SSHUsersResponse{}
-	req := c.R().SetResult(&respBody)
-	req.SetQueryParam("pageSize", strconv.Itoa(c.PageSize))
-	req.SetQueryParam("verbose", "true")
-	if err := c.execute(req, resty.MethodGet, url); err != nil {
+	content, err := c.GetPaginated(url, &api.SSHUsersResponse{},
+		DefaultPagingConfig().
+			SetContentFieldName("List").
+			SetSizeParamName("pageSize").
+			SetPageParamName("pageNumber").
+			SetFirstPageNumber(0).
+			SetAdditionalParams(map[string]string{"verbose": "true"}))
+	if err != nil {
 		return nil, err
 	}
-	content := make([]api.SSHUser, 0, respBody.TotalCount)
-	content = append(content, respBody.List...)
-
-	recordsAsked := c.PageSize
-	isLast := false
-	if recordsAsked >= respBody.TotalCount {
-		isLast = true
+	transformed := make([]SSHUser, len(content))
+	for i := range content {
+		transformed[i] = *mapSSHUserAPIToDomain(content[i].(api.SSHUser))
 	}
-	for pageNum := 1; !isLast; pageNum++ {
-		req := c.R().SetResult(&respBody).
-			SetQueryParam("pageSize", strconv.Itoa(c.PageSize)).
-			SetQueryParam("verbose", "true").
-			SetQueryParam("pageNumber", strconv.Itoa(pageNum))
-		if err := c.execute(req, resty.MethodGet, url); err != nil {
-			return nil, err
-		}
-		content = append(content, respBody.List...)
-		recordsAsked += c.PageSize
-		if recordsAsked >= respBody.TotalCount {
-			isLast = true
-		}
-	}
-	return mapSSHUsersAPIToDomain(content), nil
+	return transformed, nil
 }
 
 //GetSSHUser fetches details of a SSH user with a given UUID
@@ -186,14 +170,6 @@ func mapSSHUserAPIToDomain(apiUser api.SSHUser) *SSHUser {
 		UUID:        apiUser.UUID,
 		Username:    apiUser.Username,
 		DeviceUUIDs: apiUser.DeviceUUIDs}
-}
-
-func mapSSHUsersAPIToDomain(apiUsers []api.SSHUser) []SSHUser {
-	transformed := make([]SSHUser, len(apiUsers))
-	for i := range apiUsers {
-		transformed[i] = *mapSSHUserAPIToDomain(apiUsers[i])
-	}
-	return transformed
 }
 
 func diffStringSlices(a, b []string) (extraA, extraB []string) {
