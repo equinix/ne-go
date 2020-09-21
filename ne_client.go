@@ -38,6 +38,7 @@ const (
 type Client interface {
 	GetAccounts(metroCode string) ([]Account, error)
 	GetDeviceTypes() ([]DeviceType, error)
+	GetDeviceSoftwareVersions(deviceTypeCode string) ([]DeviceSoftwareVersion, error)
 
 	CreateDevice(device Device) (string, error)
 	CreateRedundantDevice(primary Device, secondary Device) (string, string, error)
@@ -187,6 +188,17 @@ type DeviceType struct {
 	Vendor      string
 	Category    string
 	MetroCodes  []string
+}
+
+//DeviceSoftwareVersion describes available software packages and versions for a Network Edge device
+type DeviceSoftwareVersion struct {
+	Version          string
+	ImageName        string
+	Date             string
+	Status           string
+	IsStable         bool
+	ReleaseNotesLink string
+	PackageCodes     []string
 }
 
 //SSHUser describes Network Edge SSH user

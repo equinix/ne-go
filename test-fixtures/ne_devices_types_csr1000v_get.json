@@ -1,0 +1,1590 @@
+{
+    "totalCount": 1,
+    "pageNumber": 1,
+    "pageSize": 100,
+    "content": [
+        {
+            "deviceTypeCode": "CSR1000V",
+            "name": "CSR 1000V",
+            "description": "The [Cisco CSR 1000v Router Series|https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html] serves as a secure single-tenant router in a multi-tenant, shared-resource public cloud environment. It provides end-to-end managed connectivity, enabling the user to construct a secure network connection and seamlessly extend it to public and virtual private clouds. Deploy a complete, hypervisor-isolated, multiservice secure instance for each tenant. Secure features include IPsec VPNs and built-in zone-based firewalls, among others.",
+            "vendor": "Cisco",
+            "category": "ROUTER",
+            "maxInterfaceCount": 24,
+            "defaultInterfaceCount": 10,
+            "availableMetros": [
+                {
+                    "metroCode": "DC",
+                    "metroDescription": "Ashburn",
+                    "region": "AMER"
+                },
+                {
+                    "metroCode": "SY",
+                    "metroDescription": "Sydney",
+                    "region": "APAC"
+                }
+            ],
+            "softwarePackages": [
+                {
+                    "packageCode": "APPX",
+                    "name": "AppX",
+                    "versionDetails": [
+                        {
+                            "version": "16.09.02",
+                            "imageName": "csr-16.09.02",
+                            "versionDate": "2019-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.03",
+                                "16.09.05"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        },
+                        {
+                            "version": "16.09.03",
+                            "imageName": "csr-16.09.03",
+                            "versionDate": "2019-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.02",
+                                "16.09.05"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        },
+                        {
+                            "version": "16.09.05",
+                            "imageName": "csr-16.09.05",
+                            "versionDate": "2020-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.02",
+                                "16.09.03"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        }
+                    ]
+                },
+                {
+                    "packageCode": "AX",
+                    "name": "AX",
+                    "versionDetails": [
+                        {
+                            "version": "16.09.02",
+                            "imageName": "csr-16.09.02",
+                            "versionDate": "2019-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.03",
+                                "16.09.05"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        },
+                        {
+                            "version": "16.09.03",
+                            "imageName": "csr-16.09.03",
+                            "versionDate": "2020-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.02",
+                                "16.09.05"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        },
+                        {
+                            "version": "16.09.05",
+                            "imageName": "csr-16.09.05",
+                            "versionDate": "2020-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.02",
+                                "16.09.03"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        }
+                    ]
+                },
+                {
+                    "packageCode": "IPBASE",
+                    "name": "IP Base",
+                    "versionDetails": [
+                        {
+                            "version": "16.09.02",
+                            "imageName": "csr-16.09.02",
+                            "versionDate": "2019-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.03",
+                                "16.09.05"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        },
+                        {
+                            "version": "16.09.03",
+                            "imageName": "csr-16.09.03",
+                            "versionDate": "2020-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.02",
+                                "16.09.05"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        },
+                        {
+                            "version": "16.09.05",
+                            "imageName": "csr-16.09.05",
+                            "versionDate": "2020-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.02",
+                                "16.09.03"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        }
+                    ]
+                },
+                {
+                    "packageCode": "SEC",
+                    "name": "Security",
+                    "versionDetails": [
+                        {
+                            "version": "16.09.02",
+                            "imageName": "csr-16.09.02",
+                            "versionDate": "2019-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.03",
+                                "16.09.05"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        },
+                        {
+                            "version": "16.09.03",
+                            "imageName": "csr-16.09.03",
+                            "versionDate": "2020-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.02",
+                                "16.09.05"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        },
+                        {
+                            "version": "16.09.05",
+                            "imageName": "csr-16.09.05",
+                            "versionDate": "2020-01-01",
+                            "status": "ACTIVE",
+                            "stableVersion": true,
+                            "allowedUpgradableVersions": [
+                                "16.09.02",
+                                "16.09.03"
+                            ],
+                            "upgradeAllowed": false,
+                            "releaseNotesLink": "https://www.cisco.com/c/en/us/products/routers/cloud-services-router-1000v-series/index.html"
+                        }
+                    ]
+                }
+            ],
+            "deviceManagementTypes": {
+                "EQUINIX-CONFIGURED": {
+                    "type": "EQUINIX-CONFIGURED",
+                    "licenseOptions": {
+                        "SUB": {
+                            "type": "Sub",
+                            "name": "Subscription",
+                            "cores": [
+                                {
+                                    "core": 2,
+                                    "memory": 4,
+                                    "unit": "GB",
+                                    "flavor": "small",
+                                    "packageCodes": [
+                                        {
+                                            "packageCode": "APPX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "AX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "IPBASE",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "SEC",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        }
+                                    ],
+                                    "supported": true
+                                },
+                                {
+                                    "core": 4,
+                                    "memory": 4,
+                                    "unit": "GB",
+                                    "flavor": "medium",
+                                    "packageCodes": [
+                                        {
+                                            "packageCode": "APPX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "AX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "IPBASE",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "SEC",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        }
+                                    ],
+                                    "supported": true
+                                },
+                                {
+                                    "core": 6,
+                                    "memory": 4,
+                                    "unit": "GB",
+                                    "flavor": "large",
+                                    "packageCodes": [
+                                        {
+                                            "packageCode": "APPX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "AX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "IPBASE",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "SEC",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        }
+                                    ],
+                                    "supported": true
+                                }
+                            ],
+                            "supported": true
+                        },
+                        "BYOL": {
+                            "type": "BYOL",
+                            "name": "Bring Your Own License",
+                            "cores": [
+                                {
+                                    "core": 2,
+                                    "memory": 4,
+                                    "unit": "GB",
+                                    "flavor": "small",
+                                    "packageCodes": [
+                                        {
+                                            "packageCode": "APPX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "AX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "IPBASE",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "SEC",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        }
+                                    ],
+                                    "supported": true
+                                },
+                                {
+                                    "core": 4,
+                                    "memory": 4,
+                                    "unit": "GB",
+                                    "flavor": "medium",
+                                    "packageCodes": [
+                                        {
+                                            "packageCode": "APPX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "AX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "IPBASE",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "SEC",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        }
+                                    ],
+                                    "supported": true
+                                },
+                                {
+                                    "core": 6,
+                                    "memory": 4,
+                                    "unit": "GB",
+                                    "flavor": "large",
+                                    "packageCodes": [
+                                        {
+                                            "packageCode": "APPX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "AX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "IPBASE",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "SEC",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        }
+                                    ],
+                                    "supported": true
+                                }
+                            ],
+                            "supported": true
+                        }
+                    },
+                    "supportedServices": [
+                        {
+                            "name": "CLOUD_PROFILE",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "SSH",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "ACL",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "VPN",
+                            "required": false,
+                            "packageCodes": [
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "INTERFACE_OVERLAY",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "Additional Bandwidth",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "BGP",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "Console Access",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "Upgrade Device Version",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        }
+                    ],
+                    "supported": true
+                },
+                "SELF-CONFIGURED": {
+                    "type": "SELF-CONFIGURED",
+                    "licenseOptions": {
+                        "SUB": {
+                            "type": "Sub",
+                            "name": "Subscription",
+                            "cores": [],
+                            "supported": false
+                        },
+                        "BYOL": {
+                            "type": "BYOL",
+                            "name": "Bring Your Own License",
+                            "cores": [
+                                {
+                                    "core": 2,
+                                    "memory": 4,
+                                    "unit": "GB",
+                                    "flavor": "small",
+                                    "packageCodes": [
+                                        {
+                                            "packageCode": "APPX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "AX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "IPBASE",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "SEC",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        }
+                                    ],
+                                    "supported": true
+                                },
+                                {
+                                    "core": 4,
+                                    "memory": 4,
+                                    "unit": "GB",
+                                    "flavor": "medium",
+                                    "packageCodes": [
+                                        {
+                                            "packageCode": "APPX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "AX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "IPBASE",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "SEC",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        }
+                                    ],
+                                    "supported": true
+                                },
+                                {
+                                    "core": 6,
+                                    "memory": 4,
+                                    "unit": "GB",
+                                    "flavor": "large",
+                                    "packageCodes": [
+                                        {
+                                            "packageCode": "APPX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "AX",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "IPBASE",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        },
+                                        {
+                                            "packageCode": "SEC",
+                                            "throughputs": [
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "500",
+                                                    "throughputUnit": "Mbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "1",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "2.5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": true,
+                                                    "throughput": "5",
+                                                    "throughputUnit": "Gbps"
+                                                },
+                                                {
+                                                    "supported": false,
+                                                    "throughput": "10",
+                                                    "throughputUnit": "Gbps"
+                                                }
+                                            ],
+                                            "supported": true
+                                        }
+                                    ],
+                                    "supported": true
+                                }
+                            ],
+                            "supported": true
+                        }
+                    },
+                    "supportedServices": [
+                        {
+                            "name": "SSH",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "ACL",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "Additional Bandwidth",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        },
+                        {
+                            "name": "Console Access",
+                            "required": false,
+                            "packageCodes": [
+                                "IPBASE",
+                                "SEC",
+                                "AX",
+                                "APPX"
+                            ]
+                        }
+                    ],
+                    "defaultAcls": {
+                        "dnsServers": [
+                            "8.8.8.8",
+                            "8.8.4.4"
+                        ],
+                        "ntpServers": [
+                            "216.239.35.0/28"
+                        ]
+                    },
+                    "supported": true
+                }
+            }
+        }
+    ]
+}
