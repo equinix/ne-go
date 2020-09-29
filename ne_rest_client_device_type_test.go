@@ -84,6 +84,40 @@ func TestGetDeviceSoftwareVersions(t *testing.T) {
 	}
 }
 
+func TestGetDevicePlatforms(t *testing.T) {
+	//Given
+	respBody := api.DeviceTypeResponse{}
+	if err := readJSONData("./test-fixtures/ne_devices_types_csr1000v_get.json", &respBody); err != nil {
+		assert.Failf(t, "cannot read test response due to %s", err.Error())
+	}
+	pageSize := respBody.PageSize
+	deviceTypeCode := "CSR1000V"
+	testHc := &http.Client{}
+	httpmock.ActivateNonDefault(testHc)
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device/type?deviceTypeCode=%s&size=%d", baseURL, deviceTypeCode, pageSize),
+		func(r *http.Request) (*http.Response, error) {
+			resp, _ := httpmock.NewJsonResponse(200, respBody)
+			return resp, nil
+		},
+	)
+	defer httpmock.DeactivateAndReset()
+
+	//When
+	c := NewClient(context.Background(), baseURL, testHc)
+	c.PageSize = pageSize
+	platforms, err := c.GetDevicePlatforms(deviceTypeCode)
+
+	//Then
+	assert.Nil(t, err, "Client should not return an error")
+	assert.NotNil(t, platforms, "Client should return a response")
+	assert.Equal(t, 3, len(platforms), "Number of platforms matches")
+	for _, version := range platforms {
+		assert.ElementsMatch(t, version.PackageCodes, []string{"APPX", "AX", "IPBASE", "SEC"}, "PackageCodes match")
+		assert.ElementsMatch(t, version.ManagementTypes, []string{"EQUINIX-CONFIGURED", "SELF-CONFIGURED"}, "ManagementTypes match")
+		assert.ElementsMatch(t, version.LicenseOptions, []string{"BYOL", "Sub"}, "LicenseOptions match")
+	}
+}
+
 func verifyDeviceType(t *testing.T, apiDeviceType api.DeviceType, deviceType DeviceType) {
 	assert.Equal(t, apiDeviceType.Name, deviceType.Name, "Name matches")
 	assert.Equal(t, apiDeviceType.Description, deviceType.Description, "Description matches")

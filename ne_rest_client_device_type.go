@@ -24,25 +24,43 @@ func (c RestClient) GetDeviceTypes() ([]DeviceType, error) {
 
 //GetDeviceSoftwareVersions retrieves list of available software versions for a given device type
 func (c RestClient) GetDeviceSoftwareVersions(deviceTypeCode string) ([]DeviceSoftwareVersion, error) {
-	reqURL := fmt.Sprintf("%s/ne/v1/device/type", c.baseURL)
-	content, err := c.GetPaginated(reqURL, &api.DeviceTypeResponse{},
-		DefaultPagingConfig().
-			SetAdditionalParams(map[string]string{"deviceTypeCode": url.QueryEscape(deviceTypeCode)}))
+	deviceType, err := c.getDeviceType(deviceTypeCode)
 	if err != nil {
 		return nil, err
 	}
-	if len(content) < 1 {
-		return nil, fmt.Errorf("device type query returned no results for given type code: %s", deviceTypeCode)
+	return mapDeviceTypeAPIToDeviceSoftwareVersions(*deviceType), nil
+}
+
+//GetDevicePlatforms retrieves list of available platform configurations for a given device type
+func (c RestClient) GetDevicePlatforms(deviceTypeCode string) ([]DevicePlatform, error) {
+	deviceType, err := c.getDeviceType(deviceTypeCode)
+	if err != nil {
+		return nil, err
 	}
-	if len(content) > 1 {
-		return nil, fmt.Errorf("device type query returned more than one result for a given type code: %s", deviceTypeCode)
-	}
-	return mapDeviceTypeAPIToDeviceSoftwareVersions(content[0].(api.DeviceType)), nil
+	return mapDeviceTypeAPIToDevicePlatforms(*deviceType), nil
 }
 
 //‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 // Unexported package methods
 //_______________________________________________________________________
+
+func (c RestClient) getDeviceType(typeCode string) (*api.DeviceType, error) {
+	reqURL := fmt.Sprintf("%s/ne/v1/device/type", c.baseURL)
+	content, err := c.GetPaginated(reqURL, &api.DeviceTypeResponse{},
+		DefaultPagingConfig().
+			SetAdditionalParams(map[string]string{"deviceTypeCode": url.QueryEscape(typeCode)}))
+	if err != nil {
+		return nil, err
+	}
+	if len(content) < 1 {
+		return nil, fmt.Errorf("device type query returned no results for given type code: %s", typeCode)
+	}
+	if len(content) > 1 {
+		return nil, fmt.Errorf("device type query returned more than one result for a given type code: %s", typeCode)
+	}
+	devType := content[0].(api.DeviceType)
+	return &devType, nil
+}
 
 func mapDeviceTypeAPIToDomain(apiDevice api.DeviceType) DeviceType {
 	return DeviceType{
@@ -92,4 +110,78 @@ func mapDeviceSoftwareVersionAPIToDomain(apiVer api.DeviceTypeVersionDetails) *D
 		ReleaseNotesLink: apiVer.ReleaseNotesLink,
 		PackageCodes:     []string{},
 	}
+}
+
+func mapDeviceTypeAPIToDevicePlatforms(apiType api.DeviceType) []DevicePlatform {
+	mgmtPlatforms := flattenMgmtType(apiType.DeviceManagementTypes.EquinixConfigured)
+	mgmtPlatforms = append(mgmtPlatforms, flattenMgmtType(apiType.DeviceManagementTypes.SelfConfigured)...)
+	pMap := make(map[string]*DevicePlatform)
+	for i := range mgmtPlatforms {
+		platform, ok := pMap[mgmtPlatforms[i].Flavor]
+		if !ok {
+			platform = &mgmtPlatforms[i]
+			pMap[mgmtPlatforms[i].Flavor] = platform
+		} else {
+			platform.ManagementTypes = append(platform.ManagementTypes, mgmtPlatforms[i].ManagementTypes...)
+		}
+	}
+	return devPlatfromMapToSlice(pMap)
+}
+
+func flattenMgmtType(mgmtType api.DeviceManagementType) []DevicePlatform {
+	if !mgmtType.IsSupported {
+		return []DevicePlatform{}
+	}
+	licPlatforms := mapLicenseOption(mgmtType.LicenseOptions.BYOL)
+	licPlatforms = append(licPlatforms, mapLicenseOption(mgmtType.LicenseOptions.Sub)...)
+	pMap := make(map[string]*DevicePlatform)
+	for i := range licPlatforms {
+		platform, ok := pMap[licPlatforms[i].Flavor]
+		if !ok {
+			platform = &licPlatforms[i]
+			platform.ManagementTypes = append(platform.ManagementTypes, mgmtType.Type)
+			pMap[licPlatforms[i].Flavor] = platform
+		} else {
+			platform.LicenseOptions = append(platform.LicenseOptions, licPlatforms[i].LicenseOptions...)
+		}
+	}
+	return devPlatfromMapToSlice(pMap)
+}
+
+func mapLicenseOption(licOption api.DeviceLicenseOption) []DevicePlatform {
+	if !licOption.IsSupported {
+		return []DevicePlatform{}
+	}
+	transformed := make([]DevicePlatform, len(licOption.Cores))
+	for i := range licOption.Cores {
+		transformed[i] = DevicePlatform{
+			Flavor:          licOption.Cores[i].Flavor,
+			CoreCount:       licOption.Cores[i].Core,
+			Memory:          licOption.Cores[i].Memory,
+			MemoryUnit:      licOption.Cores[i].Unit,
+			PackageCodes:    mapPackageCodesAPIToDomain(licOption.Cores[i].PackageCodes),
+			ManagementTypes: []string{},
+			LicenseOptions:  []string{licOption.Type},
+		}
+	}
+	return transformed
+}
+
+func mapPackageCodesAPIToDomain(apiCodes []api.DevicePackageCode) []string {
+	transformed := make([]string, 0, len(apiCodes))
+	for _, apiCode := range apiCodes {
+		if !apiCode.IsSupported {
+			continue
+		}
+		transformed = append(transformed, apiCode.PackageCode)
+	}
+	return transformed
+}
+
+func devPlatfromMapToSlice(devPlatformMap map[string]*DevicePlatform) []DevicePlatform {
+	transformed := make([]DevicePlatform, 0, len(devPlatformMap))
+	for _, v := range devPlatformMap {
+		transformed = append(transformed, *v)
+	}
+	return transformed
 }

@@ -38,6 +38,7 @@ const (
 type Client interface {
 	GetAccounts(metroCode string) ([]Account, error)
 	GetDeviceTypes() ([]DeviceType, error)
+	GetDevicePlatforms(deviceTypeCode string) ([]DevicePlatform, error)
 	GetDeviceSoftwareVersions(deviceTypeCode string) ([]DeviceSoftwareVersion, error)
 
 	CreateDevice(device Device) (string, error)
@@ -188,6 +189,18 @@ type DeviceType struct {
 	Vendor      string
 	Category    string
 	MetroCodes  []string
+}
+
+//DevicePlatform describes Network Edge platform configurations
+//available for a given device type
+type DevicePlatform struct {
+	Flavor          string
+	CoreCount       int
+	Memory          int
+	MemoryUnit      string
+	PackageCodes    []string
+	ManagementTypes []string
+	LicenseOptions  []string
 }
 
 //DeviceSoftwareVersion describes available software packages and versions for a Network Edge device
