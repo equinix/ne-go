@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/equinix/ne-go/internal/api"
-	"github.com/go-resty/resty/v2"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,52 +20,6 @@ func TestClientImplementation(t *testing.T) {
 	cli := NewClient(context.Background(), "http://localhost:8888", &http.Client{})
 	//then
 	assert.Implements(t, (*Client)(nil), cli, "Rest client implements Client interface")
-}
-
-func TestSingleError(t *testing.T) {
-	//given
-	resp := api.ErrorResponse{}
-	if err := readJSONData("./test-fixtures/ne_error_resp.json", &resp); err != nil {
-		assert.Fail(t, "Cannot read test response")
-	}
-	testURL := "http://localhost:8888"
-	testHc := setupMockedClient("GET", testURL, 500, resp)
-	defer httpmock.DeactivateAndReset()
-
-	//when
-	cli := NewClient(context.Background(), testURL, testHc)
-	err := cli.execute(cli.R(), resty.MethodGet, testURL)
-
-	//then
-	assert.NotNil(t, err, "Error should be returned")
-	assert.IsType(t, RestError{}, err, "Error should be RestError type")
-	restErr := err.(RestError)
-	assert.Equal(t, 500, restErr.HTTPCode, "RestError should have valid httpCode")
-	assert.Equal(t, 1, len(restErr.Errors), "RestError should have one domain error")
-	neError := restErr.Errors[0]
-	assert.Equal(t, resp.ErrorCode, neError.ErrorCode, "RestError domain error code matches")
-}
-
-func TestMultipleError(t *testing.T) {
-	//given
-	resp := api.ErrorResponses{}
-	if err := readJSONData("./test-fixtures/ne_errors_resp.json", &resp); err != nil {
-		assert.Fail(t, "Cannot read test response")
-	}
-	testURL := "http://localhost:8888"
-	testHc := setupMockedClient("GET", testURL, 500, resp)
-	defer httpmock.DeactivateAndReset()
-
-	//when
-	cli := NewClient(context.Background(), testURL, testHc)
-	err := cli.execute(cli.R(), resty.MethodGet, testURL)
-
-	//then
-	assert.NotNil(t, err, "Error should be returned")
-	assert.IsType(t, RestError{}, err, "Error should be RestError type")
-	restErr := err.(RestError)
-	assert.Equal(t, 500, restErr.HTTPCode, "RestError should have valid httpCode")
-	assert.Equal(t, len(resp), len(restErr.Errors), "RestError should have valid number of domain errors")
 }
 
 func readJSONData(filePath string, target interface{}) error {

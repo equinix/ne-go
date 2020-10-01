@@ -5,6 +5,7 @@ import (
 	"net/url"
 
 	"github.com/equinix/ne-go/internal/api"
+	"github.com/equinix/rest-go"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -23,7 +24,7 @@ type restSSHUserUpdateRequest struct {
 
 //CreateSSHUser creates new Network Edge SSH user with a given parameters and returns its UUID upon successful creation
 func (c RestClient) CreateSSHUser(username string, password string, device string) (string, error) {
-	u := c.baseURL + "/ne/v1/services/ssh-user"
+	path := "/ne/v1/services/ssh-user"
 	reqBody := api.SSHUserRequest{
 		Username:   username,
 		Password:   password,
@@ -31,7 +32,7 @@ func (c RestClient) CreateSSHUser(username string, password string, device strin
 	}
 	respBody := api.SSHUserRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.execute(req, resty.MethodPost, u); err != nil {
+	if err := c.Execute(req, resty.MethodPost, path); err != nil {
 		return "", err
 	}
 	return respBody.UUID, nil
@@ -39,9 +40,9 @@ func (c RestClient) CreateSSHUser(username string, password string, device strin
 
 //GetSSHUsers retrieves list of all SSH users (with details)
 func (c RestClient) GetSSHUsers() ([]SSHUser, error) {
-	url := fmt.Sprintf("%s/ne/v1/services/ssh-user", c.baseURL)
-	content, err := c.GetPaginated(url, &api.SSHUsersResponse{},
-		DefaultPagingConfig().
+	path := "/ne/v1/services/ssh-user"
+	content, err := c.GetPaginated(path, &api.SSHUsersResponse{},
+		rest.DefaultPagingConfig().
 			SetContentFieldName("List").
 			SetSizeParamName("pageSize").
 			SetPageParamName("pageNumber").
@@ -59,10 +60,10 @@ func (c RestClient) GetSSHUsers() ([]SSHUser, error) {
 
 //GetSSHUser fetches details of a SSH user with a given UUID
 func (c RestClient) GetSSHUser(uuid string) (*SSHUser, error) {
-	url := c.baseURL + "/ne/v1/services/ssh-user/" + url.PathEscape(uuid)
+	path := "/ne/v1/services/ssh-user/" + url.PathEscape(uuid)
 	respBody := api.SSHUser{}
 	req := c.R().SetResult(&respBody)
-	if err := c.execute(req, resty.MethodGet, url); err != nil {
+	if err := c.Execute(req, resty.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapSSHUserAPIToDomain(respBody), nil
@@ -133,19 +134,18 @@ func (req *restSSHUserUpdateRequest) Execute() error {
 //_______________________________________________________________________
 
 func (c RestClient) changeUserPassword(userID string, newPassword string) error {
-	url := fmt.Sprintf("%s/ne/v1/services/ssh-user/%s",
-		c.baseURL, url.PathEscape(userID))
+	path := "/ne/v1/services/ssh-user/" + url.PathEscape(userID)
 	reqBody := api.SSHUserUpdateRequest{Password: newPassword}
 	req := c.R().SetBody(&reqBody)
-	if err := c.execute(req, resty.MethodPut, url); err != nil {
+	if err := c.Execute(req, resty.MethodPut, path); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (c RestClient) changeDeviceAssociation(changeType string, userID string, deviceID string) error {
-	url := fmt.Sprintf("%s/ne/v1/services/ssh-user/%s/association?deviceUuid=%s",
-		c.baseURL, url.PathEscape(userID), url.PathEscape(deviceID))
+	path := fmt.Sprintf("/ne/v1/services/ssh-user/%s/association?deviceUuid=%s",
+		url.PathEscape(userID), url.PathEscape(deviceID))
 	var method string
 	switch changeType {
 	case associateDevice:
@@ -159,7 +159,7 @@ func (c RestClient) changeDeviceAssociation(changeType string, userID string, de
 		//due to bug in NE API that requires content type and content len = 0 altough there is no content needed in any case
 		SetHeader("Content-Type", "application/json").
 		SetBody("{}")
-	if err := c.execute(req, method, url); err != nil {
+	if err := c.Execute(req, method, path); err != nil {
 		return err
 	}
 	return nil

@@ -1,12 +1,12 @@
 package ne
 
 import (
-	"fmt"
 	"net/url"
 	"strconv"
 	"strings"
 
 	"github.com/equinix/ne-go/internal/api"
+	"github.com/equinix/rest-go"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -30,12 +30,11 @@ type restDeviceUpdateRequest struct {
 
 //CreateDevice creates given Network Edge device and returns its UUID upon successful creation
 func (c RestClient) CreateDevice(device Device) (string, error) {
-	url := fmt.Sprintf("%s/ne/v1/device", c.baseURL)
+	path := "/ne/v1/device"
 	reqBody := createDeviceRequest(device)
 	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-
-	if err := c.execute(req, resty.MethodPost, url); err != nil {
+	if err := c.Execute(req, resty.MethodPost, path); err != nil {
 		return "", err
 	}
 	return respBody.UUID, nil
@@ -44,12 +43,11 @@ func (c RestClient) CreateDevice(device Device) (string, error) {
 //CreateRedundantDevice creates HA device setup from given primary and secondary devices and
 //returns their UUIDS upon successful creation
 func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (string, string, error) {
-	url := fmt.Sprintf("%s/ne/v1/device", c.baseURL)
+	path := "/ne/v1/device"
 	reqBody := createRedundantDeviceRequest(primary, secondary)
 	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-
-	if err := c.execute(req, resty.MethodPost, url); err != nil {
+	if err := c.Execute(req, resty.MethodPost, path); err != nil {
 		return "", "", err
 	}
 	return respBody.UUID, respBody.SecondaryUUID, nil
@@ -57,10 +55,10 @@ func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (str
 
 //GetDevice fetches details of a device with a given UUID
 func (c RestClient) GetDevice(uuid string) (*Device, error) {
-	url := fmt.Sprintf("%s/ne/v1/device/%s", c.baseURL, url.PathEscape(uuid))
+	path := "/ne/v1/device/" + url.PathEscape(uuid)
 	result := api.Device{}
 	request := c.R().SetResult(&result)
-	if err := c.execute(request, resty.MethodGet, url); err != nil {
+	if err := c.Execute(request, resty.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapDeviceAPIToDomain(result), nil
@@ -68,9 +66,9 @@ func (c RestClient) GetDevice(uuid string) (*Device, error) {
 
 //GetDevices retrieves list of devices (along with their details) with given list of statuses
 func (c RestClient) GetDevices(statuses []string) ([]Device, error) {
-	url := fmt.Sprintf("%s/ne/v1/device", c.baseURL)
-	content, err := c.GetPaginated(url, &api.DevicesResponse{},
-		DefaultPagingConfig().
+	path := "/ne/v1/device"
+	content, err := c.GetPaginated(path, &api.DevicesResponse{},
+		rest.DefaultPagingConfig().
 			SetAdditionalParams(map[string]string{"status": buildQueryParamValueString(statuses)}))
 	if err != nil {
 		return nil, err
@@ -92,9 +90,9 @@ func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 
 //DeleteDevice deletes device with a given UUID
 func (c RestClient) DeleteDevice(uuid string) error {
-	url := fmt.Sprintf("%s/ne/v1/device/%s", c.baseURL, url.PathEscape(uuid))
+	path := "/ne/v1/device/" + url.PathEscape(uuid)
 	req := c.R().SetQueryParam("deleteRedundantDevice", "true")
-	if err := c.execute(req, resty.MethodDelete, url); err != nil {
+	if err := c.Execute(req, resty.MethodDelete, path); err != nil {
 		return err
 	}
 	return nil
@@ -157,10 +155,10 @@ func (req *restDeviceUpdateRequest) Execute() error {
 //GetDeviceACLs fetches details of ACLs for a device with a given UUID.
 //In addition to list of ACL CIDRs, provisioning status is returned.
 func (c RestClient) GetDeviceACLs(uuid string) (*DeviceACLs, error) {
-	url := fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", c.baseURL, url.PathEscape(uuid))
+	path := "/ne/v1/device/" + url.PathEscape(uuid) + "/fqdn-acl"
 	result := api.DeviceFqdnACLResponse{}
 	req := c.R().SetResult(&result)
-	if err := c.execute(req, resty.MethodGet, url); err != nil {
+	if err := c.Execute(req, resty.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return &DeviceACLs{
@@ -300,20 +298,20 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 }
 
 func (c RestClient) replaceDeviceACLs(uuid string, acls []string) error {
-	url := fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", c.baseURL, url.PathEscape(uuid))
+	path := "/ne/v1/device/" + url.PathEscape(uuid) + "/fqdn-acl"
 	reqBody := mapDeviceACLsToFQDNACLs(acls)
 	req := c.R().SetBody(reqBody)
-	if err := c.execute(req, resty.MethodPut, url); err != nil {
+	if err := c.Execute(req, resty.MethodPut, path); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (c RestClient) replaceDeviceAdditionalBandwidth(uuid string, bandwidth int) error {
-	url := fmt.Sprintf("%s/ne/v1/device/additionalbandwidth/%s", c.baseURL, url.PathEscape(uuid))
+	path := "/ne/v1/device/additionalbandwidth/" + url.PathEscape(uuid)
 	reqBody := api.DeviceAdditionalBandwidthUpdateRequest{AdditionalBandwidth: bandwidth}
 	req := c.R().SetBody(reqBody)
-	if err := c.execute(req, resty.MethodPut, url); err != nil {
+	if err := c.Execute(req, resty.MethodPut, path); err != nil {
 		return err
 	}
 	return nil
@@ -335,9 +333,9 @@ func (c RestClient) replaceDeviceFields(uuid string, fields map[string]interface
 		okToSend = true
 	}
 	if okToSend {
-		url := fmt.Sprintf("%s/ne/v1/device/%s", c.baseURL, url.PathEscape(uuid))
+		path := "/ne/v1/device/" + uuid
 		req := c.R().SetBody(&reqBody)
-		if err := c.execute(req, resty.MethodPatch, url); err != nil {
+		if err := c.Execute(req, resty.MethodPatch, path); err != nil {
 			return err
 		}
 	}

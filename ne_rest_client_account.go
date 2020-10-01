@@ -1,7 +1,6 @@
 package ne
 
 import (
-	"fmt"
 	"net/url"
 
 	"github.com/equinix/ne-go/internal/api"
@@ -10,11 +9,11 @@ import (
 
 //GetAccounts retrieves accounts and their details for a given metro code using Network Edge API
 func (c RestClient) GetAccounts(metroCode string) ([]Account, error) {
-	url := fmt.Sprintf("%s/ne/v1/device/account/%s", c.baseURL, url.PathEscape(metroCode))
+	path := "/ne/v1/device/account/" + url.PathEscape(metroCode)
 	respBody := api.AccountResponse{}
 	req := c.R().SetResult(&respBody)
 
-	if err := c.execute(req, resty.MethodGet, url); err != nil {
+	if err := c.Execute(req, resty.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapAccountsAPIToDomain(respBody.Accounts), nil

@@ -5,13 +5,14 @@ import (
 	"net/url"
 
 	"github.com/equinix/ne-go/internal/api"
+	"github.com/equinix/rest-go"
 )
 
 //GetDeviceTypes retrieves list of devices types along with their details
 func (c RestClient) GetDeviceTypes() ([]DeviceType, error) {
-	url := fmt.Sprintf("%s/ne/v1/device/type", c.baseURL)
-	content, err := c.GetPaginated(url, &api.DeviceTypeResponse{},
-		DefaultPagingConfig())
+	path := "/ne/v1/device/type"
+	content, err := c.GetPaginated(path, &api.DeviceTypeResponse{},
+		rest.DefaultPagingConfig())
 	if err != nil {
 		return nil, err
 	}
@@ -45,9 +46,9 @@ func (c RestClient) GetDevicePlatforms(deviceTypeCode string) ([]DevicePlatform,
 //_______________________________________________________________________
 
 func (c RestClient) getDeviceType(typeCode string) (*api.DeviceType, error) {
-	reqURL := fmt.Sprintf("%s/ne/v1/device/type", c.baseURL)
-	content, err := c.GetPaginated(reqURL, &api.DeviceTypeResponse{},
-		DefaultPagingConfig().
+	path := "/ne/v1/device/type"
+	content, err := c.GetPaginated(path, &api.DeviceTypeResponse{},
+		rest.DefaultPagingConfig().
 			SetAdditionalParams(map[string]string{"deviceTypeCode": url.QueryEscape(typeCode)}))
 	if err != nil {
 		return nil, err
