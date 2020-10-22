@@ -18,7 +18,6 @@ func TestSSHUserGet(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_sshuser_get_resp.json", &resp); err != nil {
 		assert.Failf(t, "Cannot read test response due to %s", err.Error())
 	}
-	baseURL := "http://localhost:8888"
 	userID := "myTestUser"
 	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s", baseURL, userID), 200, resp)
 	defer httpmock.DeactivateAndReset()
@@ -70,7 +69,6 @@ func TestSSHUserCreate(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_sshuser_create_resp.json", &resp); err != nil {
 		assert.Failf(t, "Cannot read test response due to %s", err.Error())
 	}
-	baseURL := "http://localhost:8888"
 	user := SSHUser{
 		Username:    "myUser",
 		Password:    "myPassword",
@@ -102,7 +100,6 @@ func TestSSHUserCreate(t *testing.T) {
 
 func TestSSHUserUpdate(t *testing.T) {
 	//given
-	baseURL := "http://localhost:8888"
 	userID := "myTestUser"
 	newPass := "myNewPassword"
 	oldDevices := []string{"Dev1", "Dev2"}
@@ -146,7 +143,6 @@ func TestSSHUserUpdate(t *testing.T) {
 
 func TestSSHUserDelete(t *testing.T) {
 	//given
-	baseURL := "http://localhost:8888"
 	userID := "myTestUser"
 	userResp := api.SSHUser{
 		UUID:        userID,

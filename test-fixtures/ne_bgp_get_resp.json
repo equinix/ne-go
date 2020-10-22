@@ -1,0 +1,16 @@
+{
+    "uuid": "632459d6-27e0-406c-8e88-a64f198ac622",
+    "connectionUUID": "e8b2e48e-2eba-4412-bc0b-c88dadb48050",
+    "virtualDeviceUUID": "502267e5-ebd6-4487-b0d6-b35bf106cda8",
+    "localIpAddress": "10.0.0.1/30",
+    "localAsn": 10012,
+    "remoteAsn": 10013,
+    "remoteIpAddress": "10.0.0.2",
+    "authenticationKey": "pass123",
+    "createdBy": "eqxnfvuser1",
+    "createdByFullName": "eqxnfvuser1 eqxnfvuser1",
+    "createdDate": "2020-10-06T12:28:17.815Z",
+    "createdByEmail": "kkolla@equinix.com",
+    "provisioningStatus": "PROVISIONED",
+    "state": "Idle"
+}

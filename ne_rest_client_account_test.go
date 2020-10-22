@@ -16,7 +16,6 @@ func TestGetAccounts(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_accounts.json", &resp); err != nil {
 		assert.Fail(t, "Cannot read test response")
 	}
-	baseURL := "http://localhost:8888"
 	metro := "SV"
 	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/account/%s", baseURL, metro), 200, resp)
 	defer httpmock.DeactivateAndReset()

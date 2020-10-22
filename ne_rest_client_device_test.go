@@ -47,7 +47,6 @@ func TestCreateDevice(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
 		assert.Fail(t, "Cannot read test response")
 	}
-	baseURL := "http://localhost:8888"
 	device := testDevice
 	req := api.DeviceRequest{}
 	testHc := &http.Client{}
@@ -79,7 +78,6 @@ func TestCreateRedundantDevice(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
 		assert.Fail(t, "Cannot read test response")
 	}
-	baseURL := "http://localhost:8888"
 	req := api.DeviceRequest{}
 	primary := testDevice
 	secondary := Device{
@@ -124,7 +122,6 @@ func TestGetDevice(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_device_get_resp.json", &resp); err != nil {
 		assert.Fail(t, "Cannot read test response")
 	}
-	baseURL := "http://localhost:8888"
 	devID := "myDevice"
 	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/%s", baseURL, devID), 200, resp)
 	defer httpmock.DeactivateAndReset()
@@ -173,7 +170,6 @@ func TestGetDevices(t *testing.T) {
 
 func TestUpdateDeviceBasicFields(t *testing.T) {
 	//given
-	baseURL := "http://localhost:8888"
 	devID := "myDevice"
 	newName := "myNewName"
 	newNotifications := []string{"new@new.com", "new2@new.com"}
@@ -205,7 +201,6 @@ func TestUpdateDeviceBasicFields(t *testing.T) {
 
 func TestUpdateDeviceACL(t *testing.T) {
 	//given
-	baseURL := "http://localhost:8888"
 	devID := "myDevice"
 	newACLs := []string{"127.0.0.1/32", "192.168.0.0/24"}
 	testHc := &http.Client{}
@@ -232,7 +227,6 @@ func TestUpdateDeviceACL(t *testing.T) {
 
 func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
 	//given
-	baseURL := "http://localhost:8888"
 	devID := "myDevice"
 	newBandwidth := 1000
 	testHc := &http.Client{}
@@ -259,7 +253,6 @@ func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
 
 func TestDeleteDevice(t *testing.T) {
 	//given
-	baseURL := "http://localhost:8888"
 	devID := "myDevice"
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)

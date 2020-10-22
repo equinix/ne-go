@@ -17,7 +17,7 @@ const (
 
 func TestClientImplementation(t *testing.T) {
 	//given
-	cli := NewClient(context.Background(), "http://localhost:8888", &http.Client{})
+	cli := NewClient(context.Background(), baseURL, &http.Client{})
 	//then
 	assert.Implements(t, (*Client)(nil), cli, "Rest client implements Client interface")
 }

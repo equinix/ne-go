@@ -30,6 +30,27 @@ const (
 	//DeviceLicenseStateFailed license registration has failed
 	DeviceLicenseStateFailed = "REGISTRATION_FAILED"
 
+	//BGPStateIdle BGP peer state is idle
+	BGPStateIdle = "Idle"
+	//BGPStateConnect BGP peer state is connect
+	BGPStateConnect = "Connect"
+	//BGPStateActive BGP peer state is active
+	BGPStateActive = "Active"
+	//BGPStateOpenSent BGP peer state is OpenSent
+	BGPStateOpenSent = "OpenSent"
+	//BGPStateOpenConnect BGP peer state is OpenConfirm
+	BGPStateOpenConnect = "OpenConfirm"
+	//BGPStateEstablished BGP peer state is Established
+	BGPStateEstablished = "Established"
+	//BGPProvisioningStatusProvisioning BGP peering is provisioning
+	BGPProvisioningStatusProvisioning = "PROVISIONING"
+	//BGPProvisioningStatusPendingUpdate BGP peering is being updated
+	BGPProvisioningStatusPendingUpdate = "PENDING_UPDATE"
+	//BGPProvisioningStatusProvisioned BGP peering is provisioned
+	BGPProvisioningStatusProvisioned = "PROVISIONED"
+	//BGPProvisioningStatusFailed BGP peering failed
+	BGPProvisioningStatusFailed = "FAILED"
+
 	//ErrorCodeDeviceRemoved is used on attempt to remove device that is deprovisioning or already deprovisioned
 	ErrorCodeDeviceRemoved = "IC-NE-VD-030"
 )
@@ -54,6 +75,11 @@ type Client interface {
 	GetSSHUser(uuid string) (*SSHUser, error)
 	NewSSHUserUpdateRequest(uuid string) SSHUserUpdateRequest
 	DeleteSSHUser(uuid string) error
+
+	CreateBGPConfiguration(config BGPConfiguration) (string, error)
+	GetBGPConfiguration(uuid string) (*BGPConfiguration, error)
+	NewBGPConfigurationUpdateRequest(uuid string) BGPUpdateRequest
+	GetBGPConfigurationForConnection(uuid string) (*BGPConfiguration, error)
 }
 
 //DeviceUpdateRequest describes composite request to update given Network Edge device
@@ -70,6 +96,16 @@ type DeviceUpdateRequest interface {
 type SSHUserUpdateRequest interface {
 	WithNewPassword(password string) SSHUserUpdateRequest
 	WithDeviceChange(old []string, new []string) SSHUserUpdateRequest
+	Execute() error
+}
+
+//BGPUpdateRequest describes request to update given BGP configuration
+type BGPUpdateRequest interface {
+	WithLocalIPAddress(localIPAddress string) BGPUpdateRequest
+	WithLocalASN(localASN int) BGPUpdateRequest
+	WithRemoteASN(remoteASN int) BGPUpdateRequest
+	WithRemoteIPAddress(remoteIPAddress string) BGPUpdateRequest
+	WithAuthenticationKey(authenticationKey string) BGPUpdateRequest
 	Execute() error
 }
 
@@ -220,4 +256,18 @@ type SSHUser struct {
 	Username    string
 	Password    string
 	DeviceUUIDs []string
+}
+
+//BGPConfiguration describes Network Edge BGP configuration
+type BGPConfiguration struct {
+	UUID               string
+	ConnectionUUID     string
+	DeviceUUID         string
+	LocalIPAddress     string
+	LocalASN           int
+	RemoteIPAddress    string
+	RemoteASN          int
+	AuthenticationKey  string
+	State              string
+	ProvisioningStatus string
 }
