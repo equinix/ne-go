@@ -27,7 +27,7 @@ var testDevice = Device{
 	Throughput:          1,
 	ThroughputUnit:      "Gbps",
 	Name:                "PaloAltoSRmy",
-	ACLs:                []string{"192.168.1.1/32"},
+	ACLTemplateUUID:     "4792d9ab-b8aa-49cc-8fe2-b56ced6c9c2f",
 	AccountNumber:       "1777643",
 	OrderReference:      "orderRef",
 	PurchaseOrderNumber: "PO123456789",
@@ -87,7 +87,7 @@ func TestCreateRedundantDevice(t *testing.T) {
 		HostName:            "secondaryHostname",
 		AccountNumber:       "99999",
 		AdditionalBandwidth: 200,
-		ACLs:                []string{"2.2.2.2/32"},
+		ACLTemplateUUID:     "4972e8d2-417f-4821-91a8-f4a61a6dcdc3",
 		VendorConfiguration: map[string]string{
 			"serialNumber": "2222222",
 			"controller1":  "2.2.2.2",
@@ -199,14 +199,14 @@ func TestUpdateDeviceBasicFields(t *testing.T) {
 	assert.Equal(t, newTermLength, req.TermLength, "TermLength match")
 }
 
-func TestUpdateDeviceACL(t *testing.T) {
+func TestUpdateDeviceACLTemplate(t *testing.T) {
 	//given
 	devID := "myDevice"
-	newACLs := []string{"127.0.0.1/32", "192.168.0.0/24"}
+	newACLTemplateID := "0647398e-2827-43cb-8fee-e6a9010ba78d"
 	testHc := &http.Client{}
-	req := make([]api.DeviceFqdnACL, 0)
+	req := api.DeviceACLTemplateRequest{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", baseURL, devID),
+	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/device/%s/acl", baseURL, devID),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -218,11 +218,11 @@ func TestUpdateDeviceACL(t *testing.T) {
 
 	//when
 	c := NewClient(context.Background(), baseURL, testHc)
-	err := c.NewDeviceUpdateRequest(devID).WithACLs(newACLs).Execute()
+	err := c.NewDeviceUpdateRequest(devID).WithACLTemplate(newACLTemplateID).Execute()
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.ElementsMatch(t, req, mapDeviceACLsToFQDNACLs(newACLs), "ACL matches")
+	assert.Equal(t, newACLTemplateID, req.TemplateUUID, "ACLTemplateUUID matches")
 }
 
 func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
@@ -268,33 +268,6 @@ func TestDeleteDevice(t *testing.T) {
 	assert.Nil(t, err, "Error is not returned")
 }
 
-func TestGetFqdnACLs(t *testing.T) {
-	//given
-	resp := api.DeviceFqdnACLResponse{}
-	if err := readJSONData("./test-fixtures/ne_device_fqdnAcls_get_resp.json", &resp); err != nil {
-		assert.Fail(t, "Cannot read test response")
-	}
-	baseURL := "http://localhost:8888"
-	devID := "myDevice"
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/%s/fqdn-acl", baseURL, devID), 200, resp)
-	defer httpmock.DeactivateAndReset()
-
-	//when
-	c := NewClient(context.Background(), baseURL, testHc)
-	acls, err := c.GetDeviceACLs(devID)
-
-	//then
-	assert.NotNil(t, acls, "Returned device is not nil")
-	assert.Nil(t, err, "Error is not returned")
-
-	cnt := 0
-	for i := range resp.FqdnACLs {
-		cnt += len(resp.FqdnACLs[i].CIDRs)
-	}
-	assert.Equal(t, cnt, len(acls.ACLs), "Number of CIDRS and ACLs matches")
-	assert.Equal(t, resp.Status, acls.Status, "Status matches")
-}
-
 func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.UUID, device.UUID, "UUID matches")
 	assert.Equal(t, resp.Name, device.Name, "Name matches")
@@ -314,7 +287,7 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	} else {
 		assert.True(t, device.IsBYOL, "LicenseType matches")
 	}
-	assert.ElementsMatch(t, resp.ACL, device.ACLs, "ACLs matches")
+	assert.Equal(t, resp.ACLTemplateUUID, device.ACLTemplateUUID, "ACLTemplateUUID matches")
 	assert.Equal(t, resp.SSHIPAddress, device.SSHIPAddress, "SSHIPAddress matches")
 	assert.Equal(t, resp.SSHIPFqdn, device.SSHIPFqdn, "SSHIPFqdn matches")
 	assert.Equal(t, resp.AccountNumber, device.AccountNumber, "AccountNumber matches")
@@ -378,7 +351,7 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	}
 	assert.Equal(t, device.CoreCount, req.Core, "Core matches")
 	assert.Equal(t, device.AdditionalBandwidth, req.AdditionalBandwidth, "AdditionalBandwidth matches")
-	assert.ElementsMatch(t, mapDeviceACLsToFQDNACLs(device.ACLs), req.FqdnACL, "ACLs matches")
+	assert.Equal(t, device.ACLTemplateUUID, req.ACLTemplateUUID, "ACLTemplateUUID matches")
 	assert.Equal(t, device.VendorConfiguration, req.VendorConfig, "VendorConfigurations match")
 }
 
@@ -390,6 +363,6 @@ func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req a
 	assert.Equal(t, secondary.HostName, req.Secondary.HostNamePrefix, "Secondary HostName matches")
 	assert.Equal(t, secondary.AccountNumber, req.Secondary.AccountNumber, "Secondary AccountNumber matches")
 	assert.Equal(t, secondary.AdditionalBandwidth, req.Secondary.AdditionalBandwidth, "Secondary AdditionalBandwidth matches")
-	assert.ElementsMatch(t, mapDeviceACLsToFQDNACLs(secondary.ACLs), req.Secondary.FqdnACL, "Secondary ACLs matches")
+	assert.Equal(t, secondary.ACLTemplateUUID, req.Secondary.ACLTemplateUUID, "Secondary ACLTemplateUUID matches")
 	assert.Equal(t, secondary.VendorConfiguration, req.Secondary.VendorConfig, "Secondary VendorConfigurations match")
 }

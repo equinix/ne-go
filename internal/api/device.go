@@ -16,7 +16,7 @@ type Device struct {
 	PackageCode          string                 `json:"packageCode,omitempty"`
 	Version              string                 `json:"version,omitempty"`
 	LicenseType          string                 `json:"licenseType,omitempty"`
-	ACL                  []string               `json:"acl,omitempty"`
+	ACLTemplateUUID      string                 `json:"aclTemplateUuid,omitempty"`
 	SSHIPAddress         string                 `json:"sshIpAddress,omitempty"`
 	SSHIPFqdn            string                 `json:"sshIpFqdn,omitempty"`
 	AccountNumber        string                 `json:"accountNumber,omitempty"`
@@ -55,7 +55,7 @@ type DeviceRequest struct {
 	DeviceManagementType string                  `json:"deviceManagementType,omitempty"`
 	Core                 int                     `json:"core,omitempty"`
 	AdditionalBandwidth  int                     `json:"additionalBandwidth,omitempty,string"`
-	FqdnACL              []DeviceFqdnACL         `json:"fqdnAcl,omitempty"`
+	ACLTemplateUUID      string                  `json:"aclTemplateUuid,omitempty"`
 	VendorConfig         map[string]string       `json:"vendorConfig,omitempty"`
 	Secondary            *SecondaryDeviceRequest `json:"secondary,omitempty"`
 }
@@ -68,20 +68,8 @@ type SecondaryDeviceRequest struct {
 	HostNamePrefix      string            `json:"hostNamePrefix,omitempty"`
 	AccountNumber       string            `json:"accountNumber,omitempty"`
 	AdditionalBandwidth int               `json:"additionalBandwidth,omitempty,string"`
-	FqdnACL             []DeviceFqdnACL   `json:"fqdnAcl,omitempty"`
+	ACLTemplateUUID     string            `json:"aclTemplateUuid,omitempty"`
 	VendorConfig        map[string]string `json:"vendorConfig,omitempty"`
-}
-
-//DeviceFqdnACL describes device ACL FQDN format
-type DeviceFqdnACL struct {
-	CIDRs []string `json:"cidrs,omitempty"`
-	Type  string   `json:"type,omitempty"`
-}
-
-//DeviceFqdnACLResponse describes respone for device FQDN ACLs fetch request
-type DeviceFqdnACLResponse struct {
-	FqdnACLs []DeviceFqdnACL `json:"fqdnAcl,omitempty"`
-	Status   string          `json:"status,omitempty"`
 }
 
 //DeviceInterface describes device network interface
@@ -126,4 +114,9 @@ type DevicesResponse struct {
 	TotalCount int      `json:"totalCount,omitempty"`
 	PageSize   int      `json:"pageSize,omitempty"`
 	Content    []Device `json:"content,omitempty"`
+}
+
+//DeviceACLTemplateRequest describes request for updating device ACL template
+type DeviceACLTemplateRequest struct {
+	TemplateUUID string `json:"aclTemplateUuid"`
 }

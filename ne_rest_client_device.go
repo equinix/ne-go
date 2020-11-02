@@ -24,7 +24,7 @@ type restDeviceUpdateRequest struct {
 	termLength          int
 	notifications       []string
 	additionalBandwidth int
-	acls                []string
+	aclTemplateID       *string
 	c                   RestClient
 }
 
@@ -122,9 +122,9 @@ func (req *restDeviceUpdateRequest) WithAdditionalBandwidth(additionalBandwidth 
 	return req
 }
 
-//WithAdditionalBandwidth sets new ACLs in a composite device update request
-func (req *restDeviceUpdateRequest) WithACLs(acls []string) DeviceUpdateRequest {
-	req.acls = acls
+//WithACLTemplate sets new ACL template identifier in a composite device update request
+func (req *restDeviceUpdateRequest) WithACLTemplate(templateID string) DeviceUpdateRequest {
+	req.aclTemplateID = &templateID
 	return req
 }
 
@@ -136,9 +136,9 @@ func (req *restDeviceUpdateRequest) Execute() error {
 	if err := req.c.replaceDeviceFields(req.uuid, req.deviceFields); err != nil {
 		updateErr.AddChangeError(changeTypeUpdate, "deviceFields", req.deviceFields, err)
 	}
-	if len(req.acls) > 0 {
-		if err := req.c.replaceDeviceACLs(req.uuid, req.acls); err != nil {
-			updateErr.AddChangeError(changeTypeUpdate, "acl", req.acls, err)
+	if req.aclTemplateID != nil {
+		if err := req.c.replaceDeviceACLTemplate(req.uuid, *req.aclTemplateID); err != nil {
+			updateErr.AddChangeError(changeTypeUpdate, "aclTemplateUuid", *req.aclTemplateID, err)
 		}
 	}
 	if req.additionalBandwidth > 0 {
@@ -150,21 +150,6 @@ func (req *restDeviceUpdateRequest) Execute() error {
 		return updateErr
 	}
 	return nil
-}
-
-//GetDeviceACLs fetches details of ACLs for a device with a given UUID.
-//In addition to list of ACL CIDRs, provisioning status is returned.
-func (c RestClient) GetDeviceACLs(uuid string) (*DeviceACLs, error) {
-	path := "/ne/v1/device/" + url.PathEscape(uuid) + "/fqdn-acl"
-	result := api.DeviceFqdnACLResponse{}
-	req := c.R().SetResult(&result)
-	if err := c.Execute(req, resty.MethodGet, path); err != nil {
-		return nil, err
-	}
-	return &DeviceACLs{
-		ACLs:   mapDeviceFQDNACLsToACLs(result.FqdnACLs),
-		Status: result.Status,
-	}, nil
 }
 
 //‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
@@ -189,7 +174,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	if apiDevice.LicenseType == deviceLicenseModeBYOL {
 		device.IsBYOL = true
 	}
-	device.ACLs = apiDevice.ACL
+	device.ACLTemplateUUID = apiDevice.ACLTemplateUUID
 	device.SSHIPAddress = apiDevice.SSHIPAddress
 	device.SSHIPFqdn = apiDevice.SSHIPFqdn
 	device.AccountNumber = apiDevice.AccountNumber
@@ -256,30 +241,9 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	}
 	req.Core = device.CoreCount
 	req.AdditionalBandwidth = device.AdditionalBandwidth
-	req.FqdnACL = mapDeviceACLsToFQDNACLs(device.ACLs)
+	req.ACLTemplateUUID = device.ACLTemplateUUID
 	req.VendorConfig = device.VendorConfiguration
 	return req
-}
-
-func mapDeviceACLsToFQDNACLs(acls []string) []api.DeviceFqdnACL {
-	transformed := make([]api.DeviceFqdnACL, len(acls))
-	for i := range acls {
-		transformed[i] = api.DeviceFqdnACL{
-			CIDRs: []string{acls[i]},
-			Type:  "SUBNET",
-		}
-	}
-	return transformed
-}
-
-func mapDeviceFQDNACLsToACLs(fqdnACLs []api.DeviceFqdnACL) []string {
-	transformed := make([]string, 0, len(fqdnACLs)*10) //assuming that one FQDN ACL will have max 10 CIDRs
-	for i := range fqdnACLs {
-		for j := range fqdnACLs[i].CIDRs {
-			transformed = append(transformed, fqdnACLs[i].CIDRs[j])
-		}
-	}
-	return transformed
 }
 
 func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRequest {
@@ -291,15 +255,15 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.HostNamePrefix = secondary.HostName
 	secReq.AccountNumber = secondary.AccountNumber
 	secReq.AdditionalBandwidth = secondary.AdditionalBandwidth
-	secReq.FqdnACL = mapDeviceACLsToFQDNACLs(secondary.ACLs)
+	secReq.ACLTemplateUUID = secondary.ACLTemplateUUID
 	secReq.VendorConfig = secondary.VendorConfiguration
 	req.Secondary = &secReq
 	return req
 }
 
-func (c RestClient) replaceDeviceACLs(uuid string, acls []string) error {
-	path := "/ne/v1/device/" + url.PathEscape(uuid) + "/fqdn-acl"
-	reqBody := mapDeviceACLsToFQDNACLs(acls)
+func (c RestClient) replaceDeviceACLTemplate(uuid string, templateID string) error {
+	path := "/ne/v1/device/" + url.PathEscape(uuid) + "/acl"
+	reqBody := api.DeviceACLTemplateRequest{TemplateUUID: templateID}
 	req := c.R().SetBody(reqBody)
 	if err := c.Execute(req, resty.MethodPut, path); err != nil {
 		return err

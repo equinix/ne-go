@@ -68,7 +68,6 @@ type Client interface {
 	GetDevices(statuses []string) ([]Device, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
-	GetDeviceACLs(uuid string) (*DeviceACLs, error)
 
 	CreateSSHUser(username string, password string, device string) (string, error)
 	GetSSHUsers() ([]SSHUser, error)
@@ -80,6 +79,12 @@ type Client interface {
 	GetBGPConfiguration(uuid string) (*BGPConfiguration, error)
 	NewBGPConfigurationUpdateRequest(uuid string) BGPUpdateRequest
 	GetBGPConfigurationForConnection(uuid string) (*BGPConfiguration, error)
+
+	CreateACLTemplate(template ACLTemplate) (string, error)
+	GetACLTemplates() ([]ACLTemplate, error)
+	GetACLTemplate(uuid string) (*ACLTemplate, error)
+	ReplaceACLTemplate(uuid string, template ACLTemplate) error
+	DeleteACLTemplate(uuid string) error
 }
 
 //DeviceUpdateRequest describes composite request to update given Network Edge device
@@ -88,7 +93,7 @@ type DeviceUpdateRequest interface {
 	WithTermLength(termLength int) DeviceUpdateRequest
 	WithNotifications(notifications []string) DeviceUpdateRequest
 	WithAdditionalBandwidth(additionalBandwidth int) DeviceUpdateRequest
-	WithACLs(acls []string) DeviceUpdateRequest
+	WithACLTemplate(templateID string) DeviceUpdateRequest
 	Execute() error
 }
 
@@ -181,7 +186,7 @@ type Device struct {
 	Version             string
 	IsBYOL              bool
 	LicenseToken        string
-	ACLs                []string
+	ACLTemplateUUID     string
 	SSHIPAddress        string
 	SSHIPFqdn           string
 	AccountNumber       string
@@ -209,12 +214,6 @@ type DeviceInterface struct {
 	IPAddress         string
 	AssignedType      string
 	Type              string
-}
-
-//DeviceACLs describes device ACLs - list of CIDRs along with their current provisioning status
-type DeviceACLs struct {
-	ACLs   []string
-	Status string
 }
 
 //DeviceType describes Network Edge device type
@@ -270,4 +269,27 @@ type BGPConfiguration struct {
 	AuthenticationKey  string
 	State              string
 	ProvisioningStatus string
+}
+
+//ACLTemplate describes Network Edge device ACL template
+type ACLTemplate struct {
+	UUID            string
+	Name            string
+	Description     string
+	MetroCode       string
+	DeviceUUID      string
+	DeviceACLStatus string
+	InboundRules    []ACLTemplateInboundRule
+}
+
+//ACLTemplateInboundRule describes inbound ACL rule that is part of
+//Network Edge device ACL template
+type ACLTemplateInboundRule struct {
+	SeqNo    int
+	SrcType  string
+	FQDN     string
+	Subnets  []string
+	Protocol string
+	SrcPort  string
+	DstPort  string
 }
