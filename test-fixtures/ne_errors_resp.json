@@ -1,8 +1,0 @@
-[
-    {
-        "errorCode": "IC-NE-ERR-400",
-        "errorMessage": "Invalid throughput and/or throughput unit",
-        "property": "throughput",
-        "moreInfo": "Please confirm the data types and values in the request body, then try again."
-    }
-]

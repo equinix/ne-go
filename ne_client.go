@@ -53,6 +53,10 @@ const (
 
 	//ErrorCodeDeviceRemoved is used on attempt to remove device that is deprovisioning or already deprovisioned
 	ErrorCodeDeviceRemoved = "IC-NE-VD-030"
+
+	//ErrorCodeSSHPublicKeyInvalid is an error code returned when invalid
+	//SSH public key identifier was used
+	ErrorCodeSSHPublicKeyInvalid = "IC-NE-PUBLIC-KEY-03"
 )
 
 //Client interface describes operations provided by Network Edge client library
@@ -80,6 +84,11 @@ type Client interface {
 	GetBGPConfiguration(uuid string) (*BGPConfiguration, error)
 	NewBGPConfigurationUpdateRequest(uuid string) BGPUpdateRequest
 	GetBGPConfigurationForConnection(uuid string) (*BGPConfiguration, error)
+
+	GetSSHPublicKeys() ([]SSHPublicKey, error)
+	GetSSHPublicKey(uuid string) (*SSHPublicKey, error)
+	CreateSSHPublicKey(key SSHPublicKey) (string, error)
+	DeleteSSHPublicKey(uuid string) error
 }
 
 //DeviceUpdateRequest describes composite request to update given Network Edge device
@@ -270,4 +279,11 @@ type BGPConfiguration struct {
 	AuthenticationKey  string
 	State              string
 	ProvisioningStatus string
+}
+
+//SSHPublicKey describes Network Edge SSH user public key
+type SSHPublicKey struct {
+	UUID  string
+	Name  string
+	Value string
 }
