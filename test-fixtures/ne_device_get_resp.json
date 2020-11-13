@@ -23,7 +23,7 @@
     "createdDate": "2020-07-29T13:20:05.461Z",
     "lastUpdatedBy": "eqxnfvuser1",
     "lastUpdatedDate": "2020-07-29T14:48:44.336Z",
-    "acl": [],
+    "aclTemplateUuid": "db66bf49-b2d8-4e64-8719-d46406b54039",
     "sshIpAddress": "64.191.211.70",
     "sshIpFqdn": "mik-csr1000v-70-211-191-64-SV.nfv-uat1.eis.lab.equinix.com",
     "accountNumber": "200461",
