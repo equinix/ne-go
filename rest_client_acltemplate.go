@@ -25,7 +25,7 @@ func (c RestClient) CreateACLTemplate(template ACLTemplate) (string, error) {
 func (c RestClient) GetACLTemplates() ([]ACLTemplate, error) {
 	path := "/ne/v1/device/acl-template"
 	content, err := c.GetPaginated(path, &api.ACLTemplatesResponse{},
-		rest.DefaultPagingConfig())
+		rest.DefaultPagingConfig().SetPageParamName("pageNumber"))
 	if err != nil {
 		return nil, err
 	}
