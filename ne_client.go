@@ -51,6 +51,11 @@ const (
 	//BGPProvisioningStatusFailed BGP peering failed
 	BGPProvisioningStatusFailed = "FAILED"
 
+	//ACLDeviceStatusProvisioning indicates that ACL is being provisioned on a device
+	ACLDeviceStatusProvisioning = "PROVISIONING"
+	//ACLDeviceStatusProvisioned indicates that ACL was successfully provisioned on a device
+	ACLDeviceStatusProvisioned = "PROVISIONED"
+
 	//ErrorCodeDeviceRemoved is used on attempt to remove device that is deprovisioning or already deprovisioned
 	ErrorCodeDeviceRemoved = "IC-NE-VD-030"
 )
