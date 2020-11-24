@@ -51,6 +51,11 @@ const (
 	//BGPProvisioningStatusFailed BGP peering failed
 	BGPProvisioningStatusFailed = "FAILED"
 
+	//ACLDeviceStatusProvisioning indicates that ACL is being provisioned on a device
+	ACLDeviceStatusProvisioning = "PROVISIONING"
+	//ACLDeviceStatusProvisioned indicates that ACL was successfully provisioned on a device
+	ACLDeviceStatusProvisioned = "PROVISIONED"
+
 	//ErrorCodeDeviceRemoved is used on attempt to remove device that is deprovisioning or already deprovisioned
 	ErrorCodeDeviceRemoved = "IC-NE-VD-030"
 
@@ -72,7 +77,6 @@ type Client interface {
 	GetDevices(statuses []string) ([]Device, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
-	GetDeviceACLs(uuid string) (*DeviceACLs, error)
 
 	CreateSSHUser(username string, password string, device string) (string, error)
 	GetSSHUsers() ([]SSHUser, error)
@@ -89,6 +93,12 @@ type Client interface {
 	GetSSHPublicKey(uuid string) (*SSHPublicKey, error)
 	CreateSSHPublicKey(key SSHPublicKey) (string, error)
 	DeleteSSHPublicKey(uuid string) error
+
+	CreateACLTemplate(template ACLTemplate) (string, error)
+	GetACLTemplates() ([]ACLTemplate, error)
+	GetACLTemplate(uuid string) (*ACLTemplate, error)
+	ReplaceACLTemplate(uuid string, template ACLTemplate) error
+	DeleteACLTemplate(uuid string) error
 }
 
 //DeviceUpdateRequest describes composite request to update given Network Edge device
@@ -97,7 +107,7 @@ type DeviceUpdateRequest interface {
 	WithTermLength(termLength int) DeviceUpdateRequest
 	WithNotifications(notifications []string) DeviceUpdateRequest
 	WithAdditionalBandwidth(additionalBandwidth int) DeviceUpdateRequest
-	WithACLs(acls []string) DeviceUpdateRequest
+	WithACLTemplate(templateID string) DeviceUpdateRequest
 	Execute() error
 }
 
@@ -190,7 +200,7 @@ type Device struct {
 	Version             string
 	IsBYOL              bool
 	LicenseToken        string
-	ACLs                []string
+	ACLTemplateUUID     string
 	SSHIPAddress        string
 	SSHIPFqdn           string
 	AccountNumber       string
@@ -218,12 +228,6 @@ type DeviceInterface struct {
 	IPAddress         string
 	AssignedType      string
 	Type              string
-}
-
-//DeviceACLs describes device ACLs - list of CIDRs along with their current provisioning status
-type DeviceACLs struct {
-	ACLs   []string
-	Status string
 }
 
 //DeviceType describes Network Edge device type
@@ -286,4 +290,27 @@ type SSHPublicKey struct {
 	UUID  string
 	Name  string
 	Value string
+}
+
+//ACLTemplate describes Network Edge device ACL template
+type ACLTemplate struct {
+	UUID            string
+	Name            string
+	Description     string
+	MetroCode       string
+	DeviceUUID      string
+	DeviceACLStatus string
+	InboundRules    []ACLTemplateInboundRule
+}
+
+//ACLTemplateInboundRule describes inbound ACL rule that is part of
+//Network Edge device ACL template
+type ACLTemplateInboundRule struct {
+	SeqNo    int
+	SrcType  string
+	FQDN     string
+	Subnets  []string
+	Protocol string
+	SrcPort  string
+	DstPort  string
 }

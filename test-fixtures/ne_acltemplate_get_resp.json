@@ -1,0 +1,35 @@
+{
+    "name": "test",
+    "uuid": "db66bf49-b2d8-4e64-8719-d46406b54039",
+    "description": "Test ACL",
+    "inboundRules": [
+        {
+            "srcType": "SUBNET",
+            "seqNo": 1,
+            "subnets": [
+                "10.0.0.0/24"
+            ],
+            "protocol": "TCP",
+            "srcPort": "any",
+            "dstPort": "22"
+        },
+        {
+            "srcType": "DOMAIN",
+            "seqNo": 2,
+            "fqdn": "equinix.com",
+            "subnets": [
+                "216.221.225.13/32"
+            ],
+            "protocol": "TCP",
+            "srcPort": "any",
+            "dstPort": "1024-10000"
+        }
+    ],
+    "metroName": "Silicon Valley",
+    "metroCode": "SV",
+    "virtualDeviceName": "csr1000v-n",
+    "virtualDeviceUUID": "4ad6ab9c-f470-4dae-a445-926424785e2f",
+    "deviceAclstatus": "PROVISIONED",
+    "createdBy": "user",
+    "createdDate": "2020-10-29T09:58:05.012Z"
+}
