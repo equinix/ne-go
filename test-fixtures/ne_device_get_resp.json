@@ -51,6 +51,11 @@
     },
     "deviceManagementType": "EQUINIX-CONFIGURED",
     "networkScope": "TENANT",
+    "userPublicKey": {
+        "username": "rty",
+        "publicKeyName": "keyyD2Sj",
+        "publicKey": "keyyyyyyyyyyyyyyyyyyyyyyyyy"
+    },
     "interfaces": [
         {
             "id": 1,

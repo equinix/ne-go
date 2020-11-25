@@ -32,44 +32,47 @@ type Device struct {
 	DeviceManagementType string                 `json:"deviceManagementType,omitempty"`
 	Interfaces           []DeviceInterface      `json:"interfaces,omitempty"`
 	VendorConfig         map[string]string      `json:"vendorConfig,omitempty"`
+	UserPublicKey        *DeviceUserPublicKey   `json:"userPublicKey,omitempty"`
 }
 
 //DeviceRequest describes network edge device creation request
 type DeviceRequest struct {
-	Throughput           int                     `json:"throughput,omitempty,string"`
-	ThroughputUnit       string                  `json:"throughputUnit,omitempty"`
-	MetroCode            string                  `json:"metroCode,omitempty"`
-	DeviceTypeCode       string                  `json:"deviceTypeCode,omitempty"`
-	TermLength           string                  `json:"termLength,omitempty"`
-	LicenseMode          string                  `json:"licenseMode,omitempty"`
-	LicenseToken         string                  `json:"licenseToken,omitempty"`
-	PackageCode          string                  `json:"packageCode,omitempty"`
-	VirtualDeviceName    string                  `json:"virtualDeviceName,omitempty"`
-	Notifications        []string                `json:"notifications,omitempty"`
-	HostNamePrefix       string                  `json:"hostNamePrefix,omitempty"`
-	OrderReference       string                  `json:"orderReference,omitempty"`
-	PurchaseOrderNumber  string                  `json:"purchaseOrderNumber,omitempty"`
-	AccountNumber        string                  `json:"accountNumber,omitempty"`
-	Version              string                  `json:"version,omitempty"`
-	InterfaceCount       int                     `json:"interfaceCount,omitempty"`
-	DeviceManagementType string                  `json:"deviceManagementType,omitempty"`
-	Core                 int                     `json:"core,omitempty"`
-	AdditionalBandwidth  int                     `json:"additionalBandwidth,omitempty,string"`
-	ACLTemplateUUID      string                  `json:"aclTemplateUuid,omitempty"`
-	VendorConfig         map[string]string       `json:"vendorConfig,omitempty"`
-	Secondary            *SecondaryDeviceRequest `json:"secondary,omitempty"`
+	Throughput           int                         `json:"throughput,omitempty,string"`
+	ThroughputUnit       string                      `json:"throughputUnit,omitempty"`
+	MetroCode            string                      `json:"metroCode,omitempty"`
+	DeviceTypeCode       string                      `json:"deviceTypeCode,omitempty"`
+	TermLength           string                      `json:"termLength,omitempty"`
+	LicenseMode          string                      `json:"licenseMode,omitempty"`
+	LicenseToken         string                      `json:"licenseToken,omitempty"`
+	PackageCode          string                      `json:"packageCode,omitempty"`
+	VirtualDeviceName    string                      `json:"virtualDeviceName,omitempty"`
+	Notifications        []string                    `json:"notifications,omitempty"`
+	HostNamePrefix       string                      `json:"hostNamePrefix,omitempty"`
+	OrderReference       string                      `json:"orderReference,omitempty"`
+	PurchaseOrderNumber  string                      `json:"purchaseOrderNumber,omitempty"`
+	AccountNumber        string                      `json:"accountNumber,omitempty"`
+	Version              string                      `json:"version,omitempty"`
+	InterfaceCount       int                         `json:"interfaceCount,omitempty"`
+	DeviceManagementType string                      `json:"deviceManagementType,omitempty"`
+	Core                 int                         `json:"core,omitempty"`
+	AdditionalBandwidth  int                         `json:"additionalBandwidth,omitempty,string"`
+	ACLTemplateUUID      string                      `json:"aclTemplateUuid,omitempty"`
+	VendorConfig         map[string]string           `json:"vendorConfig,omitempty"`
+	UserPublicKey        *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`
+	Secondary            *SecondaryDeviceRequest     `json:"secondary,omitempty"`
 }
 
 //SecondaryDeviceRequest describes secondary device part of device creation request
 type SecondaryDeviceRequest struct {
-	MetroCode           string            `json:"metroCode,omitempty"`
-	VirtualDeviceName   string            `json:"virtualDeviceName,omitempty"`
-	Notifications       []string          `json:"notifications,omitempty"`
-	HostNamePrefix      string            `json:"hostNamePrefix,omitempty"`
-	AccountNumber       string            `json:"accountNumber,omitempty"`
-	AdditionalBandwidth int               `json:"additionalBandwidth,omitempty,string"`
-	ACLTemplateUUID     string            `json:"aclTemplateUuid,omitempty"`
-	VendorConfig        map[string]string `json:"vendorConfig,omitempty"`
+	MetroCode           string                      `json:"metroCode,omitempty"`
+	VirtualDeviceName   string                      `json:"virtualDeviceName,omitempty"`
+	Notifications       []string                    `json:"notifications,omitempty"`
+	HostNamePrefix      string                      `json:"hostNamePrefix,omitempty"`
+	AccountNumber       string                      `json:"accountNumber,omitempty"`
+	AdditionalBandwidth int                         `json:"additionalBandwidth,omitempty,string"`
+	ACLTemplateUUID     string                      `json:"aclTemplateUuid,omitempty"`
+	VendorConfig        map[string]string           `json:"vendorConfig,omitempty"`
+	UserPublicKey       *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`
 }
 
 //DeviceInterface describes device network interface
@@ -82,6 +85,22 @@ type DeviceInterface struct {
 	IPAddress         string `json:"ipAddress,omitempty"`
 	AssignedType      string `json:"assignedType,omitempty"`
 	Type              string `json:"type,omitempty"`
+}
+
+//DeviceUserPublicKey describes public SSH key along with username that is
+//provisioned on a network device
+type DeviceUserPublicKey struct {
+	Username string `json:"username,omitempty"`
+	KeyName  string `json:"publicKeyName,omitempty"`
+	Key      string `json:"publicKey,omitempty"`
+}
+
+//DeviceUserPublicKeyRequest describes public SSH key along with username that
+//will be provisioned on a network device. SSH key has to be created beforehand
+//and referred by its name
+type DeviceUserPublicKeyRequest struct {
+	Username string `json:"username,omitempty"`
+	KeyName  string `json:"keyName,omitempty"`
 }
 
 //DeviceCoreInformation describes device core and memory information

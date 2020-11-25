@@ -25,7 +25,7 @@ type SSHUserUpdateRequest struct {
 	Password string `json:"password,omitempty"`
 }
 
-//SSHUsersResponse  describes response for a get ssh user list request
+//SSHUsersResponse describes response for a get ssh user list request
 type SSHUsersResponse struct {
 	TotalCount int       `json:"totalCount,omitempty"`
 	PageSize   int       `json:"pageSize,omitempty"`

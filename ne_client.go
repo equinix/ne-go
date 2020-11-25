@@ -216,6 +216,7 @@ type Device struct {
 	IsSelfManaged       bool
 	Interfaces          []DeviceInterface
 	VendorConfiguration map[string]string
+	UserPublicKey       *DeviceUserPublicKey
 }
 
 //DeviceInterface describes Network Edge device interface
@@ -228,6 +229,13 @@ type DeviceInterface struct {
 	IPAddress         string
 	AssignedType      string
 	Type              string
+}
+
+//DeviceUserPublicKey describes public SSH key along with username that is
+//provisioned on a network device.
+type DeviceUserPublicKey struct {
+	Username string
+	KeyName  string
 }
 
 //DeviceType describes Network Edge device type

@@ -194,6 +194,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	}
 	device.Interfaces = mapDeviceInterfacesAPIToDomain(apiDevice.Interfaces)
 	device.VendorConfiguration = apiDevice.VendorConfig
+	device.UserPublicKey = mapDeviceUserPublicKeyAPIToDomain(apiDevice.UserPublicKey)
 	return &device
 }
 
@@ -212,6 +213,26 @@ func mapDeviceInterfacesAPIToDomain(apiInterfaces []api.DeviceInterface) []Devic
 		}
 	}
 	return transformed
+}
+
+func mapDeviceUserPublicKeyAPIToDomain(apiUserKey *api.DeviceUserPublicKey) *DeviceUserPublicKey {
+	if apiUserKey == nil {
+		return nil
+	}
+	return &DeviceUserPublicKey{
+		Username: apiUserKey.Username,
+		KeyName:  apiUserKey.KeyName,
+	}
+}
+
+func mapDeviceUserPublicKeyDomainToAPI(userKey *DeviceUserPublicKey) *api.DeviceUserPublicKeyRequest {
+	if userKey == nil {
+		return nil
+	}
+	return &api.DeviceUserPublicKeyRequest{
+		Username: userKey.Username,
+		KeyName:  userKey.KeyName,
+	}
 }
 
 func createDeviceRequest(device Device) api.DeviceRequest {
@@ -243,6 +264,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.AdditionalBandwidth = device.AdditionalBandwidth
 	req.ACLTemplateUUID = device.ACLTemplateUUID
 	req.VendorConfig = device.VendorConfiguration
+	req.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(device.UserPublicKey)
 	return req
 }
 
@@ -257,6 +279,7 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.AdditionalBandwidth = secondary.AdditionalBandwidth
 	secReq.ACLTemplateUUID = secondary.ACLTemplateUUID
 	secReq.VendorConfig = secondary.VendorConfiguration
+	secReq.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(secondary.UserPublicKey)
 	req.Secondary = &secReq
 	return req
 }

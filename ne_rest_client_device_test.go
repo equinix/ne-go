@@ -39,6 +39,10 @@ var testDevice = Device{
 		"serialNumber": "12312312",
 		"controller1":  "1.1.1.1",
 	},
+	UserPublicKey: &DeviceUserPublicKey{
+		Username: "testUserName",
+		KeyName:  "testKey",
+	},
 }
 
 func TestCreateDevice(t *testing.T) {
@@ -91,6 +95,10 @@ func TestCreateRedundantDevice(t *testing.T) {
 		VendorConfiguration: map[string]string{
 			"serialNumber": "2222222",
 			"controller1":  "2.2.2.2",
+		},
+		UserPublicKey: &DeviceUserPublicKey{
+			Username: "testUserSec",
+			KeyName:  "testKeySec",
 		}}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -310,6 +318,8 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 		verifyDeviceInterface(t, device.Interfaces[i], resp.Interfaces[i])
 	}
 	assert.Equal(t, resp.VendorConfig, device.VendorConfiguration, "VendorConfigurations match")
+	assert.NotNil(t, device.UserPublicKey, "UserPublicKey is not nil")
+	verifyDeviceUserPublicKey(t, *device.UserPublicKey, *resp.UserPublicKey)
 }
 
 func verifyDeviceInterface(t *testing.T, inf DeviceInterface, apiInf api.DeviceInterface) {
@@ -353,6 +363,8 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.AdditionalBandwidth, req.AdditionalBandwidth, "AdditionalBandwidth matches")
 	assert.Equal(t, device.ACLTemplateUUID, req.ACLTemplateUUID, "ACLTemplateUUID matches")
 	assert.Equal(t, device.VendorConfiguration, req.VendorConfig, "VendorConfigurations match")
+	assert.NotNil(t, req.UserPublicKey, "UserPublicKey is not nil")
+	verifyDeviceUserPublicKeyRequest(t, *device.UserPublicKey, *req.UserPublicKey)
 }
 
 func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req api.DeviceRequest) {
@@ -365,4 +377,16 @@ func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req a
 	assert.Equal(t, secondary.AdditionalBandwidth, req.Secondary.AdditionalBandwidth, "Secondary AdditionalBandwidth matches")
 	assert.Equal(t, secondary.ACLTemplateUUID, req.Secondary.ACLTemplateUUID, "Secondary ACLTemplateUUID matches")
 	assert.Equal(t, secondary.VendorConfiguration, req.Secondary.VendorConfig, "Secondary VendorConfigurations match")
+	assert.NotNil(t, req.Secondary.UserPublicKey, "UserPublicKey is not nil")
+	verifyDeviceUserPublicKeyRequest(t, *secondary.UserPublicKey, *req.Secondary.UserPublicKey)
+}
+
+func verifyDeviceUserPublicKey(t *testing.T, userKey DeviceUserPublicKey, apiUserKey api.DeviceUserPublicKey) {
+	assert.Equal(t, apiUserKey.Username, userKey.Username, "Username matches")
+	assert.Equal(t, apiUserKey.KeyName, userKey.KeyName, "KeyName matches")
+}
+
+func verifyDeviceUserPublicKeyRequest(t *testing.T, userKey DeviceUserPublicKey, apiUserKeyReq api.DeviceUserPublicKeyRequest) {
+	assert.Equal(t, apiUserKeyReq.Username, userKey.Username, "Username matches")
+	assert.Equal(t, apiUserKeyReq.KeyName, userKey.KeyName, "KeyName matches")
 }

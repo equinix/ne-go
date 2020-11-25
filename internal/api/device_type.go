@@ -46,22 +46,28 @@ type DeviceTypeVersionDetails struct {
 	ReleaseNotesLink          string   `json:"releaseNotesLink,omitempty"`
 }
 
+//DeviceManagementTypes describes device management types
+//offered for a given device type
 type DeviceManagementTypes struct {
 	EquinixConfigured DeviceManagementType `json:"EQUINIX-CONFIGURED,omitempty"`
 	SelfConfigured    DeviceManagementType `json:"SELF-CONFIGURED,omitempty"`
 }
 
+//DeviceManagementType describes details of a given device management type
 type DeviceManagementType struct {
 	Type           string               `json:"type,omitempty"`
 	LicenseOptions DeviceLicenseOptions `json:"licenseOptions,omitempty"`
 	IsSupported    bool                 `json:"supported,omitempty"`
 }
 
+//DeviceLicenseOptions describes licensing options offered for a given
+//device management type
 type DeviceLicenseOptions struct {
 	Sub  DeviceLicenseOption `json:"SUB,omitempty"`
 	BYOL DeviceLicenseOption `json:"BYOL,omitempty"`
 }
 
+//DeviceLicenseOption describes details of a given licesing option
 type DeviceLicenseOption struct {
 	Type        string       `json:"type,omitempty"`
 	Name        string       `json:"name,omitempty"`
@@ -69,6 +75,8 @@ type DeviceLicenseOption struct {
 	IsSupported bool         `json:"supported,omitempty"`
 }
 
+//DeviceCore describes CPU and memory configurations supported by given
+//licesing option within given management type
 type DeviceCore struct {
 	Core         int                 `json:"core,omitempty"`
 	Memory       int                 `json:"memory,omitempty"`
@@ -78,6 +86,8 @@ type DeviceCore struct {
 	IsSupported  bool                `json:"supported,omitempty"`
 }
 
+//DevicePackageCode describes device software package code supported
+//by given CPU and memory configuration
 type DevicePackageCode struct {
 	PackageCode string `json:"packageCode,omitempty"`
 	IsSupported bool   `json:"supported,omitempty"`
