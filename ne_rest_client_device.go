@@ -11,10 +11,18 @@ import (
 )
 
 const (
-	deviceManagementTypeSelf      = "SELF-CONFIGURED"
-	deviceManagementTypeEquinix   = "EQUINIX-CONFIGURED"
-	deviceLicenseModeSubscription = "Sub"
-	deviceLicenseModeBYOL         = "BYOL"
+	//DeviceManagementTypeSelf indicates device management mode where customer
+	//fully manages the device
+	DeviceManagementTypeSelf = "SELF-CONFIGURED"
+	//DeviceManagementTypeEquinix indicates device management mode where device
+	//connectivity and services are managed by Equinix
+	DeviceManagementTypeEquinix = "EQUINIX-CONFIGURED"
+	//DeviceLicenseModeSubscription indicates device software license mode where
+	//Equinix provides software license in a form of subscription
+	DeviceLicenseModeSubscription = "Sub"
+	//DeviceLicenseModeBYOL indicates device software license mode where
+	//customer provides his own, externally procured device license
+	DeviceLicenseModeBYOL = "BYOL"
 )
 
 type restDeviceUpdateRequest struct {
@@ -171,7 +179,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.HostName = apiDevice.HostName
 	device.PackageCode = apiDevice.PackageCode
 	device.Version = apiDevice.Version
-	if apiDevice.LicenseType == deviceLicenseModeBYOL {
+	if apiDevice.LicenseType == DeviceLicenseModeBYOL {
 		device.IsBYOL = true
 	}
 	device.ACLTemplateUUID = apiDevice.ACLTemplateUUID
@@ -189,7 +197,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	if apiDevice.Core != nil {
 		device.CoreCount = apiDevice.Core.Core
 	}
-	if apiDevice.DeviceManagementType == deviceManagementTypeSelf {
+	if apiDevice.DeviceManagementType == DeviceManagementTypeSelf {
 		device.IsSelfManaged = true
 	}
 	device.Interfaces = mapDeviceInterfacesAPIToDomain(apiDevice.Interfaces)
@@ -242,9 +250,9 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.MetroCode = device.MetroCode
 	req.DeviceTypeCode = device.TypeCode
 	req.TermLength = strconv.Itoa(device.TermLength)
-	req.LicenseMode = deviceLicenseModeSubscription
+	req.LicenseMode = DeviceLicenseModeSubscription
 	if device.IsBYOL {
-		req.LicenseMode = deviceLicenseModeBYOL
+		req.LicenseMode = DeviceLicenseModeBYOL
 	}
 	req.LicenseToken = device.LicenseToken
 	req.PackageCode = device.PackageCode
@@ -256,9 +264,9 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.AccountNumber = device.AccountNumber
 	req.Version = device.Version
 	req.InterfaceCount = device.InterfaceCount
-	req.DeviceManagementType = deviceManagementTypeEquinix
+	req.DeviceManagementType = DeviceManagementTypeEquinix
 	if device.IsSelfManaged {
-		req.DeviceManagementType = deviceManagementTypeSelf
+		req.DeviceManagementType = DeviceManagementTypeSelf
 	}
 	req.Core = device.CoreCount
 	req.AdditionalBandwidth = device.AdditionalBandwidth

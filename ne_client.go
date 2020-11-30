@@ -3,6 +3,7 @@ package ne
 
 import (
 	"fmt"
+	"io"
 )
 
 const (
@@ -99,6 +100,8 @@ type Client interface {
 	GetACLTemplate(uuid string) (*ACLTemplate, error)
 	ReplaceACLTemplate(uuid string, template ACLTemplate) error
 	DeleteACLTemplate(uuid string) error
+
+	UploadLicenseFile(metroCode, deviceTypeCode, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (string, error)
 }
 
 //DeviceUpdateRequest describes composite request to update given Network Edge device

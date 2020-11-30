@@ -290,7 +290,7 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.HostName, device.HostName, "HostName matches")
 	assert.Equal(t, resp.PackageCode, device.PackageCode, "PackageCode matches")
 	assert.Equal(t, resp.Version, device.Version, "Version matches")
-	if resp.LicenseType == deviceLicenseModeSubscription {
+	if resp.LicenseType == DeviceLicenseModeSubscription {
 		assert.False(t, device.IsBYOL, "LicenseType matches")
 	} else {
 		assert.True(t, device.IsBYOL, "LicenseType matches")
@@ -308,7 +308,7 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.OrderReference, device.OrderReference, "OrderReference matches")
 	assert.Equal(t, resp.InterfaceCount, device.InterfaceCount, "InterfaceCount matches")
 	assert.Equal(t, resp.Core.Core, device.CoreCount, "Core.Core matches")
-	if resp.DeviceManagementType == deviceManagementTypeEquinix {
+	if resp.DeviceManagementType == DeviceManagementTypeEquinix {
 		assert.False(t, device.IsSelfManaged, "DeviceManagementType matches")
 	} else {
 		assert.True(t, device.IsSelfManaged, "DeviceManagementType matches")
@@ -340,9 +340,9 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.TypeCode, req.DeviceTypeCode, "TypeCode matches")
 	assert.Equal(t, strconv.Itoa(device.TermLength), req.TermLength, "TermLength matches")
 	if device.IsBYOL {
-		assert.Equal(t, deviceLicenseModeBYOL, req.LicenseMode, "LicenseMode matches")
+		assert.Equal(t, DeviceLicenseModeBYOL, req.LicenseMode, "LicenseMode matches")
 	} else {
-		assert.Equal(t, deviceLicenseModeSubscription, req.LicenseMode, "LicenseMode matches")
+		assert.Equal(t, DeviceLicenseModeSubscription, req.LicenseMode, "LicenseMode matches")
 	}
 	assert.Equal(t, device.LicenseToken, req.LicenseToken, "LicenseToken matches")
 	assert.Equal(t, device.PackageCode, req.PackageCode, "PackageCode matches")
@@ -355,9 +355,9 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.Version, req.Version, "Version matches")
 	assert.Equal(t, device.InterfaceCount, req.InterfaceCount, "InterfaceCount matches")
 	if device.IsSelfManaged {
-		assert.Equal(t, deviceManagementTypeSelf, req.DeviceManagementType, "DeviceManagementType matches")
+		assert.Equal(t, DeviceManagementTypeSelf, req.DeviceManagementType, "DeviceManagementType matches")
 	} else {
-		assert.Equal(t, deviceManagementTypeEquinix, req.DeviceManagementType, "DeviceManagementType matches")
+		assert.Equal(t, DeviceManagementTypeEquinix, req.DeviceManagementType, "DeviceManagementType matches")
 	}
 	assert.Equal(t, device.CoreCount, req.Core, "Core matches")
 	assert.Equal(t, device.AdditionalBandwidth, req.AdditionalBandwidth, "AdditionalBandwidth matches")
