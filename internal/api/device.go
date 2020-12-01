@@ -15,7 +15,9 @@ type Device struct {
 	HostName             string                 `json:"hostName,omitempty"`
 	PackageCode          string                 `json:"packageCode,omitempty"`
 	Version              string                 `json:"version,omitempty"`
+	LicenseToken         string                 `json:"licenseToken,omitempty"`
 	LicenseType          string                 `json:"licenseType,omitempty"`
+	LicenseFileID        string                 `json:"licenseFileId,omitempty"`
 	ACLTemplateUUID      string                 `json:"aclTemplateUuid,omitempty"`
 	SSHIPAddress         string                 `json:"sshIpAddress,omitempty"`
 	SSHIPFqdn            string                 `json:"sshIpFqdn,omitempty"`
@@ -44,6 +46,7 @@ type DeviceRequest struct {
 	TermLength           string                      `json:"termLength,omitempty"`
 	LicenseMode          string                      `json:"licenseMode,omitempty"`
 	LicenseToken         string                      `json:"licenseToken,omitempty"`
+	LicenseFileID        string                      `json:"licenseFileId,omitempty"`
 	PackageCode          string                      `json:"packageCode,omitempty"`
 	VirtualDeviceName    string                      `json:"virtualDeviceName,omitempty"`
 	Notifications        []string                    `json:"notifications,omitempty"`
@@ -65,6 +68,8 @@ type DeviceRequest struct {
 //SecondaryDeviceRequest describes secondary device part of device creation request
 type SecondaryDeviceRequest struct {
 	MetroCode           string                      `json:"metroCode,omitempty"`
+	LicenseToken        string                      `json:"licenseToken,omitempty"`
+	LicenseFileID       string                      `json:"licenseFileId,omitempty"`
 	VirtualDeviceName   string                      `json:"virtualDeviceName,omitempty"`
 	Notifications       []string                    `json:"notifications,omitempty"`
 	HostNamePrefix      string                      `json:"hostNamePrefix,omitempty"`

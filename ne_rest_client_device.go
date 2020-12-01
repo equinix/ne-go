@@ -182,6 +182,8 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	if apiDevice.LicenseType == DeviceLicenseModeBYOL {
 		device.IsBYOL = true
 	}
+	device.LicenseToken = apiDevice.LicenseToken
+	device.LicenseFileID = apiDevice.LicenseFileID
 	device.ACLTemplateUUID = apiDevice.ACLTemplateUUID
 	device.SSHIPAddress = apiDevice.SSHIPAddress
 	device.SSHIPFqdn = apiDevice.SSHIPFqdn
@@ -255,6 +257,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 		req.LicenseMode = DeviceLicenseModeBYOL
 	}
 	req.LicenseToken = device.LicenseToken
+	req.LicenseFileID = device.LicenseFileID
 	req.PackageCode = device.PackageCode
 	req.VirtualDeviceName = device.Name
 	req.Notifications = device.Notifications
@@ -280,6 +283,8 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	req := createDeviceRequest(primary)
 	secReq := api.SecondaryDeviceRequest{}
 	secReq.MetroCode = secondary.MetroCode
+	secReq.LicenseToken = secondary.LicenseToken
+	secReq.LicenseFileID = secondary.LicenseFileID
 	secReq.VirtualDeviceName = secondary.Name
 	secReq.Notifications = secondary.Notifications
 	secReq.HostNamePrefix = secondary.HostName

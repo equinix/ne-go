@@ -20,6 +20,7 @@ var testDevice = Device{
 	HostName:            "myhostSRmy",
 	IsBYOL:              true,
 	LicenseToken:        "somelicensetokenaaaaazzzzz",
+	LicenseFileID:       "8d180057-8309-4c59-b645-f630f010ad43",
 	MetroCode:           "SV",
 	Notifications:       []string{"test1@example.com", "test2@example.com"},
 	PackageCode:         "VM100",
@@ -86,6 +87,8 @@ func TestCreateRedundantDevice(t *testing.T) {
 	primary := testDevice
 	secondary := Device{
 		MetroCode:           "DC",
+		LicenseToken:        "licenseToken",
+		LicenseFileID:       "5a1102c6-d556-4498-b7ca-a10e902ef783",
 		Name:                "secondary",
 		Notifications:       []string{"secondary@secondary.com"},
 		HostName:            "secondaryHostname",
@@ -282,6 +285,8 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.DeviceTypeCode, device.TypeCode, "DeviceTypeCode matches")
 	assert.Equal(t, resp.Status, device.Status, "Status matches")
 	assert.Equal(t, resp.LicenseStatus, device.LicenseStatus, "LicenseStatus matches")
+	assert.Equal(t, resp.LicenseToken, device.LicenseToken, "LicenseToken matches")
+	assert.Equal(t, resp.LicenseFileID, device.LicenseFileID, "LicenseFileID matches")
 	assert.Equal(t, resp.MetroCode, device.MetroCode, "MetroCode matches")
 	assert.Equal(t, resp.IBX, device.IBX, "IBX matches")
 	assert.Equal(t, resp.Region, device.Region, "Region matches")
@@ -345,6 +350,7 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 		assert.Equal(t, DeviceLicenseModeSubscription, req.LicenseMode, "LicenseMode matches")
 	}
 	assert.Equal(t, device.LicenseToken, req.LicenseToken, "LicenseToken matches")
+	assert.Equal(t, device.LicenseFileID, req.LicenseFileID, "LicenseFileID matches")
 	assert.Equal(t, device.PackageCode, req.PackageCode, "PackageCode matches")
 	assert.Equal(t, device.Name, req.VirtualDeviceName, "Name matches")
 	assert.ElementsMatch(t, device.Notifications, req.Notifications, "Notifications matches")
@@ -370,6 +376,8 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req api.DeviceRequest) {
 	verifyDeviceRequest(t, primary, req)
 	assert.Equal(t, secondary.MetroCode, req.Secondary.MetroCode, "Secondary MetroCode matches")
+	assert.Equal(t, secondary.LicenseToken, req.Secondary.LicenseToken, "LicenseFileID matches")
+	assert.Equal(t, secondary.LicenseFileID, req.Secondary.LicenseFileID, "LicenseFileID matches")
 	assert.Equal(t, secondary.Name, req.Secondary.VirtualDeviceName, "Secondary Name matches")
 	assert.ElementsMatch(t, secondary.Notifications, req.Secondary.Notifications, "Secondary Notifications matches")
 	assert.Equal(t, secondary.HostName, req.Secondary.HostNamePrefix, "Secondary HostName matches")

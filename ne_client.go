@@ -28,6 +28,8 @@ const (
 	DeviceLicenseStateApplying = "APPLYING_LICENSE"
 	//DeviceLicenseStateRegistered license was successfully registered
 	DeviceLicenseStateRegistered = "REGISTERED"
+	//DeviceLicenseStateApplied license was successfully applied
+	DeviceLicenseStateApplied = "APPLIED"
 	//DeviceLicenseStateFailed license registration has failed
 	DeviceLicenseStateFailed = "REGISTRATION_FAILED"
 
@@ -203,6 +205,7 @@ type Device struct {
 	Version             string
 	IsBYOL              bool
 	LicenseToken        string
+	LicenseFileID       string
 	ACLTemplateUUID     string
 	SSHIPAddress        string
 	SSHIPFqdn           string
