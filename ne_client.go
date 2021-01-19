@@ -205,6 +205,7 @@ type Device struct {
 	Version             string
 	IsBYOL              bool
 	LicenseToken        string
+	LicenseFile         string
 	LicenseFileID       string
 	ACLTemplateUUID     string
 	SSHIPAddress        string
