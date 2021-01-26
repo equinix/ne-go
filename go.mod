@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/equinix/rest-go v1.1.0
+	github.com/equinix/rest-go v1.2.1-0.20210126121137-95138fa1f951
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/jarcoal/httpmock v1.0.6
 	github.com/kr/text v0.2.0 // indirect

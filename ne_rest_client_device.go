@@ -37,26 +37,26 @@ type restDeviceUpdateRequest struct {
 }
 
 //CreateDevice creates given Network Edge device and returns its UUID upon successful creation
-func (c RestClient) CreateDevice(device Device) (string, error) {
+func (c RestClient) CreateDevice(device Device) (*string, error) {
 	path := "/ne/v1/device"
 	reqBody := createDeviceRequest(device)
 	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
 	if err := c.Execute(req, resty.MethodPost, path); err != nil {
-		return "", err
+		return nil, err
 	}
 	return respBody.UUID, nil
 }
 
 //CreateRedundantDevice creates HA device setup from given primary and secondary devices and
 //returns their UUIDS upon successful creation
-func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (string, string, error) {
+func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (*string, *string, error) {
 	path := "/ne/v1/device"
 	reqBody := createRedundantDeviceRequest(primary, secondary)
 	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
 	if err := c.Execute(req, resty.MethodPost, path); err != nil {
-		return "", "", err
+		return nil, nil, err
 	}
 	return respBody.UUID, respBody.SecondaryUUID, nil
 }
@@ -179,8 +179,12 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.HostName = apiDevice.HostName
 	device.PackageCode = apiDevice.PackageCode
 	device.Version = apiDevice.Version
-	if apiDevice.LicenseType == DeviceLicenseModeBYOL {
-		device.IsBYOL = true
+	if apiDevice.LicenseType != nil {
+		if *apiDevice.LicenseType == DeviceLicenseModeBYOL {
+			device.IsBYOL = Bool(true)
+		} else {
+			device.IsBYOL = Bool(false)
+		}
 	}
 	device.LicenseToken = apiDevice.LicenseToken
 	device.LicenseFileID = apiDevice.LicenseFileID
@@ -199,8 +203,12 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	if apiDevice.Core != nil {
 		device.CoreCount = apiDevice.Core.Core
 	}
-	if apiDevice.DeviceManagementType == DeviceManagementTypeSelf {
-		device.IsSelfManaged = true
+	if apiDevice.DeviceManagementType != nil {
+		if *apiDevice.DeviceManagementType == DeviceManagementTypeSelf {
+			device.IsSelfManaged = Bool(true)
+		} else {
+			device.IsSelfManaged = Bool(false)
+		}
 	}
 	device.Interfaces = mapDeviceInterfacesAPIToDomain(apiDevice.Interfaces)
 	device.VendorConfiguration = apiDevice.VendorConfig
@@ -251,10 +259,18 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.ThroughputUnit = device.ThroughputUnit
 	req.MetroCode = device.MetroCode
 	req.DeviceTypeCode = device.TypeCode
-	req.TermLength = strconv.Itoa(device.TermLength)
-	req.LicenseMode = DeviceLicenseModeSubscription
-	if device.IsBYOL {
-		req.LicenseMode = DeviceLicenseModeBYOL
+	if device.TermLength != nil {
+		termLengthString := strconv.Itoa(*device.TermLength)
+		req.TermLength = &termLengthString
+	}
+	if device.IsBYOL != nil {
+		if *device.IsBYOL {
+			byolLicenseModeValue := DeviceLicenseModeBYOL
+			req.LicenseMode = &byolLicenseModeValue
+		} else {
+			subLicenseModeValue := DeviceLicenseModeSubscription
+			req.LicenseMode = &subLicenseModeValue
+		}
 	}
 	req.LicenseToken = device.LicenseToken
 	req.LicenseFileID = device.LicenseFileID
@@ -267,9 +283,14 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.AccountNumber = device.AccountNumber
 	req.Version = device.Version
 	req.InterfaceCount = device.InterfaceCount
-	req.DeviceManagementType = DeviceManagementTypeEquinix
-	if device.IsSelfManaged {
-		req.DeviceManagementType = DeviceManagementTypeSelf
+	if device.IsSelfManaged != nil {
+		if *device.IsSelfManaged {
+			selfManagedValue := DeviceManagementTypeSelf
+			req.DeviceManagementType = &selfManagedValue
+		} else {
+			equinixManagedValue := DeviceManagementTypeEquinix
+			req.DeviceManagementType = &equinixManagedValue
+		}
 	}
 	req.Core = device.CoreCount
 	req.AdditionalBandwidth = device.AdditionalBandwidth
@@ -299,7 +320,7 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 
 func (c RestClient) replaceDeviceACLTemplate(uuid string, templateID string) error {
 	path := "/ne/v1/device/" + url.PathEscape(uuid) + "/acl"
-	reqBody := api.DeviceACLTemplateRequest{TemplateUUID: templateID}
+	reqBody := api.DeviceACLTemplateRequest{TemplateUUID: &templateID}
 	req := c.R().SetBody(reqBody)
 	if err := c.Execute(req, resty.MethodPut, path); err != nil {
 		return err
@@ -309,7 +330,7 @@ func (c RestClient) replaceDeviceACLTemplate(uuid string, templateID string) err
 
 func (c RestClient) replaceDeviceAdditionalBandwidth(uuid string, bandwidth int) error {
 	path := "/ne/v1/device/additionalbandwidth/" + url.PathEscape(uuid)
-	reqBody := api.DeviceAdditionalBandwidthUpdateRequest{AdditionalBandwidth: bandwidth}
+	reqBody := api.DeviceAdditionalBandwidthUpdateRequest{AdditionalBandwidth: &bandwidth}
 	req := c.R().SetBody(reqBody)
 	if err := c.Execute(req, resty.MethodPut, path); err != nil {
 		return err
@@ -321,11 +342,11 @@ func (c RestClient) replaceDeviceFields(uuid string, fields map[string]interface
 	reqBody := api.DeviceUpdateRequest{}
 	okToSend := false
 	if v, ok := fields["deviceName"]; ok {
-		reqBody.VirtualDeviceName = v.(string)
+		reqBody.VirtualDeviceName = String(v.(string))
 		okToSend = true
 	}
 	if v, ok := fields["termLength"]; ok {
-		reqBody.TermLength = v.(int)
+		reqBody.TermLength = Int(v.(int))
 		okToSend = true
 	}
 	if v, ok := fields["notifications"]; ok {

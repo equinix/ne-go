@@ -74,8 +74,8 @@ type Client interface {
 	GetDevicePlatforms(deviceTypeCode string) ([]DevicePlatform, error)
 	GetDeviceSoftwareVersions(deviceTypeCode string) ([]DeviceSoftwareVersion, error)
 
-	CreateDevice(device Device) (string, error)
-	CreateRedundantDevice(primary Device, secondary Device) (string, string, error)
+	CreateDevice(device Device) (*string, error)
+	CreateRedundantDevice(primary Device, secondary Device) (*string, *string, error)
 	GetDevice(uuid string) (*Device, error)
 	GetDevices(statuses []string) ([]Device, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
@@ -190,37 +190,37 @@ type Account struct {
 
 //Device describes Network Edge device
 type Device struct {
-	UUID                string
-	Name                string
-	TypeCode            string
-	Status              string
-	LicenseStatus       string
-	MetroCode           string
-	IBX                 string
-	Region              string
-	Throughput          int
-	ThroughputUnit      string
-	HostName            string
-	PackageCode         string
-	Version             string
-	IsBYOL              bool
-	LicenseToken        string
-	LicenseFile         string
-	LicenseFileID       string
-	ACLTemplateUUID     string
-	SSHIPAddress        string
-	SSHIPFqdn           string
-	AccountNumber       string
+	UUID                *string
+	Name                *string
+	TypeCode            *string
+	Status              *string
+	LicenseStatus       *string
+	MetroCode           *string
+	IBX                 *string
+	Region              *string
+	Throughput          *int
+	ThroughputUnit      *string
+	HostName            *string
+	PackageCode         *string
+	Version             *string
+	IsBYOL              *bool
+	LicenseToken        *string
+	LicenseFile         *string
+	LicenseFileID       *string
+	ACLTemplateUUID     *string
+	SSHIPAddress        *string
+	SSHIPFqdn           *string
+	AccountNumber       *string
 	Notifications       []string
-	PurchaseOrderNumber string
-	RedundancyType      string
-	RedundantUUID       string
-	TermLength          int
-	AdditionalBandwidth int
-	OrderReference      string
-	InterfaceCount      int
-	CoreCount           int
-	IsSelfManaged       bool
+	PurchaseOrderNumber *string
+	RedundancyType      *string
+	RedundantUUID       *string
+	TermLength          *int
+	AdditionalBandwidth *int
+	OrderReference      *string
+	InterfaceCount      *int
+	CoreCount           *int
+	IsSelfManaged       *bool
 	Interfaces          []DeviceInterface
 	VendorConfiguration map[string]string
 	UserPublicKey       *DeviceUserPublicKey
@@ -228,21 +228,21 @@ type Device struct {
 
 //DeviceInterface describes Network Edge device interface
 type DeviceInterface struct {
-	ID                int
-	Name              string
-	Status            string
-	OperationalStatus string
-	MACAddress        string
-	IPAddress         string
-	AssignedType      string
-	Type              string
+	ID                *int
+	Name              *string
+	Status            *string
+	OperationalStatus *string
+	MACAddress        *string
+	IPAddress         *string
+	AssignedType      *string
+	Type              *string
 }
 
 //DeviceUserPublicKey describes public SSH key along with username that is
 //provisioned on a network device.
 type DeviceUserPublicKey struct {
-	Username string
-	KeyName  string
+	Username *string
+	KeyName  *string
 }
 
 //DeviceType describes Network Edge device type

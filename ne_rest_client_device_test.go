@@ -15,34 +15,34 @@ import (
 )
 
 var testDevice = Device{
-	AdditionalBandwidth: 100,
-	TypeCode:            "PA-VM",
-	HostName:            "myhostSRmy",
-	IsBYOL:              true,
-	LicenseToken:        "somelicensetokenaaaaazzzzz",
-	LicenseFileID:       "8d180057-8309-4c59-b645-f630f010ad43",
-	MetroCode:           "SV",
+	AdditionalBandwidth: Int(100),
+	TypeCode:            String("PA-VM"),
+	HostName:            String("myhostSRmy"),
+	IsBYOL:              Bool(true),
+	LicenseToken:        String("somelicensetokenaaaaazzzzz"),
+	LicenseFileID:       String("8d180057-8309-4c59-b645-f630f010ad43"),
+	MetroCode:           String("SV"),
 	Notifications:       []string{"test1@example.com", "test2@example.com"},
-	PackageCode:         "VM100",
-	TermLength:          24,
-	Throughput:          1,
-	ThroughputUnit:      "Gbps",
-	Name:                "PaloAltoSRmy",
-	ACLTemplateUUID:     "4792d9ab-b8aa-49cc-8fe2-b56ced6c9c2f",
-	AccountNumber:       "1777643",
-	OrderReference:      "orderRef",
-	PurchaseOrderNumber: "PO123456789",
-	InterfaceCount:      10,
-	CoreCount:           2,
-	Version:             "10.09.05",
-	IsSelfManaged:       true,
+	PackageCode:         String("VM100"),
+	TermLength:          Int(24),
+	Throughput:          Int(1),
+	ThroughputUnit:      String("Gbps"),
+	Name:                String("PaloAltoSRmy"),
+	ACLTemplateUUID:     String("4792d9ab-b8aa-49cc-8fe2-b56ced6c9c2f"),
+	AccountNumber:       String("1777643"),
+	OrderReference:      String("orderRef"),
+	PurchaseOrderNumber: String("PO123456789"),
+	InterfaceCount:      Int(10),
+	CoreCount:           Int(2),
+	Version:             String("10.09.05"),
+	IsSelfManaged:       Bool(true),
 	VendorConfiguration: map[string]string{
 		"serialNumber": "12312312",
 		"controller1":  "1.1.1.1",
 	},
 	UserPublicKey: &DeviceUserPublicKey{
-		Username: "testUserName",
-		KeyName:  "testKey",
+		Username: String("testUserName"),
+		KeyName:  String("testKey"),
 	},
 }
 
@@ -86,22 +86,22 @@ func TestCreateRedundantDevice(t *testing.T) {
 	req := api.DeviceRequest{}
 	primary := testDevice
 	secondary := Device{
-		MetroCode:           "DC",
-		LicenseToken:        "licenseToken",
-		LicenseFileID:       "5a1102c6-d556-4498-b7ca-a10e902ef783",
-		Name:                "secondary",
+		MetroCode:           String("DC"),
+		LicenseToken:        String("licenseToken"),
+		LicenseFileID:       String("5a1102c6-d556-4498-b7ca-a10e902ef783"),
+		Name:                String("secondary"),
 		Notifications:       []string{"secondary@secondary.com"},
-		HostName:            "secondaryHostname",
-		AccountNumber:       "99999",
-		AdditionalBandwidth: 200,
-		ACLTemplateUUID:     "4972e8d2-417f-4821-91a8-f4a61a6dcdc3",
+		HostName:            String("secondaryHostname"),
+		AccountNumber:       String("99999"),
+		AdditionalBandwidth: Int(200),
+		ACLTemplateUUID:     String("4972e8d2-417f-4821-91a8-f4a61a6dcdc3"),
 		VendorConfiguration: map[string]string{
 			"serialNumber": "2222222",
 			"controller1":  "2.2.2.2",
 		},
 		UserPublicKey: &DeviceUserPublicKey{
-			Username: "testUserSec",
-			KeyName:  "testKeySec",
+			Username: String("testUserSec"),
+			KeyName:  String("testKeySec"),
 		}}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -153,7 +153,7 @@ func TestGetDevices(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_devices_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := respBody.PageSize
+	pageSize := *respBody.PageSize
 	statuses := []string{"INITIALIZING", "PROVISIONING"}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -205,9 +205,9 @@ func TestUpdateDeviceBasicFields(t *testing.T) {
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.Equal(t, newName, req.VirtualDeviceName, "DeviceName matches")
+	assert.Equal(t, &newName, req.VirtualDeviceName, "DeviceName matches")
 	assert.ElementsMatch(t, newNotifications, req.Notifications, "Notifications match")
-	assert.Equal(t, newTermLength, req.TermLength, "TermLength match")
+	assert.Equal(t, &newTermLength, req.TermLength, "TermLength match")
 }
 
 func TestUpdateDeviceACLTemplate(t *testing.T) {
@@ -233,7 +233,7 @@ func TestUpdateDeviceACLTemplate(t *testing.T) {
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.Equal(t, newACLTemplateID, req.TemplateUUID, "ACLTemplateUUID matches")
+	assert.Equal(t, &newACLTemplateID, req.TemplateUUID, "ACLTemplateUUID matches")
 }
 
 func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
@@ -259,7 +259,7 @@ func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.Equal(t, newBandwidth, req.AdditionalBandwidth, "AdditionalBandwidth match")
+	assert.Equal(t, &newBandwidth, req.AdditionalBandwidth, "AdditionalBandwidth match")
 }
 
 func TestDeleteDevice(t *testing.T) {
@@ -295,10 +295,10 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.HostName, device.HostName, "HostName matches")
 	assert.Equal(t, resp.PackageCode, device.PackageCode, "PackageCode matches")
 	assert.Equal(t, resp.Version, device.Version, "Version matches")
-	if resp.LicenseType == DeviceLicenseModeSubscription {
-		assert.False(t, device.IsBYOL, "LicenseType matches")
+	if *resp.LicenseType == DeviceLicenseModeSubscription {
+		assert.False(t, *device.IsBYOL, "LicenseType matches")
 	} else {
-		assert.True(t, device.IsBYOL, "LicenseType matches")
+		assert.True(t, *device.IsBYOL, "LicenseType matches")
 	}
 	assert.Equal(t, resp.ACLTemplateUUID, device.ACLTemplateUUID, "ACLTemplateUUID matches")
 	assert.Equal(t, resp.SSHIPAddress, device.SSHIPAddress, "SSHIPAddress matches")
@@ -313,10 +313,10 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.OrderReference, device.OrderReference, "OrderReference matches")
 	assert.Equal(t, resp.InterfaceCount, device.InterfaceCount, "InterfaceCount matches")
 	assert.Equal(t, resp.Core.Core, device.CoreCount, "Core.Core matches")
-	if resp.DeviceManagementType == DeviceManagementTypeEquinix {
-		assert.False(t, device.IsSelfManaged, "DeviceManagementType matches")
+	if *resp.DeviceManagementType == DeviceManagementTypeEquinix {
+		assert.False(t, *device.IsSelfManaged, "DeviceManagementType matches")
 	} else {
-		assert.True(t, device.IsSelfManaged, "DeviceManagementType matches")
+		assert.True(t, *device.IsSelfManaged, "DeviceManagementType matches")
 	}
 	assert.Equal(t, len(resp.Interfaces), len(device.Interfaces), "Number of interfaces matches")
 	for i := range resp.Interfaces {
@@ -343,11 +343,12 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.ThroughputUnit, req.ThroughputUnit, "ThroughputUnit matches")
 	assert.Equal(t, device.MetroCode, req.MetroCode, "MetroCode matches")
 	assert.Equal(t, device.TypeCode, req.DeviceTypeCode, "TypeCode matches")
-	assert.Equal(t, strconv.Itoa(device.TermLength), req.TermLength, "TermLength matches")
-	if device.IsBYOL {
-		assert.Equal(t, DeviceLicenseModeBYOL, req.LicenseMode, "LicenseMode matches")
+	termLengthStr := strconv.Itoa(*device.TermLength)
+	assert.Equal(t, &termLengthStr, req.TermLength, "TermLength matches")
+	if *device.IsBYOL {
+		assert.Equal(t, String(DeviceLicenseModeBYOL), req.LicenseMode, "LicenseMode matches")
 	} else {
-		assert.Equal(t, DeviceLicenseModeSubscription, req.LicenseMode, "LicenseMode matches")
+		assert.Equal(t, String(DeviceLicenseModeSubscription), req.LicenseMode, "LicenseMode matches")
 	}
 	assert.Equal(t, device.LicenseToken, req.LicenseToken, "LicenseToken matches")
 	assert.Equal(t, device.LicenseFileID, req.LicenseFileID, "LicenseFileID matches")
@@ -360,8 +361,8 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.AccountNumber, req.AccountNumber, "AccountNumber matches")
 	assert.Equal(t, device.Version, req.Version, "Version matches")
 	assert.Equal(t, device.InterfaceCount, req.InterfaceCount, "InterfaceCount matches")
-	if device.IsSelfManaged {
-		assert.Equal(t, DeviceManagementTypeSelf, req.DeviceManagementType, "DeviceManagementType matches")
+	if *device.IsSelfManaged {
+		assert.Equal(t, String(DeviceManagementTypeSelf), req.DeviceManagementType, "DeviceManagementType matches")
 	} else {
 		assert.Equal(t, DeviceManagementTypeEquinix, req.DeviceManagementType, "DeviceManagementType matches")
 	}
