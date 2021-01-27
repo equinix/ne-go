@@ -13,8 +13,8 @@ import (
 )
 
 var testSSHPublicKey = SSHPublicKey{
-	Name:  "testKey",
-	Value: "keyyyyyyyyyyyyyyyyyyyyyyyyy",
+	Name:  String("testKey"),
+	Value: String("keyyyyyyyyyyyyyyyyyyyyyyyyy"),
 }
 
 func TestGetSSHPublicKeys(t *testing.T) {

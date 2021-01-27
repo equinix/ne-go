@@ -57,7 +57,7 @@ func TestSSHUsersGet(t *testing.T) {
 	//Then
 	assert.Nil(t, err, "Client should not return an error")
 	assert.NotNil(t, users, "Client should return a response")
-	assert.Equal(t, respBody.TotalCount, len(users))
+	assert.Equal(t, IntValue(respBody.TotalCount), len(users))
 	for i := range users {
 		verifyUser(t, users[i], respBody.List[i])
 	}
@@ -70,8 +70,8 @@ func TestSSHUserCreate(t *testing.T) {
 		assert.Failf(t, "Cannot read test response due to %s", err.Error())
 	}
 	user := SSHUser{
-		Username:    "myUser",
-		Password:    "myPassword",
+		Username:    String("myUser"),
+		Password:    String("myPassword"),
 		DeviceUUIDs: []string{"deviceOne"},
 	}
 	req := api.SSHUserRequest{}
@@ -90,7 +90,7 @@ func TestSSHUserCreate(t *testing.T) {
 
 	//when
 	c := NewClient(context.Background(), baseURL, testHc)
-	uuid, err := c.CreateSSHUser(user.Username, user.Password, user.DeviceUUIDs[0])
+	uuid, err := c.CreateSSHUser(*user.Username, *user.Password, user.DeviceUUIDs[0])
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
@@ -145,8 +145,8 @@ func TestSSHUserDelete(t *testing.T) {
 	//given
 	userID := "myTestUser"
 	userResp := api.SSHUser{
-		UUID:        userID,
-		Username:    "user",
+		UUID:        String(userID),
+		Username:    String("user"),
 		DeviceUUIDs: []string{"dev1", "dev2", "dev3"}}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -182,9 +182,9 @@ func verifyUser(t *testing.T, user SSHUser, resp api.SSHUser) {
 func verifyUserRequest(t *testing.T, user SSHUser, req api.SSHUserRequest) {
 	assert.Equal(t, user.Username, req.Username, "Username matches")
 	assert.Equal(t, user.Password, req.Password, "Password matches")
-	assert.Equal(t, user.DeviceUUIDs[0], req.DeviceUUID, "First DeviceUUID matches")
+	assert.Equal(t, user.DeviceUUIDs[0], StringValue(req.DeviceUUID), "First DeviceUUID matches")
 }
 
 func verifyUserUpdateRequest(t *testing.T, updateReq *restSSHUserUpdateRequest, req api.SSHUserUpdateRequest) {
-	assert.Equal(t, updateReq.newPassword, req.Password, "Password matches")
+	assert.Equal(t, updateReq.newPassword, StringValue(req.Password), "Password matches")
 }

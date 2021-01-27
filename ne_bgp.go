@@ -9,24 +9,24 @@ import (
 
 type restBGPConfigurationUpdateRequest struct {
 	uuid              string
-	localIPAddress    string
-	localASN          int
-	remoteIPAddress   string
-	remoteASN         int
-	authenticationKey string
+	localIPAddress    *string
+	localASN          *int
+	remoteIPAddress   *string
+	remoteASN         *int
+	authenticationKey *string
 	c                 RestClient
 }
 
 //CreateBGPConfiguration creates new Network Edge BGP configuration
 //with a given model. Configuration's UUID is returned on successful
 //creation
-func (c RestClient) CreateBGPConfiguration(config BGPConfiguration) (string, error) {
+func (c RestClient) CreateBGPConfiguration(config BGPConfiguration) (*string, error) {
 	path := "/ne/v1/services/bgp"
 	reqBody := mapBGPConfigurationDomainToAPI(config)
 	respBody := api.BGPConfigurationCreateResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
 	if err := c.Execute(req, resty.MethodPost, path); err != nil {
-		return "", err
+		return nil, err
 	}
 	return respBody.UUID, nil
 }
@@ -64,27 +64,27 @@ func (c RestClient) NewBGPConfigurationUpdateRequest(uuid string) BGPUpdateReque
 }
 
 func (req *restBGPConfigurationUpdateRequest) WithLocalIPAddress(localIPAddress string) BGPUpdateRequest {
-	req.localIPAddress = localIPAddress
+	req.localIPAddress = &localIPAddress
 	return req
 }
 
 func (req *restBGPConfigurationUpdateRequest) WithLocalASN(localASN int) BGPUpdateRequest {
-	req.localASN = localASN
+	req.localASN = &localASN
 	return req
 }
 
 func (req *restBGPConfigurationUpdateRequest) WithRemoteASN(remoteASN int) BGPUpdateRequest {
-	req.remoteASN = remoteASN
+	req.remoteASN = &remoteASN
 	return req
 }
 
 func (req *restBGPConfigurationUpdateRequest) WithRemoteIPAddress(remoteIPAddress string) BGPUpdateRequest {
-	req.remoteIPAddress = remoteIPAddress
+	req.remoteIPAddress = &remoteIPAddress
 	return req
 }
 
 func (req *restBGPConfigurationUpdateRequest) WithAuthenticationKey(authenticationKey string) BGPUpdateRequest {
-	req.authenticationKey = authenticationKey
+	req.authenticationKey = &authenticationKey
 	return req
 }
 

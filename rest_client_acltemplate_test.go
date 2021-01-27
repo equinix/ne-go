@@ -13,32 +13,32 @@ import (
 )
 
 var testACLTemplate = ACLTemplate{
-	Name:        "test",
-	Description: "Test ACL",
-	MetroCode:   "SV",
+	Name:        String("test"),
+	Description: String("Test ACL"),
+	MetroCode:   String("SV"),
 	InboundRules: []ACLTemplateInboundRule{
 		{
-			SrcType:  "SUBNET",
-			SeqNo:    1,
+			SrcType:  String("SUBNET"),
+			SeqNo:    Int(1),
 			Subnets:  []string{"10.0.0.0/24"},
-			Protocol: "TCP",
-			SrcPort:  "any",
-			DstPort:  "22",
+			Protocol: String("TCP"),
+			SrcPort:  String("any"),
+			DstPort:  String("22"),
 		},
 		{
-			SrcType:  "DOMAIN",
-			SeqNo:    2,
+			SrcType:  String("DOMAIN"),
+			SeqNo:    Int(2),
 			Subnets:  []string{"216.221.225.13/32"},
-			Protocol: "TCP",
-			SrcPort:  "any",
-			DstPort:  "1024-10000",
+			Protocol: String("TCP"),
+			SrcPort:  String("any"),
+			DstPort:  String("1024-10000"),
 		},
 	},
 }
 
 func TestCreateACLTemplate(t *testing.T) {
 	//given
-	resp := api.BGPConfigurationCreateResponse{}
+	resp := api.ACLTemplateCreateResponse{}
 	if err := readJSONData("./test-fixtures/ne_acltemplate_post_resp.json", &resp); err != nil {
 		assert.Fail(t, "Cannot read test response")
 	}
@@ -73,7 +73,7 @@ func GetACLTemplates(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_acltemplates_get_resp.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := respBody.PageSize
+	pageSize := IntValue(respBody.PageSize)
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device/acl-template?size=%d", baseURL, pageSize),

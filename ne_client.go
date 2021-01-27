@@ -87,29 +87,29 @@ type Client interface {
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
 
-	CreateSSHUser(username string, password string, device string) (string, error)
+	CreateSSHUser(username string, password string, device string) (*string, error)
 	GetSSHUsers() ([]SSHUser, error)
 	GetSSHUser(uuid string) (*SSHUser, error)
 	NewSSHUserUpdateRequest(uuid string) SSHUserUpdateRequest
 	DeleteSSHUser(uuid string) error
 
-	CreateBGPConfiguration(config BGPConfiguration) (string, error)
+	CreateBGPConfiguration(config BGPConfiguration) (*string, error)
 	GetBGPConfiguration(uuid string) (*BGPConfiguration, error)
 	NewBGPConfigurationUpdateRequest(uuid string) BGPUpdateRequest
 	GetBGPConfigurationForConnection(uuid string) (*BGPConfiguration, error)
 
 	GetSSHPublicKeys() ([]SSHPublicKey, error)
 	GetSSHPublicKey(uuid string) (*SSHPublicKey, error)
-	CreateSSHPublicKey(key SSHPublicKey) (string, error)
+	CreateSSHPublicKey(key SSHPublicKey) (*string, error)
 	DeleteSSHPublicKey(uuid string) error
 
-	CreateACLTemplate(template ACLTemplate) (string, error)
+	CreateACLTemplate(template ACLTemplate) (*string, error)
 	GetACLTemplates() ([]ACLTemplate, error)
 	GetACLTemplate(uuid string) (*ACLTemplate, error)
 	ReplaceACLTemplate(uuid string, template ACLTemplate) error
 	DeleteACLTemplate(uuid string) error
 
-	UploadLicenseFile(metroCode, deviceTypeCode, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (string, error)
+	UploadLicenseFile(metroCode, deviceTypeCode, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (*string, error)
 }
 
 //DeviceUpdateRequest describes composite request to update given Network Edge device
@@ -188,10 +188,10 @@ func (e UpdateError) Error() string {
 
 //Account describes Network Edge customer account details
 type Account struct {
-	Name   string
-	Number string
-	Status string
-	UCMID  string
+	Name   *string
+	Number *string
+	Status *string
+	UCMID  *string
 }
 
 //Device describes Network Edge device
@@ -253,21 +253,21 @@ type DeviceUserPublicKey struct {
 
 //DeviceType describes Network Edge device type
 type DeviceType struct {
-	Name        string
-	Code        string
-	Description string
-	Vendor      string
-	Category    string
+	Name        *string
+	Code        *string
+	Description *string
+	Vendor      *string
+	Category    *string
 	MetroCodes  []string
 }
 
 //DevicePlatform describes Network Edge platform configurations
 //available for a given device type
 type DevicePlatform struct {
-	Flavor          string
-	CoreCount       int
-	Memory          int
-	MemoryUnit      string
+	Flavor          *string
+	CoreCount       *int
+	Memory          *int
+	MemoryUnit      *string
 	PackageCodes    []string
 	ManagementTypes []string
 	LicenseOptions  []string
@@ -275,65 +275,65 @@ type DevicePlatform struct {
 
 //DeviceSoftwareVersion describes available software packages and versions for a Network Edge device
 type DeviceSoftwareVersion struct {
-	Version          string
-	ImageName        string
-	Date             string
-	Status           string
-	IsStable         bool
-	ReleaseNotesLink string
+	Version          *string
+	ImageName        *string
+	Date             *string
+	Status           *string
+	IsStable         *bool
+	ReleaseNotesLink *string
 	PackageCodes     []string
 }
 
 //SSHUser describes Network Edge SSH user
 type SSHUser struct {
-	UUID        string
-	Username    string
-	Password    string
+	UUID        *string
+	Username    *string
+	Password    *string
 	DeviceUUIDs []string
 }
 
 //BGPConfiguration describes Network Edge BGP configuration
 type BGPConfiguration struct {
-	UUID               string
-	ConnectionUUID     string
-	DeviceUUID         string
-	LocalIPAddress     string
-	LocalASN           int
-	RemoteIPAddress    string
-	RemoteASN          int
-	AuthenticationKey  string
-	State              string
-	ProvisioningStatus string
+	UUID               *string
+	ConnectionUUID     *string
+	DeviceUUID         *string
+	LocalIPAddress     *string
+	LocalASN           *int
+	RemoteIPAddress    *string
+	RemoteASN          *int
+	AuthenticationKey  *string
+	State              *string
+	ProvisioningStatus *string
 }
 
 //SSHPublicKey describes Network Edge SSH user public key
 type SSHPublicKey struct {
-	UUID  string
-	Name  string
-	Value string
+	UUID  *string
+	Name  *string
+	Value *string
 }
 
 //ACLTemplate describes Network Edge device ACL template
 type ACLTemplate struct {
-	UUID            string
-	Name            string
-	Description     string
-	MetroCode       string
-	DeviceUUID      string
-	DeviceACLStatus string
+	UUID            *string
+	Name            *string
+	Description     *string
+	MetroCode       *string
+	DeviceUUID      *string
+	DeviceACLStatus *string
 	InboundRules    []ACLTemplateInboundRule
 }
 
 //ACLTemplateInboundRule describes inbound ACL rule that is part of
 //Network Edge device ACL template
 type ACLTemplateInboundRule struct {
-	SeqNo    int
-	SrcType  string
-	FQDN     string
+	SeqNo    *int
+	SrcType  *string
+	FQDN     *string
 	Subnets  []string
-	Protocol string
-	SrcPort  string
-	DstPort  string
+	Protocol *string
+	SrcPort  *string
+	DstPort  *string
 }
 
 //DeviceAdditionalBandwidthDetails describes details of a device

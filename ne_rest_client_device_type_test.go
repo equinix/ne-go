@@ -17,7 +17,7 @@ func TestGetDeviceTypes(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_device_types_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := respBody.PageSize
+	pageSize := IntValue(respBody.PageSize)
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
 	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device/type?size=%d", baseURL, pageSize),
@@ -48,7 +48,7 @@ func TestGetDeviceSoftwareVersions(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_devices_types_csr1000v_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := respBody.PageSize
+	pageSize := IntValue(respBody.PageSize)
 	deviceTypeCode := "CSR1000V"
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -72,14 +72,14 @@ func TestGetDeviceSoftwareVersions(t *testing.T) {
 	apiVerMap := make(map[string]api.DeviceTypeVersionDetails)
 	for _, pkg := range apiType.SoftwarePackages {
 		for _, ver := range pkg.VersionDetails {
-			if _, ok := apiVerMap[ver.Version]; !ok {
-				apiVerMap[ver.Version] = ver
+			if _, ok := apiVerMap[StringValue(ver.Version)]; !ok {
+				apiVerMap[StringValue(ver.Version)] = ver
 			}
 		}
 	}
 	assert.Equal(t, len(apiVerMap), len(versions), "Number of versions matches")
 	for _, ver := range versions {
-		apiVer := apiVerMap[ver.Version]
+		apiVer := apiVerMap[StringValue(ver.Version)]
 		verifyDeviceSoftwareVersion(t, apiVer, ver)
 	}
 }
@@ -90,7 +90,7 @@ func TestGetDevicePlatforms(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_devices_types_csr1000v_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := respBody.PageSize
+	pageSize := IntValue(respBody.PageSize)
 	deviceTypeCode := "CSR1000V"
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -126,7 +126,7 @@ func verifyDeviceType(t *testing.T, apiDeviceType api.DeviceType, deviceType Dev
 	assert.Equal(t, apiDeviceType.Category, deviceType.Category, "Category matches")
 	assert.Equal(t, len(apiDeviceType.AvailableMetros), len(deviceType.MetroCodes), "Number of available metros matches")
 	for i := range apiDeviceType.AvailableMetros {
-		assert.Equalf(t, apiDeviceType.AvailableMetros[i].Code, deviceType.MetroCodes[i], "Code of available metro element %d matches", i)
+		assert.Equalf(t, *apiDeviceType.AvailableMetros[i].Code, deviceType.MetroCodes[i], "Code of available metro element %d matches", i)
 	}
 }
 

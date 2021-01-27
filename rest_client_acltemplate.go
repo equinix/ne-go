@@ -10,13 +10,13 @@ import (
 
 //CreateACLTemplate creates new ACL template with a given model
 //On successful creation, template's UUID is returned
-func (c RestClient) CreateACLTemplate(template ACLTemplate) (string, error) {
+func (c RestClient) CreateACLTemplate(template ACLTemplate) (*string, error) {
 	path := "/ne/v1/device/acl-template"
 	reqBody := mapACLTemplateDomainToAPI(template)
 	respBody := api.ACLTemplateCreateResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
 	if err := c.Execute(req, resty.MethodPost, path); err != nil {
-		return "", err
+		return nil, err
 	}
 	return respBody.UUID, nil
 }

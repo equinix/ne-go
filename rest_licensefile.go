@@ -9,7 +9,7 @@ import (
 
 //UploadLicenseFile performs multipart upload of a license file from a given reader interface
 //along with provided data. Uploaded file identifier is returned on success.
-func (c RestClient) UploadLicenseFile(metroCode, deviceTypeCode, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (string, error) {
+func (c RestClient) UploadLicenseFile(metroCode, deviceTypeCode, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (*string, error) {
 	path := "/ne/v1/device/license/file"
 	respBody := api.LicenseFileUploadResponse{}
 	req := c.R().
@@ -22,7 +22,7 @@ func (c RestClient) UploadLicenseFile(metroCode, deviceTypeCode, deviceManagemen
 		}).
 		SetResult(&respBody)
 	if err := c.Execute(req, resty.MethodPost, path); err != nil {
-		return "", err
+		return nil, err
 	}
 	return respBody.FileID, nil
 }

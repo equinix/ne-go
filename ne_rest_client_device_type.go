@@ -77,7 +77,7 @@ func mapDeviceTypeAPIToDomain(apiDevice api.DeviceType) DeviceType {
 func mapDeviceTypeAvailableMetrosAPIToDomain(apiMetros []api.DeviceTypeAvailableMetro) []string {
 	transformed := make([]string, len(apiMetros))
 	for i := range apiMetros {
-		transformed[i] = apiMetros[i].Code
+		transformed[i] = StringValue(apiMetros[i].Code)
 	}
 	return transformed
 }
@@ -86,12 +86,13 @@ func mapDeviceTypeAPIToDeviceSoftwareVersions(apiType api.DeviceType) []DeviceSo
 	versionMap := make(map[string]*DeviceSoftwareVersion)
 	for _, apiPkg := range apiType.SoftwarePackages {
 		for _, apiVer := range apiPkg.VersionDetails {
-			ver, ok := versionMap[apiVer.Version]
+			apiVerStr := StringValue(apiVer.Version)
+			ver, ok := versionMap[apiVerStr]
 			if !ok {
 				ver = mapDeviceSoftwareVersionAPIToDomain(apiVer)
-				versionMap[apiVer.Version] = ver
+				versionMap[apiVerStr] = ver
 			}
-			ver.PackageCodes = append(ver.PackageCodes, apiPkg.Code)
+			ver.PackageCodes = append(ver.PackageCodes, StringValue(apiPkg.Code))
 		}
 	}
 	transformed := make([]DeviceSoftwareVersion, 0, len(versionMap))
@@ -118,10 +119,10 @@ func mapDeviceTypeAPIToDevicePlatforms(apiType api.DeviceType) []DevicePlatform 
 	mgmtPlatforms = append(mgmtPlatforms, flattenMgmtType(apiType.DeviceManagementTypes.SelfConfigured)...)
 	pMap := make(map[string]*DevicePlatform)
 	for i := range mgmtPlatforms {
-		platform, ok := pMap[mgmtPlatforms[i].Flavor]
+		platform, ok := pMap[StringValue(mgmtPlatforms[i].Flavor)]
 		if !ok {
 			platform = &mgmtPlatforms[i]
-			pMap[mgmtPlatforms[i].Flavor] = platform
+			pMap[StringValue(mgmtPlatforms[i].Flavor)] = platform
 		} else {
 			platform.ManagementTypes = append(platform.ManagementTypes, mgmtPlatforms[i].ManagementTypes...)
 		}
@@ -137,11 +138,11 @@ func flattenMgmtType(mgmtType api.DeviceManagementType) []DevicePlatform {
 	licPlatforms = append(licPlatforms, mapLicenseOption(mgmtType.LicenseOptions.Sub)...)
 	pMap := make(map[string]*DevicePlatform)
 	for i := range licPlatforms {
-		platform, ok := pMap[licPlatforms[i].Flavor]
+		platform, ok := pMap[StringValue(licPlatforms[i].Flavor)]
 		if !ok {
 			platform = &licPlatforms[i]
 			platform.ManagementTypes = append(platform.ManagementTypes, mgmtType.Type)
-			pMap[licPlatforms[i].Flavor] = platform
+			pMap[StringValue(licPlatforms[i].Flavor)] = platform
 		} else {
 			platform.LicenseOptions = append(platform.LicenseOptions, licPlatforms[i].LicenseOptions...)
 		}
@@ -150,7 +151,7 @@ func flattenMgmtType(mgmtType api.DeviceManagementType) []DevicePlatform {
 }
 
 func mapLicenseOption(licOption api.DeviceLicenseOption) []DevicePlatform {
-	if !licOption.IsSupported {
+	if !BoolValue(licOption.IsSupported) {
 		return []DevicePlatform{}
 	}
 	transformed := make([]DevicePlatform, len(licOption.Cores))
@@ -162,7 +163,7 @@ func mapLicenseOption(licOption api.DeviceLicenseOption) []DevicePlatform {
 			MemoryUnit:      licOption.Cores[i].Unit,
 			PackageCodes:    mapPackageCodesAPIToDomain(licOption.Cores[i].PackageCodes),
 			ManagementTypes: []string{},
-			LicenseOptions:  []string{licOption.Type},
+			LicenseOptions:  []string{StringValue(licOption.Type)},
 		}
 	}
 	return transformed
@@ -171,10 +172,10 @@ func mapLicenseOption(licOption api.DeviceLicenseOption) []DevicePlatform {
 func mapPackageCodesAPIToDomain(apiCodes []api.DevicePackageCode) []string {
 	transformed := make([]string, 0, len(apiCodes))
 	for _, apiCode := range apiCodes {
-		if !apiCode.IsSupported {
+		if !BoolValue(apiCode.IsSupported) {
 			continue
 		}
-		transformed = append(transformed, apiCode.PackageCode)
+		transformed = append(transformed, StringValue(apiCode.PackageCode))
 	}
 	return transformed
 }

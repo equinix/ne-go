@@ -23,17 +23,17 @@ type restSSHUserUpdateRequest struct {
 }
 
 //CreateSSHUser creates new Network Edge SSH user with a given parameters and returns its UUID upon successful creation
-func (c RestClient) CreateSSHUser(username string, password string, device string) (string, error) {
+func (c RestClient) CreateSSHUser(username string, password string, device string) (*string, error) {
 	path := "/ne/v1/services/ssh-user"
 	reqBody := api.SSHUserRequest{
-		Username:   username,
-		Password:   password,
-		DeviceUUID: device,
+		Username:   &username,
+		Password:   &password,
+		DeviceUUID: &device,
 	}
 	respBody := api.SSHUserRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
 	if err := c.Execute(req, resty.MethodPost, path); err != nil {
-		return "", err
+		return nil, err
 	}
 	return respBody.UUID, nil
 }
@@ -135,7 +135,7 @@ func (req *restSSHUserUpdateRequest) Execute() error {
 
 func (c RestClient) changeUserPassword(userID string, newPassword string) error {
 	path := "/ne/v1/services/ssh-user/" + url.PathEscape(userID)
-	reqBody := api.SSHUserUpdateRequest{Password: newPassword}
+	reqBody := api.SSHUserUpdateRequest{Password: &newPassword}
 	req := c.R().SetBody(&reqBody)
 	if err := c.Execute(req, resty.MethodPut, path); err != nil {
 		return err

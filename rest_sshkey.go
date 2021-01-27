@@ -31,13 +31,13 @@ func (c RestClient) GetSSHPublicKey(uuid string) (*SSHPublicKey, error) {
 }
 
 //CreateSSHPublicKey creates new SSH public key with a given details
-func (c RestClient) CreateSSHPublicKey(key SSHPublicKey) (string, error) {
+func (c RestClient) CreateSSHPublicKey(key SSHPublicKey) (*string, error) {
 	path := "/ne/v1/device/public-keys"
 	reqBody := mapSSHPublicKeyDomainToAPI(key)
 	respBody := api.SSHPublicKeyCreateResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
 	if err := c.Execute(req, resty.MethodPost, path); err != nil {
-		return "", err
+		return nil, err
 	}
 	return respBody.UUID, nil
 }

@@ -13,12 +13,12 @@ import (
 )
 
 var testBGPConfiguration = BGPConfiguration{
-	ConnectionUUID:    "e8b2e48e-2eba-4412-bc0b-c88dadb48050",
-	LocalIPAddress:    "10.0.0.1/30",
-	LocalASN:          10012,
-	RemoteIPAddress:   "10.0.0.2",
-	RemoteASN:         10013,
-	AuthenticationKey: "authKey",
+	ConnectionUUID:    String("e8b2e48e-2eba-4412-bc0b-c88dadb48050"),
+	LocalIPAddress:    String("10.0.0.1/30"),
+	LocalASN:          Int(10012),
+	RemoteIPAddress:   String("10.0.0.2"),
+	RemoteASN:         Int(10013),
+	AuthenticationKey: String("authKey"),
 }
 
 func TestCreateBGPConfiguration(t *testing.T) {
@@ -130,11 +130,11 @@ func TestUpdateBGPConfiguration(t *testing.T) {
 	//then
 	assert.Nil(t, err, "Error is not returned")
 	verifyBGPConfig(t, BGPConfiguration{
-		LocalASN:          newLocalASN,
-		RemoteASN:         newRemoteASN,
-		LocalIPAddress:    newLocalIPAddress,
-		RemoteIPAddress:   newRemoteIPAddress,
-		AuthenticationKey: newAuthenticationKey,
+		LocalASN:          Int(newLocalASN),
+		RemoteASN:         Int(newRemoteASN),
+		LocalIPAddress:    String(newLocalIPAddress),
+		RemoteIPAddress:   String(newRemoteIPAddress),
+		AuthenticationKey: String(newAuthenticationKey),
 	}, reqBody)
 }
 
