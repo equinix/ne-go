@@ -65,6 +65,11 @@ const (
 	//ErrorCodeSSHPublicKeyInvalid is an error code returned when invalid
 	//SSH public key identifier was used
 	ErrorCodeSSHPublicKeyInvalid = "IC-NE-PUBLIC-KEY-03"
+
+	//DeviceAdditionalBandwidthStatusProvisioning additional bandwidth is provisioning
+	DeviceAdditionalBandwidthStatusProvisioning = "PROVISIONING"
+	//DeviceAdditionalBandwidthStatusProvisioned additional bandwidth is provisioned
+	DeviceAdditionalBandwidthStatusProvisioned = "PROVISIONED"
 )
 
 //Client interface describes operations provided by Network Edge client library
@@ -78,6 +83,7 @@ type Client interface {
 	CreateRedundantDevice(primary Device, secondary Device) (*string, *string, error)
 	GetDevice(uuid string) (*Device, error)
 	GetDevices(statuses []string) ([]Device, error)
+	GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdditionalBandwidthDetails, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
 
@@ -328,4 +334,11 @@ type ACLTemplateInboundRule struct {
 	Protocol string
 	SrcPort  string
 	DstPort  string
+}
+
+//DeviceAdditionalBandwidthDetails describes details of a device
+//additional badwidth
+type DeviceAdditionalBandwidthDetails struct {
+	AdditionalBandwidth *int
+	Status              *string
 }

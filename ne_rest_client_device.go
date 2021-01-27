@@ -88,6 +88,17 @@ func (c RestClient) GetDevices(statuses []string) ([]Device, error) {
 	return transformed, nil
 }
 
+//GetDeviceAdditionalBandwidthDetails retrives details of given device's additional bandwidth
+func (c RestClient) GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdditionalBandwidthDetails, error) {
+	path := "/ne/v1/device/additionalbandwidth/" + url.PathEscape(uuid)
+	result := api.DeviceAdditionalBandwidthResponse{}
+	request := c.R().SetResult(&result)
+	if err := c.Execute(request, resty.MethodGet, path); err != nil {
+		return nil, err
+	}
+	return mapDeviceAdditionalBandwidthAPIToDomain(result), nil
+}
+
 //NewDeviceUpdateRequest creates new composite update request for a device with a given UUID
 func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 	return &restDeviceUpdateRequest{
@@ -372,4 +383,11 @@ func buildQueryParamValueString(values []string) string {
 		}
 	}
 	return sb.String()
+}
+
+func mapDeviceAdditionalBandwidthAPIToDomain(apiDetails api.DeviceAdditionalBandwidthResponse) *DeviceAdditionalBandwidthDetails {
+	return &DeviceAdditionalBandwidthDetails{
+		AdditionalBandwidth: apiDetails.AdditionalBandwidth,
+		Status:              apiDetails.Status,
+	}
 }

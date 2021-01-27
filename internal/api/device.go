@@ -144,3 +144,10 @@ type DevicesResponse struct {
 type DeviceACLTemplateRequest struct {
 	TemplateUUID *string `json:"aclTemplateUuid"`
 }
+
+//DeviceAdditionalBandwidthResponse describes response for device additional
+//bandwidth get request
+type DeviceAdditionalBandwidthResponse struct {
+	AdditionalBandwidth *int    `json:"additionalBandwidth,omitempty"`
+	Status              *string `json:"status,omitempty"`
+}

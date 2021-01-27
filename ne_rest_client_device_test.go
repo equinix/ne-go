@@ -179,6 +179,27 @@ func TestGetDevices(t *testing.T) {
 	}
 }
 
+func TestGetDeviceAdditionalBandwidthDetails(t *testing.T) {
+	//given
+	resp := api.DeviceAdditionalBandwidthResponse{}
+	if err := readJSONData("./test-fixtures/ne_device_additionalbandwidth_get.json", &resp); err != nil {
+		assert.Fail(t, "Cannot read test response")
+	}
+	devID := "myDevice"
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/additionalbandwidth/%s", baseURL, devID), 200, resp)
+	defer httpmock.DeactivateAndReset()
+
+	//when
+	c := NewClient(context.Background(), baseURL, testHc)
+	details, err := c.GetDeviceAdditionalBandwidthDetails(devID)
+
+	//then
+	assert.NotNil(t, details, "Returned additional bandwidth details struct is not nil")
+	assert.Nil(t, err, "Error is not returned")
+	assert.Equal(t, resp.AdditionalBandwidth, details.AdditionalBandwidth, "AdditionalBandwidth matches")
+	assert.Equal(t, resp.Status, details.Status, "Status matches")
+}
+
 func TestUpdateDeviceBasicFields(t *testing.T) {
 	//given
 	devID := "myDevice"
