@@ -31,7 +31,7 @@ type restDeviceUpdateRequest struct {
 	deviceName          string
 	termLength          int
 	notifications       []string
-	additionalBandwidth int
+	additionalBandwidth *int
 	aclTemplateID       *string
 	c                   RestClient
 }
@@ -137,7 +137,7 @@ func (req *restDeviceUpdateRequest) WithNotifications(notifications []string) De
 
 //WithAdditionalBandwidth sets new additional bandwidth in a composite device update request
 func (req *restDeviceUpdateRequest) WithAdditionalBandwidth(additionalBandwidth int) DeviceUpdateRequest {
-	req.additionalBandwidth = additionalBandwidth
+	req.additionalBandwidth = &additionalBandwidth
 	return req
 }
 
@@ -160,8 +160,8 @@ func (req *restDeviceUpdateRequest) Execute() error {
 			updateErr.AddChangeError(changeTypeUpdate, "aclTemplateUuid", *req.aclTemplateID, err)
 		}
 	}
-	if req.additionalBandwidth > 0 {
-		if err := req.c.replaceDeviceAdditionalBandwidth(req.uuid, req.additionalBandwidth); err != nil {
+	if req.additionalBandwidth != nil {
+		if err := req.c.replaceDeviceAdditionalBandwidth(req.uuid, *req.additionalBandwidth); err != nil {
 			updateErr.AddChangeError(changeTypeUpdate, "additionalBandwidth", req.additionalBandwidth, err)
 		}
 	}
