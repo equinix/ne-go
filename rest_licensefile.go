@@ -2,9 +2,9 @@ package ne
 
 import (
 	"io"
+	"net/http"
 
 	"github.com/equinix/ne-go/internal/api"
-	"github.com/go-resty/resty/v2"
 )
 
 //UploadLicenseFile performs multipart upload of a license file from a given reader interface
@@ -21,7 +21,7 @@ func (c RestClient) UploadLicenseFile(metroCode, deviceTypeCode, deviceManagemen
 			"deviceManagementType": deviceManagementMode,
 		}).
 		SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodPost, path); err != nil {
+	if err := c.Execute(req, http.MethodPost, path); err != nil {
 		return nil, err
 	}
 	return respBody.FileID, nil

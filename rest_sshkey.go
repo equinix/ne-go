@@ -1,10 +1,10 @@
 package ne
 
 import (
+	"net/http"
 	"net/url"
 
 	"github.com/equinix/ne-go/internal/api"
-	"github.com/go-resty/resty/v2"
 )
 
 //GetSSHPublicKeys retrieves list of available SSH public keys
@@ -12,7 +12,7 @@ func (c RestClient) GetSSHPublicKeys() ([]SSHPublicKey, error) {
 	path := "/ne/v1/device/public-keys"
 	respBody := make([]api.SSHPublicKey, 0)
 	req := c.R().SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodGet, path); err != nil {
+	if err := c.Execute(req, http.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapSSHPublicKeysAPIToDomain(respBody), nil
@@ -23,7 +23,7 @@ func (c RestClient) GetSSHPublicKey(uuid string) (*SSHPublicKey, error) {
 	path := "/ne/v1/device/public-keys/" + url.PathEscape(uuid)
 	respBody := api.SSHPublicKey{}
 	req := c.R().SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodGet, path); err != nil {
+	if err := c.Execute(req, http.MethodGet, path); err != nil {
 		return nil, err
 	}
 	mapped := mapSSHPublicKeyAPIToDomain(respBody)
@@ -36,7 +36,7 @@ func (c RestClient) CreateSSHPublicKey(key SSHPublicKey) (*string, error) {
 	reqBody := mapSSHPublicKeyDomainToAPI(key)
 	respBody := api.SSHPublicKeyCreateResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodPost, path); err != nil {
+	if err := c.Execute(req, http.MethodPost, path); err != nil {
 		return nil, err
 	}
 	return respBody.UUID, nil
@@ -45,7 +45,7 @@ func (c RestClient) CreateSSHPublicKey(key SSHPublicKey) (*string, error) {
 //DeleteSSHPublicKey removes SSH Public key with given identifier
 func (c RestClient) DeleteSSHPublicKey(uuid string) error {
 	path := "/ne/v1/device/public-keys/" + url.PathEscape(uuid)
-	if err := c.Execute(c.R(), resty.MethodDelete, path); err != nil {
+	if err := c.Execute(c.R(), http.MethodDelete, path); err != nil {
 		return err
 	}
 	return nil

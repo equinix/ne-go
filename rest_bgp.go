@@ -1,10 +1,10 @@
 package ne
 
 import (
+	"net/http"
 	"net/url"
 
 	"github.com/equinix/ne-go/internal/api"
-	"github.com/go-resty/resty/v2"
 )
 
 type restBGPConfigurationUpdateRequest struct {
@@ -25,7 +25,7 @@ func (c RestClient) CreateBGPConfiguration(config BGPConfiguration) (*string, er
 	reqBody := mapBGPConfigurationDomainToAPI(config)
 	respBody := api.BGPConfigurationCreateResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodPost, path); err != nil {
+	if err := c.Execute(req, http.MethodPost, path); err != nil {
 		return nil, err
 	}
 	return respBody.UUID, nil
@@ -36,7 +36,7 @@ func (c RestClient) GetBGPConfiguration(uuid string) (*BGPConfiguration, error) 
 	path := "/ne/v1/services/bgp/" + url.PathEscape(uuid)
 	respBody := api.BGPConfiguration{}
 	req := c.R().SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodGet, path); err != nil {
+	if err := c.Execute(req, http.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapBGPConfigurationAPIToDomain(respBody), nil
@@ -48,7 +48,7 @@ func (c RestClient) GetBGPConfigurationForConnection(uuid string) (*BGPConfigura
 	path := "/ne/v1/services/bgp/connection/" + url.PathEscape(uuid)
 	respBody := api.BGPConfiguration{}
 	req := c.R().SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodGet, path); err != nil {
+	if err := c.Execute(req, http.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapBGPConfigurationAPIToDomain(respBody), nil
@@ -99,7 +99,7 @@ func (req *restBGPConfigurationUpdateRequest) Execute() error {
 	}
 	respBody := api.BGPConfigurationCreateResponse{}
 	restReq := req.c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := req.c.Execute(restReq, resty.MethodPut, path); err != nil {
+	if err := req.c.Execute(restReq, http.MethodPut, path); err != nil {
 		return err
 	}
 	return nil

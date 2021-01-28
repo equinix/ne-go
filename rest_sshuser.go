@@ -2,11 +2,11 @@ package ne
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 
 	"github.com/equinix/ne-go/internal/api"
 	"github.com/equinix/rest-go"
-	"github.com/go-resty/resty/v2"
 )
 
 const (
@@ -32,7 +32,7 @@ func (c RestClient) CreateSSHUser(username string, password string, device strin
 	}
 	respBody := api.SSHUserRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodPost, path); err != nil {
+	if err := c.Execute(req, http.MethodPost, path); err != nil {
 		return nil, err
 	}
 	return respBody.UUID, nil
@@ -63,7 +63,7 @@ func (c RestClient) GetSSHUser(uuid string) (*SSHUser, error) {
 	path := "/ne/v1/services/ssh-user/" + url.PathEscape(uuid)
 	respBody := api.SSHUser{}
 	req := c.R().SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodGet, path); err != nil {
+	if err := c.Execute(req, http.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapSSHUserAPIToDomain(respBody), nil
@@ -137,7 +137,7 @@ func (c RestClient) changeUserPassword(userID string, newPassword string) error 
 	path := "/ne/v1/services/ssh-user/" + url.PathEscape(userID)
 	reqBody := api.SSHUserUpdateRequest{Password: &newPassword}
 	req := c.R().SetBody(&reqBody)
-	if err := c.Execute(req, resty.MethodPut, path); err != nil {
+	if err := c.Execute(req, http.MethodPut, path); err != nil {
 		return err
 	}
 	return nil
@@ -149,9 +149,9 @@ func (c RestClient) changeDeviceAssociation(changeType string, userID string, de
 	var method string
 	switch changeType {
 	case associateDevice:
-		method = resty.MethodPatch
+		method = http.MethodPatch
 	case unassociateDevice:
-		method = resty.MethodDelete
+		method = http.MethodDelete
 	default:
 		return fmt.Errorf("unsupported association change type")
 	}

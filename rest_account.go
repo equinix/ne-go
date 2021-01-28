@@ -1,10 +1,10 @@
 package ne
 
 import (
+	"net/http"
 	"net/url"
 
 	"github.com/equinix/ne-go/internal/api"
-	"github.com/go-resty/resty/v2"
 )
 
 //GetAccounts retrieves accounts and their details for a given metro code using Network Edge API
@@ -13,7 +13,7 @@ func (c RestClient) GetAccounts(metroCode string) ([]Account, error) {
 	respBody := api.AccountResponse{}
 	req := c.R().SetResult(&respBody)
 
-	if err := c.Execute(req, resty.MethodGet, path); err != nil {
+	if err := c.Execute(req, http.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapAccountsAPIToDomain(respBody.Accounts), nil

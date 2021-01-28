@@ -1,13 +1,13 @@
 package ne
 
 import (
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 
 	"github.com/equinix/ne-go/internal/api"
 	"github.com/equinix/rest-go"
-	"github.com/go-resty/resty/v2"
 )
 
 const (
@@ -42,7 +42,7 @@ func (c RestClient) CreateDevice(device Device) (*string, error) {
 	reqBody := createDeviceRequest(device)
 	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodPost, path); err != nil {
+	if err := c.Execute(req, http.MethodPost, path); err != nil {
 		return nil, err
 	}
 	return respBody.UUID, nil
@@ -55,7 +55,7 @@ func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (*st
 	reqBody := createRedundantDeviceRequest(primary, secondary)
 	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodPost, path); err != nil {
+	if err := c.Execute(req, http.MethodPost, path); err != nil {
 		return nil, nil, err
 	}
 	return respBody.UUID, respBody.SecondaryUUID, nil
@@ -66,7 +66,7 @@ func (c RestClient) GetDevice(uuid string) (*Device, error) {
 	path := "/ne/v1/device/" + url.PathEscape(uuid)
 	result := api.Device{}
 	request := c.R().SetResult(&result)
-	if err := c.Execute(request, resty.MethodGet, path); err != nil {
+	if err := c.Execute(request, http.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapDeviceAPIToDomain(result), nil
@@ -93,7 +93,7 @@ func (c RestClient) GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdd
 	path := "/ne/v1/device/additionalbandwidth/" + url.PathEscape(uuid)
 	result := api.DeviceAdditionalBandwidthResponse{}
 	request := c.R().SetResult(&result)
-	if err := c.Execute(request, resty.MethodGet, path); err != nil {
+	if err := c.Execute(request, http.MethodGet, path); err != nil {
 		return nil, err
 	}
 	return mapDeviceAdditionalBandwidthAPIToDomain(result), nil
@@ -111,7 +111,7 @@ func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 func (c RestClient) DeleteDevice(uuid string) error {
 	path := "/ne/v1/device/" + url.PathEscape(uuid)
 	req := c.R().SetQueryParam("deleteRedundantDevice", "true")
-	if err := c.Execute(req, resty.MethodDelete, path); err != nil {
+	if err := c.Execute(req, http.MethodDelete, path); err != nil {
 		return err
 	}
 	return nil
@@ -333,7 +333,7 @@ func (c RestClient) replaceDeviceACLTemplate(uuid string, templateID string) err
 	path := "/ne/v1/device/" + url.PathEscape(uuid) + "/acl"
 	reqBody := api.DeviceACLTemplateRequest{TemplateUUID: &templateID}
 	req := c.R().SetBody(reqBody)
-	if err := c.Execute(req, resty.MethodPut, path); err != nil {
+	if err := c.Execute(req, http.MethodPut, path); err != nil {
 		return err
 	}
 	return nil
@@ -343,7 +343,7 @@ func (c RestClient) replaceDeviceAdditionalBandwidth(uuid string, bandwidth int)
 	path := "/ne/v1/device/additionalbandwidth/" + url.PathEscape(uuid)
 	reqBody := api.DeviceAdditionalBandwidthUpdateRequest{AdditionalBandwidth: &bandwidth}
 	req := c.R().SetBody(reqBody)
-	if err := c.Execute(req, resty.MethodPut, path); err != nil {
+	if err := c.Execute(req, http.MethodPut, path); err != nil {
 		return err
 	}
 	return nil
@@ -367,7 +367,7 @@ func (c RestClient) replaceDeviceFields(uuid string, fields map[string]interface
 	if okToSend {
 		path := "/ne/v1/device/" + uuid
 		req := c.R().SetBody(&reqBody)
-		if err := c.Execute(req, resty.MethodPatch, path); err != nil {
+		if err := c.Execute(req, http.MethodPatch, path); err != nil {
 			return err
 		}
 	}

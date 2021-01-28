@@ -1,11 +1,11 @@
 package ne
 
 import (
+	"net/http"
 	"net/url"
 
 	"github.com/equinix/ne-go/internal/api"
 	"github.com/equinix/rest-go"
-	"github.com/go-resty/resty/v2"
 )
 
 //CreateACLTemplate creates new ACL template with a given model
@@ -15,7 +15,7 @@ func (c RestClient) CreateACLTemplate(template ACLTemplate) (*string, error) {
 	reqBody := mapACLTemplateDomainToAPI(template)
 	respBody := api.ACLTemplateCreateResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodPost, path); err != nil {
+	if err := c.Execute(req, http.MethodPost, path); err != nil {
 		return nil, err
 	}
 	return respBody.UUID, nil
@@ -41,7 +41,7 @@ func (c RestClient) GetACLTemplate(uuid string) (*ACLTemplate, error) {
 	path := "/ne/v1/device/acl-template/" + url.PathEscape(uuid)
 	respBody := api.ACLTemplate{}
 	req := c.R().SetResult(&respBody)
-	if err := c.Execute(req, resty.MethodGet, path); err != nil {
+	if err := c.Execute(req, http.MethodGet, path); err != nil {
 		return nil, err
 	}
 	template := mapACLTemplateAPIToDomain(respBody)
@@ -60,7 +60,7 @@ func (c RestClient) ReplaceACLTemplate(uuid string, template ACLTemplate) error 
 	}
 	reqBody := mapACLTemplateDomainToAPI(updateTemplate)
 	req := c.R().SetBody(&reqBody)
-	if err := c.Execute(req, resty.MethodPut, path); err != nil {
+	if err := c.Execute(req, http.MethodPut, path); err != nil {
 		return err
 	}
 	return nil
@@ -69,7 +69,7 @@ func (c RestClient) ReplaceACLTemplate(uuid string, template ACLTemplate) error 
 //DeleteACLTemplate removes ACL template with a given UUID
 func (c RestClient) DeleteACLTemplate(uuid string) error {
 	path := "/ne/v1/device/acl-template/" + url.PathEscape(uuid)
-	if err := c.Execute(c.R(), resty.MethodDelete, path); err != nil {
+	if err := c.Execute(c.R(), http.MethodDelete, path); err != nil {
 		return err
 	}
 	return nil
