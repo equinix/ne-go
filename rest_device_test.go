@@ -367,9 +367,9 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	termLengthStr := strconv.Itoa(*device.TermLength)
 	assert.Equal(t, &termLengthStr, req.TermLength, "TermLength matches")
 	if *device.IsBYOL {
-		assert.Equal(t, String(DeviceLicenseModeBYOL), req.LicenseMode, "LicenseMode matches")
+		assert.Equal(t, DeviceLicenseModeBYOL, StringValue(req.LicenseMode), "LicenseMode matches")
 	} else {
-		assert.Equal(t, String(DeviceLicenseModeSubscription), req.LicenseMode, "LicenseMode matches")
+		assert.Equal(t, DeviceLicenseModeSubscription, StringValue(req.LicenseMode), "LicenseMode matches")
 	}
 	assert.Equal(t, device.LicenseToken, req.LicenseToken, "LicenseToken matches")
 	assert.Equal(t, device.LicenseFileID, req.LicenseFileID, "LicenseFileID matches")
@@ -383,9 +383,9 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.Version, req.Version, "Version matches")
 	assert.Equal(t, device.InterfaceCount, req.InterfaceCount, "InterfaceCount matches")
 	if *device.IsSelfManaged {
-		assert.Equal(t, String(DeviceManagementTypeSelf), req.DeviceManagementType, "DeviceManagementType matches")
+		assert.Equal(t, DeviceManagementTypeSelf, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
 	} else {
-		assert.Equal(t, DeviceManagementTypeEquinix, req.DeviceManagementType, "DeviceManagementType matches")
+		assert.Equal(t, DeviceManagementTypeEquinix, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
 	}
 	assert.Equal(t, device.CoreCount, req.Core, "Core matches")
 	assert.Equal(t, device.AdditionalBandwidth, req.AdditionalBandwidth, "AdditionalBandwidth matches")

@@ -276,11 +276,9 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	}
 	if device.IsBYOL != nil {
 		if *device.IsBYOL {
-			byolLicenseModeValue := DeviceLicenseModeBYOL
-			req.LicenseMode = &byolLicenseModeValue
+			req.LicenseMode = String(DeviceLicenseModeBYOL)
 		} else {
-			subLicenseModeValue := DeviceLicenseModeSubscription
-			req.LicenseMode = &subLicenseModeValue
+			req.LicenseMode = String(DeviceLicenseModeSubscription)
 		}
 	}
 	req.LicenseToken = device.LicenseToken
@@ -296,11 +294,9 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.InterfaceCount = device.InterfaceCount
 	if device.IsSelfManaged != nil {
 		if *device.IsSelfManaged {
-			selfManagedValue := DeviceManagementTypeSelf
-			req.DeviceManagementType = &selfManagedValue
+			req.DeviceManagementType = String(DeviceManagementTypeSelf)
 		} else {
-			equinixManagedValue := DeviceManagementTypeEquinix
-			req.DeviceManagementType = &equinixManagedValue
+			req.DeviceManagementType = String(DeviceManagementTypeEquinix)
 		}
 	}
 	req.Core = device.CoreCount
