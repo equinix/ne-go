@@ -2,8 +2,8 @@ github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ3
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/equinix/rest-go v1.2.1 h1:uLOEsOI2pKfdY3gdobfTIdF39NiH8tyczi2SN7OFZys=
-github.com/equinix/rest-go v1.2.1/go.mod h1:7pjEgOdG2MZO9BGkQzSurSgVQxRfzc1enceXJS6hYDw=
+github.com/equinix/rest-go v1.2.2 h1:R0CiOsyqfLqolaisNpQhamYrpy0bf1+1cYoGS/qHDBA=
+github.com/equinix/rest-go v1.2.2/go.mod h1:7pjEgOdG2MZO9BGkQzSurSgVQxRfzc1enceXJS6hYDw=
 github.com/go-resty/resty/v2 v2.3.0 h1:JOOeAvjSlapTT92p8xiS19Zxev1neGikoHsXJeOq8So=
 github.com/go-resty/resty/v2 v2.3.0/go.mod h1:UpN9CgLZNsv4e9XG50UU8xdI0F43UQ4HmxLBDwaroHU=
 github.com/jarcoal/httpmock v1.0.6 h1:e81vOSexXU3mJuJ4l//geOmKIt+Vkxerk1feQBC8D0g=
