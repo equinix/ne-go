@@ -11,7 +11,7 @@ import (
 //CreateACLTemplate creates new ACL template with a given model
 //On successful creation, template's UUID is returned
 func (c RestClient) CreateACLTemplate(template ACLTemplate) (*string, error) {
-	path := "/ne/v1/device/acl-template"
+	path := "/ne/v1/aclTemplates"
 	reqBody := mapACLTemplateDomainToAPI(template)
 	respBody := api.ACLTemplateCreateResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
@@ -23,9 +23,9 @@ func (c RestClient) CreateACLTemplate(template ACLTemplate) (*string, error) {
 
 //GetACLTemplates retrieves list of all ACL templates along with their details
 func (c RestClient) GetACLTemplates() ([]ACLTemplate, error) {
-	path := "/ne/v1/device/acl-template"
-	content, err := c.GetPaginated(path, &api.ACLTemplatesResponse{},
-		rest.DefaultPagingConfig().SetPageParamName("pageNumber"))
+	path := "/ne/v1/aclTemplates"
+	content, err := c.GetOffsetPaginated(path, &api.ACLTemplatesResponse{},
+		rest.DefaultOffsetPagingConfig())
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (c RestClient) GetACLTemplates() ([]ACLTemplate, error) {
 
 //GetACLTemplate retrieves ACL template with a given UUID
 func (c RestClient) GetACLTemplate(uuid string) (*ACLTemplate, error) {
-	path := "/ne/v1/device/acl-template/" + url.PathEscape(uuid)
+	path := "/ne/v1/aclTemplates/" + url.PathEscape(uuid)
 	respBody := api.ACLTemplate{}
 	req := c.R().SetResult(&respBody)
 	if err := c.Execute(req, http.MethodGet, path); err != nil {
@@ -51,7 +51,7 @@ func (c RestClient) GetACLTemplate(uuid string) (*ACLTemplate, error) {
 //ReplaceACLTemplate replaces ACL template under given UUID with
 //a new one with a given model
 func (c RestClient) ReplaceACLTemplate(uuid string, template ACLTemplate) error {
-	path := "/ne/v1/device/acl-template/" + url.PathEscape(uuid)
+	path := "/ne/v1/aclTemplates/" + url.PathEscape(uuid)
 	updateTemplate := ACLTemplate{
 		Name:         template.Name,
 		Description:  template.Description,
@@ -68,7 +68,7 @@ func (c RestClient) ReplaceACLTemplate(uuid string, template ACLTemplate) error 
 
 //DeleteACLTemplate removes ACL template with a given UUID
 func (c RestClient) DeleteACLTemplate(uuid string) error {
-	path := "/ne/v1/device/acl-template/" + url.PathEscape(uuid)
+	path := "/ne/v1/aclTemplates/" + url.PathEscape(uuid)
 	if err := c.Execute(c.R(), http.MethodDelete, path); err != nil {
 		return err
 	}

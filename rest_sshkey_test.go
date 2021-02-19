@@ -23,7 +23,7 @@ func TestGetSSHPublicKeys(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_sshpubkeys_get.json", &resp); err != nil {
 		assert.Fail(t, "Cannot read test response")
 	}
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/public-keys", baseURL), 200, resp)
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/publicKeys", baseURL), 200, resp)
 	defer httpmock.DeactivateAndReset()
 
 	//when
@@ -46,7 +46,7 @@ func TestGetSSHPublicKey(t *testing.T) {
 		assert.Fail(t, "Cannot read test response")
 	}
 	keyUUID := "keyID"
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/public-keys/%s", baseURL, keyUUID), 200, resp)
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/publicKeys/%s", baseURL, keyUUID), 200, resp)
 	defer httpmock.DeactivateAndReset()
 
 	//when
@@ -69,7 +69,7 @@ func TestCreateSSHPublicKey(t *testing.T) {
 	req := api.SSHPublicKey{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/device/public-keys", baseURL),
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/publicKeys", baseURL),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -95,7 +95,7 @@ func TestDeleteSSHPublicKey(t *testing.T) {
 	keyUUID := "keyID"
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/device/public-keys/%s", baseURL, keyUUID),
+	httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/publicKeys/%s", baseURL, keyUUID),
 		httpmock.NewStringResponder(204, ""))
 	defer httpmock.DeactivateAndReset()
 

@@ -9,7 +9,7 @@ import (
 
 //GetAccounts retrieves accounts and their details for a given metro code using Network Edge API
 func (c RestClient) GetAccounts(metroCode string) ([]Account, error) {
-	path := "/ne/v1/device/account/" + url.PathEscape(metroCode)
+	path := "/ne/v1/accounts/" + url.PathEscape(metroCode)
 	respBody := api.AccountResponse{}
 	req := c.R().SetResult(&respBody)
 

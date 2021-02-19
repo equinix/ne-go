@@ -24,7 +24,7 @@ type restSSHUserUpdateRequest struct {
 
 //CreateSSHUser creates new Network Edge SSH user with a given parameters and returns its UUID upon successful creation
 func (c RestClient) CreateSSHUser(username string, password string, device string) (*string, error) {
-	path := "/ne/v1/services/ssh-user"
+	path := "/ne/v1/sshUsers"
 	reqBody := api.SSHUserRequest{
 		Username:   &username,
 		Password:   &password,
@@ -40,13 +40,9 @@ func (c RestClient) CreateSSHUser(username string, password string, device strin
 
 //GetSSHUsers retrieves list of all SSH users (with details)
 func (c RestClient) GetSSHUsers() ([]SSHUser, error) {
-	path := "/ne/v1/services/ssh-user"
-	content, err := c.GetPaginated(path, &api.SSHUsersResponse{},
-		rest.DefaultPagingConfig().
-			SetContentFieldName("List").
-			SetSizeParamName("pageSize").
-			SetPageParamName("pageNumber").
-			SetFirstPageNumber(0).
+	path := "/ne/v1/sshUsers"
+	content, err := c.GetOffsetPaginated(path, &api.SSHUsersResponse{},
+		rest.DefaultOffsetPagingConfig().
 			SetAdditionalParams(map[string]string{"verbose": "true"}))
 	if err != nil {
 		return nil, err
@@ -60,7 +56,7 @@ func (c RestClient) GetSSHUsers() ([]SSHUser, error) {
 
 //GetSSHUser fetches details of a SSH user with a given UUID
 func (c RestClient) GetSSHUser(uuid string) (*SSHUser, error) {
-	path := "/ne/v1/services/ssh-user/" + url.PathEscape(uuid)
+	path := "/ne/v1/sshUsers/" + url.PathEscape(uuid)
 	respBody := api.SSHUser{}
 	req := c.R().SetResult(&respBody)
 	if err := c.Execute(req, http.MethodGet, path); err != nil {
@@ -134,7 +130,7 @@ func (req *restSSHUserUpdateRequest) Execute() error {
 //_______________________________________________________________________
 
 func (c RestClient) changeUserPassword(userID string, newPassword string) error {
-	path := "/ne/v1/services/ssh-user/" + url.PathEscape(userID)
+	path := "/ne/v1/sshUsers/" + url.PathEscape(userID)
 	reqBody := api.SSHUserUpdateRequest{Password: &newPassword}
 	req := c.R().SetBody(&reqBody)
 	if err := c.Execute(req, http.MethodPut, path); err != nil {
@@ -144,12 +140,12 @@ func (c RestClient) changeUserPassword(userID string, newPassword string) error 
 }
 
 func (c RestClient) changeDeviceAssociation(changeType string, userID string, deviceID string) error {
-	path := fmt.Sprintf("/ne/v1/services/ssh-user/%s/association?deviceUuid=%s",
+	path := fmt.Sprintf("/ne/v1/sshUsers/%s/association?deviceUuid=%s",
 		url.PathEscape(userID), url.PathEscape(deviceID))
 	var method string
 	switch changeType {
 	case associateDevice:
-		method = http.MethodPatch
+		method = http.MethodPost
 	case unassociateDevice:
 		method = http.MethodDelete
 	default:

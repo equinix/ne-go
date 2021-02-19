@@ -10,7 +10,7 @@ import (
 //UploadLicenseFile performs multipart upload of a license file from a given reader interface
 //along with provided data. Uploaded file identifier is returned on success.
 func (c RestClient) UploadLicenseFile(metroCode, deviceTypeCode, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (*string, error) {
-	path := "/ne/v1/device/license/file"
+	path := "/ne/v1/devices/licenseFiles"
 	respBody := api.LicenseFileUploadResponse{}
 	req := c.R().
 		SetFileReader("file", fileName, reader).

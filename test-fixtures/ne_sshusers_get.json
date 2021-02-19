@@ -1,8 +1,10 @@
 {
-    "totalCount": 3,
-    "pageNumber": 0,
-    "pageSize": 100,
-    "list": [
+    "pagination": {
+        "offset": 0,
+        "limit": 100,
+        "total": 3
+    },
+    "data": [
         {
             "uuid": "a2227c80-8227-4f77-9df0-f69e4379aec0",
             "username": "plOzmO",

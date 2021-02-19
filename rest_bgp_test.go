@@ -31,7 +31,7 @@ func TestCreateBGPConfiguration(t *testing.T) {
 	reqBody := api.BGPConfiguration{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/services/bgp", baseURL),
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/bgp", baseURL),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -59,7 +59,7 @@ func TestGetBGPConfiguration(t *testing.T) {
 		assert.Fail(t, "Cannot read test response")
 	}
 	bgpConfID := "e8b2e48e-2eba-4412-bc0b-c88dadb48050"
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/services/bgp/%s", baseURL, bgpConfID), 200, resp)
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/bgp/%s", baseURL, bgpConfID), 200, resp)
 	defer httpmock.DeactivateAndReset()
 
 	//when
@@ -79,7 +79,7 @@ func TestGetBGPConfigurationForConnection(t *testing.T) {
 		assert.Fail(t, "Cannot read test response")
 	}
 	connID := "e8b2e48e-2eba-4412-bc0b-c88dadb48050"
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/services/bgp/connection/%s", baseURL, connID), 200, resp)
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/bgp/connection/%s", baseURL, connID), 200, resp)
 	defer httpmock.DeactivateAndReset()
 
 	//when
@@ -102,7 +102,7 @@ func TestUpdateBGPConfiguration(t *testing.T) {
 	testHc := &http.Client{}
 	reqBody := api.BGPConfiguration{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/services/bgp/%s", baseURL, bgpConfID),
+	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/bgp/%s", baseURL, bgpConfID),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil

@@ -4,8 +4,8 @@ package api
 //Used as a body in requests (create,update) and response (get)
 type BGPConfiguration struct {
 	UUID               *string `json:"uuid,omitempty"`
-	ConnectionUUID     *string `json:"connectionUUID,omitempty"`
-	VirtualDeviceUUID  *string `json:"virtualDeviceUUID,omitempty"`
+	ConnectionUUID     *string `json:"connectionUuid,omitempty"`
+	VirtualDeviceUUID  *string `json:"virtualDeviceUuid,omitempty"`
 	LocalIPAddress     *string `json:"localIpAddress,omitempty"`
 	LocalASN           *int    `json:"localAsn,omitempty"`
 	RemoteASN          *int    `json:"remoteAsn,omitempty"`

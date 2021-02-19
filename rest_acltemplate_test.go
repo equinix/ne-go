@@ -46,7 +46,7 @@ func TestCreateACLTemplate(t *testing.T) {
 	reqBody := api.ACLTemplate{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/device/acl-template", baseURL),
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/aclTemplates", baseURL),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -73,10 +73,10 @@ func GetACLTemplates(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_acltemplates_get_resp.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := IntValue(respBody.PageSize)
+	limit := respBody.Pagination.Limit
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device/acl-template?size=%d", baseURL, pageSize),
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/aclTemplates?limit=%d", baseURL, limit),
 		func(r *http.Request) (*http.Response, error) {
 			resp, _ := httpmock.NewJsonResponse(200, respBody)
 			return resp, nil
@@ -86,15 +86,15 @@ func GetACLTemplates(t *testing.T) {
 
 	//When
 	c := NewClient(context.Background(), baseURL, testHc)
-	c.PageSize = pageSize
+	c.PageSize = limit
 	templates, err := c.GetACLTemplates()
 
 	//Then
 	assert.Nil(t, err, "Client should not return an error")
 	assert.NotNil(t, templates, "Client should return a response")
-	assert.Equal(t, len(respBody.Content), len(templates), "Number of objects matches")
-	for i := range respBody.Content {
-		verifyACLTemplate(t, templates[i], respBody.Content[i])
+	assert.Equal(t, len(respBody.Data), len(templates), "Number of objects matches")
+	for i := range respBody.Data {
+		verifyACLTemplate(t, templates[i], respBody.Data[i])
 	}
 }
 
@@ -105,7 +105,7 @@ func TestGetACLTemplate(t *testing.T) {
 		assert.Fail(t, "Cannot read test response")
 	}
 	templateID := "db66bf49-b2d8-4e64-8719-d46406b54039"
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/acl-template/%s", baseURL, templateID), 200, resp)
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/aclTemplates/%s", baseURL, templateID), 200, resp)
 	defer httpmock.DeactivateAndReset()
 
 	//when
@@ -125,7 +125,7 @@ func TestReplaceACLTemplate(t *testing.T) {
 	reqBody := api.ACLTemplate{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/device/acl-template/%s", baseURL, templateID),
+	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/aclTemplates/%s", baseURL, templateID),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -149,7 +149,7 @@ func TestDeleteACLTemplate(t *testing.T) {
 	templateID := "db66bf49-b2d8-4e64-8719-d46406b54039"
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/device/acl-template/%s", baseURL, templateID),
+	httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/aclTemplates/%s", baseURL, templateID),
 		httpmock.NewStringResponder(204, ""))
 	defer httpmock.DeactivateAndReset()
 

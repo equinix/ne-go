@@ -10,9 +10,9 @@ import (
 
 //GetDeviceTypes retrieves list of devices types along with their details
 func (c RestClient) GetDeviceTypes() ([]DeviceType, error) {
-	path := "/ne/v1/device/type"
-	content, err := c.GetPaginated(path, &api.DeviceTypeResponse{},
-		rest.DefaultPagingConfig())
+	path := "/ne/v1/deviceTypes"
+	content, err := c.GetOffsetPaginated(path, &api.DeviceTypeResponse{},
+		rest.DefaultOffsetPagingConfig())
 	if err != nil {
 		return nil, err
 	}
@@ -46,9 +46,9 @@ func (c RestClient) GetDevicePlatforms(deviceTypeCode string) ([]DevicePlatform,
 //_______________________________________________________________________
 
 func (c RestClient) getDeviceType(typeCode string) (*api.DeviceType, error) {
-	path := "/ne/v1/device/type"
-	content, err := c.GetPaginated(path, &api.DeviceTypeResponse{},
-		rest.DefaultPagingConfig().
+	path := "/ne/v1/deviceTypes"
+	content, err := c.GetOffsetPaginated(path, &api.DeviceTypeResponse{},
+		rest.DefaultOffsetPagingConfig().
 			SetAdditionalParams(map[string]string{"deviceTypeCode": url.QueryEscape(typeCode)}))
 	if err != nil {
 		return nil, err

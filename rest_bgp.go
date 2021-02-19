@@ -21,7 +21,7 @@ type restBGPConfigurationUpdateRequest struct {
 //with a given model. Configuration's UUID is returned on successful
 //creation
 func (c RestClient) CreateBGPConfiguration(config BGPConfiguration) (*string, error) {
-	path := "/ne/v1/services/bgp"
+	path := "/ne/v1/bgp"
 	reqBody := mapBGPConfigurationDomainToAPI(config)
 	respBody := api.BGPConfigurationCreateResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
@@ -33,7 +33,7 @@ func (c RestClient) CreateBGPConfiguration(config BGPConfiguration) (*string, er
 
 //GetBGPConfiguration retrieves BGP configuration with a given UUID
 func (c RestClient) GetBGPConfiguration(uuid string) (*BGPConfiguration, error) {
-	path := "/ne/v1/services/bgp/" + url.PathEscape(uuid)
+	path := "/ne/v1/bgp/" + url.PathEscape(uuid)
 	respBody := api.BGPConfiguration{}
 	req := c.R().SetResult(&respBody)
 	if err := c.Execute(req, http.MethodGet, path); err != nil {
@@ -45,7 +45,7 @@ func (c RestClient) GetBGPConfiguration(uuid string) (*BGPConfiguration, error) 
 //GetBGPConfigurationForConnection retreive BGP configuration for
 //a connection with a given connection UUID
 func (c RestClient) GetBGPConfigurationForConnection(uuid string) (*BGPConfiguration, error) {
-	path := "/ne/v1/services/bgp/connection/" + url.PathEscape(uuid)
+	path := "/ne/v1/bgp/connection/" + url.PathEscape(uuid)
 	respBody := api.BGPConfiguration{}
 	req := c.R().SetResult(&respBody)
 	if err := c.Execute(req, http.MethodGet, path); err != nil {
@@ -89,7 +89,7 @@ func (req *restBGPConfigurationUpdateRequest) WithAuthenticationKey(authenticati
 }
 
 func (req *restBGPConfigurationUpdateRequest) Execute() error {
-	path := "/ne/v1/services/bgp/" + url.PathEscape(req.uuid)
+	path := "/ne/v1/bgp/" + url.PathEscape(req.uuid)
 	reqBody := api.BGPConfiguration{
 		LocalIPAddress:    req.localIPAddress,
 		LocalASN:          req.localASN,

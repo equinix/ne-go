@@ -31,7 +31,6 @@ type ACLTemplateCreateResponse struct {
 
 //ACLTemplatesResponse describes response for a get ACL template collection request
 type ACLTemplatesResponse struct {
-	TotalCount *int          `json:"totalCount,omitempty"`
-	PageSize   *int          `json:"pageSize,omitempty"`
-	Content    []ACLTemplate `json:"content,omitempty"`
+	Pagination Pagination    `json:"pagination,omitempty"`
+	Data       []ACLTemplate `json:"data,omitempty"`
 }

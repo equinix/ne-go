@@ -2,10 +2,8 @@ package api
 
 //DeviceTypeResponse describes response for Network Edge device types query
 type DeviceTypeResponse struct {
-	TotalCount *int         `json:"totalCount,omitempty"`
-	PageNumber *int         `json:"pageNumber,omitempty"`
-	PageSize   *int         `json:"pageSize,omitempty"`
-	Content    []DeviceType `json:"content,omitempty"`
+	Pagination Pagination   `json:"pagination,omitempty"`
+	Data       []DeviceType `json:"data,omitempty"`
 }
 
 //DeviceType describes Network Edge device type

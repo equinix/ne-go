@@ -30,7 +30,7 @@ func TestUploadLicenseFile(t *testing.T) {
 	managementMode := DeviceManagementTypeSelf
 	fileName := "CSRSDWAN.cfg"
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/device/license/file", baseURL),
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/devices/licenseFiles", baseURL),
 		func(r *http.Request) (*http.Response, error) {
 			if err := r.ParseMultipartForm(32 << 20); err != nil {
 				return httpmock.NewStringResponse(400, err.Error()), nil

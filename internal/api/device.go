@@ -25,7 +25,7 @@ type Device struct {
 	Notifications        []string               `json:"notifications,omitempty"`
 	PurchaseOrderNumber  *string                `json:"purchaseOrderNumber,omitempty"`
 	RedundancyType       *string                `json:"redundancyType,omitempty"`
-	RedundantUUID        *string                `json:"redundantUUID,omitempty"`
+	RedundantUUID        *string                `json:"redundantUuid,omitempty"`
 	TermLength           *int                   `json:"termLength,omitempty"`
 	AdditionalBandwidth  *int                   `json:"additionalBandwidth,omitempty"`
 	OrderReference       *string                `json:"orderReference,omitempty"`
@@ -135,9 +135,8 @@ type DeviceAdditionalBandwidthUpdateRequest struct {
 
 //DevicesResponse describes response for a get device list request
 type DevicesResponse struct {
-	TotalCount *int     `json:"totalCount,omitempty"`
-	PageSize   *int     `json:"pageSize,omitempty"`
-	Content    []Device `json:"content,omitempty"`
+	Pagination Pagination `json:"pagination,omitempty"`
+	Data       []Device   `json:"data,omitempty"`
 }
 
 //DeviceACLTemplateRequest describes request for updating device ACL template

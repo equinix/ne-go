@@ -1,6 +1,7 @@
 package ne
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -38,7 +39,7 @@ type restDeviceUpdateRequest struct {
 
 //CreateDevice creates given Network Edge device and returns its UUID upon successful creation
 func (c RestClient) CreateDevice(device Device) (*string, error) {
-	path := "/ne/v1/device"
+	path := "/ne/v1/devices"
 	reqBody := createDeviceRequest(device)
 	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
@@ -51,7 +52,7 @@ func (c RestClient) CreateDevice(device Device) (*string, error) {
 //CreateRedundantDevice creates HA device setup from given primary and secondary devices and
 //returns their UUIDS upon successful creation
 func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (*string, *string, error) {
-	path := "/ne/v1/device"
+	path := "/ne/v1/devices"
 	reqBody := createRedundantDeviceRequest(primary, secondary)
 	respBody := api.DeviceRequestResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
@@ -63,7 +64,7 @@ func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (*st
 
 //GetDevice fetches details of a device with a given UUID
 func (c RestClient) GetDevice(uuid string) (*Device, error) {
-	path := "/ne/v1/device/" + url.PathEscape(uuid)
+	path := "/ne/v1/devices/" + url.PathEscape(uuid)
 	result := api.Device{}
 	request := c.R().SetResult(&result)
 	if err := c.Execute(request, http.MethodGet, path); err != nil {
@@ -74,9 +75,9 @@ func (c RestClient) GetDevice(uuid string) (*Device, error) {
 
 //GetDevices retrieves list of devices (along with their details) with given list of statuses
 func (c RestClient) GetDevices(statuses []string) ([]Device, error) {
-	path := "/ne/v1/device"
-	content, err := c.GetPaginated(path, &api.DevicesResponse{},
-		rest.DefaultPagingConfig().
+	path := "/ne/v1/devices"
+	content, err := c.GetOffsetPaginated(path, &api.DevicesResponse{},
+		rest.DefaultOffsetPagingConfig().
 			SetAdditionalParams(map[string]string{"status": buildQueryParamValueString(statuses)}))
 	if err != nil {
 		return nil, err
@@ -90,7 +91,7 @@ func (c RestClient) GetDevices(statuses []string) ([]Device, error) {
 
 //GetDeviceAdditionalBandwidthDetails retrives details of given device's additional bandwidth
 func (c RestClient) GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdditionalBandwidthDetails, error) {
-	path := "/ne/v1/device/additionalbandwidth/" + url.PathEscape(uuid)
+	path := fmt.Sprintf("/ne/v1/devices/%s/additionalBandwidths", url.PathEscape(uuid))
 	result := api.DeviceAdditionalBandwidthResponse{}
 	request := c.R().SetResult(&result)
 	if err := c.Execute(request, http.MethodGet, path); err != nil {
@@ -109,7 +110,7 @@ func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 
 //DeleteDevice deletes device with a given UUID
 func (c RestClient) DeleteDevice(uuid string) error {
-	path := "/ne/v1/device/" + url.PathEscape(uuid)
+	path := "/ne/v1/devices/" + url.PathEscape(uuid)
 	req := c.R().SetQueryParam("deleteRedundantDevice", "true")
 	if err := c.Execute(req, http.MethodDelete, path); err != nil {
 		return err
@@ -336,7 +337,7 @@ func (c RestClient) replaceDeviceACLTemplate(uuid string, templateID string) err
 }
 
 func (c RestClient) replaceDeviceAdditionalBandwidth(uuid string, bandwidth int) error {
-	path := "/ne/v1/device/additionalbandwidth/" + url.PathEscape(uuid)
+	path := fmt.Sprintf("/ne/v1/devices/%s/additionalBandwidths", url.PathEscape(uuid))
 	reqBody := api.DeviceAdditionalBandwidthUpdateRequest{AdditionalBandwidth: &bandwidth}
 	req := c.R().SetBody(reqBody)
 	if err := c.Execute(req, http.MethodPut, path); err != nil {
@@ -361,7 +362,7 @@ func (c RestClient) replaceDeviceFields(uuid string, fields map[string]interface
 		okToSend = true
 	}
 	if okToSend {
-		path := "/ne/v1/device/" + uuid
+		path := "/ne/v1/devices/" + uuid
 		req := c.R().SetBody(&reqBody)
 		if err := c.Execute(req, http.MethodPatch, path); err != nil {
 			return err

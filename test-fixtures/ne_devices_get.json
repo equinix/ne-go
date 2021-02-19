@@ -1,8 +1,10 @@
 {
-    "totalCount": 3,
-    "pageNumber": 1,
-    "pageSize": 100,
-    "content": [
+    "pagination": {
+        "offset": 0,
+        "limit": 100,
+        "total": 3
+    },
+    "data": [
         {
             "uuid": "b1970e1e-2fee-47d7-a5c0-df41a1b02774",
             "name": "mik-csr1000v",

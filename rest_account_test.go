@@ -17,7 +17,7 @@ func TestGetAccounts(t *testing.T) {
 		assert.Fail(t, "Cannot read test response")
 	}
 	metro := "SV"
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/account/%s", baseURL, metro), 200, resp)
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/accounts/%s", baseURL, metro), 200, resp)
 	defer httpmock.DeactivateAndReset()
 
 	//when

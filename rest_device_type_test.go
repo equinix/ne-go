@@ -17,10 +17,10 @@ func TestGetDeviceTypes(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_device_types_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := IntValue(respBody.PageSize)
+	limit := respBody.Pagination.Limit
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device/type?size=%d", baseURL, pageSize),
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/deviceTypes?limit=%d", baseURL, limit),
 		func(r *http.Request) (*http.Response, error) {
 			resp, _ := httpmock.NewJsonResponse(200, respBody)
 			return resp, nil
@@ -30,15 +30,15 @@ func TestGetDeviceTypes(t *testing.T) {
 
 	//When
 	c := NewClient(context.Background(), baseURL, testHc)
-	c.PageSize = pageSize
+	c.PageSize = limit
 	types, err := c.GetDeviceTypes()
 
 	//Then
 	assert.Nil(t, err, "Client should not return an error")
 	assert.NotNil(t, types, "Client should return a response")
-	assert.Equal(t, len(respBody.Content), len(types), "Number of objects matches")
-	for i := range respBody.Content {
-		verifyDeviceType(t, respBody.Content[i], types[i])
+	assert.Equal(t, len(respBody.Data), len(types), "Number of objects matches")
+	for i := range respBody.Data {
+		verifyDeviceType(t, respBody.Data[i], types[i])
 	}
 }
 
@@ -48,11 +48,11 @@ func TestGetDeviceSoftwareVersions(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_devices_types_csr1000v_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := IntValue(respBody.PageSize)
+	limit := respBody.Pagination.Limit
 	deviceTypeCode := "CSR1000V"
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device/type?deviceTypeCode=%s&size=%d", baseURL, deviceTypeCode, pageSize),
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/deviceTypes?deviceTypeCode=%s&limit=%d", baseURL, deviceTypeCode, limit),
 		func(r *http.Request) (*http.Response, error) {
 			resp, _ := httpmock.NewJsonResponse(200, respBody)
 			return resp, nil
@@ -62,13 +62,13 @@ func TestGetDeviceSoftwareVersions(t *testing.T) {
 
 	//When
 	c := NewClient(context.Background(), baseURL, testHc)
-	c.PageSize = pageSize
+	c.PageSize = limit
 	versions, err := c.GetDeviceSoftwareVersions(deviceTypeCode)
 
 	//Then
 	assert.Nil(t, err, "Client should not return an error")
 	assert.NotNil(t, versions, "Client should return a response")
-	apiType := respBody.Content[0]
+	apiType := respBody.Data[0]
 	apiVerMap := make(map[string]api.DeviceTypeVersionDetails)
 	for _, pkg := range apiType.SoftwarePackages {
 		for _, ver := range pkg.VersionDetails {
@@ -90,11 +90,11 @@ func TestGetDevicePlatforms(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_devices_types_csr1000v_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := IntValue(respBody.PageSize)
+	limit := respBody.Pagination.Limit
 	deviceTypeCode := "CSR1000V"
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device/type?deviceTypeCode=%s&size=%d", baseURL, deviceTypeCode, pageSize),
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/deviceTypes?deviceTypeCode=%s&limit=%d", baseURL, deviceTypeCode, limit),
 		func(r *http.Request) (*http.Response, error) {
 			resp, _ := httpmock.NewJsonResponse(200, respBody)
 			return resp, nil
@@ -104,7 +104,7 @@ func TestGetDevicePlatforms(t *testing.T) {
 
 	//When
 	c := NewClient(context.Background(), baseURL, testHc)
-	c.PageSize = pageSize
+	c.PageSize = limit
 	platforms, err := c.GetDevicePlatforms(deviceTypeCode)
 
 	//Then

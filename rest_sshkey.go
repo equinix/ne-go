@@ -9,7 +9,7 @@ import (
 
 //GetSSHPublicKeys retrieves list of available SSH public keys
 func (c RestClient) GetSSHPublicKeys() ([]SSHPublicKey, error) {
-	path := "/ne/v1/device/public-keys"
+	path := "/ne/v1/publicKeys"
 	respBody := make([]api.SSHPublicKey, 0)
 	req := c.R().SetResult(&respBody)
 	if err := c.Execute(req, http.MethodGet, path); err != nil {
@@ -20,7 +20,7 @@ func (c RestClient) GetSSHPublicKeys() ([]SSHPublicKey, error) {
 
 //GetSSHPublicKey retrieves SSH public key with a given identifier
 func (c RestClient) GetSSHPublicKey(uuid string) (*SSHPublicKey, error) {
-	path := "/ne/v1/device/public-keys/" + url.PathEscape(uuid)
+	path := "/ne/v1/publicKeys/" + url.PathEscape(uuid)
 	respBody := api.SSHPublicKey{}
 	req := c.R().SetResult(&respBody)
 	if err := c.Execute(req, http.MethodGet, path); err != nil {
@@ -32,7 +32,7 @@ func (c RestClient) GetSSHPublicKey(uuid string) (*SSHPublicKey, error) {
 
 //CreateSSHPublicKey creates new SSH public key with a given details
 func (c RestClient) CreateSSHPublicKey(key SSHPublicKey) (*string, error) {
-	path := "/ne/v1/device/public-keys"
+	path := "/ne/v1/publicKeys"
 	reqBody := mapSSHPublicKeyDomainToAPI(key)
 	respBody := api.SSHPublicKeyCreateResponse{}
 	req := c.R().SetBody(&reqBody).SetResult(&respBody)
@@ -44,7 +44,7 @@ func (c RestClient) CreateSSHPublicKey(key SSHPublicKey) (*string, error) {
 
 //DeleteSSHPublicKey removes SSH Public key with given identifier
 func (c RestClient) DeleteSSHPublicKey(uuid string) error {
-	path := "/ne/v1/device/public-keys/" + url.PathEscape(uuid)
+	path := "/ne/v1/publicKeys/" + url.PathEscape(uuid)
 	if err := c.Execute(c.R(), http.MethodDelete, path); err != nil {
 		return err
 	}

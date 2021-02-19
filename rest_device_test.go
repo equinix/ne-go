@@ -56,7 +56,7 @@ func TestCreateDevice(t *testing.T) {
 	req := api.DeviceRequest{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/device", baseURL),
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/devices", baseURL),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -105,7 +105,7 @@ func TestCreateRedundantDevice(t *testing.T) {
 		}}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/device", baseURL),
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/devices", baseURL),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -134,7 +134,7 @@ func TestGetDevice(t *testing.T) {
 		assert.Fail(t, "Cannot read test response")
 	}
 	devID := "myDevice"
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/%s", baseURL, devID), 200, resp)
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/devices/%s", baseURL, devID), 200, resp)
 	defer httpmock.DeactivateAndReset()
 
 	//when
@@ -153,11 +153,11 @@ func TestGetDevices(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_devices_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := *respBody.PageSize
+	limit := respBody.Pagination.Limit
 	statuses := []string{"INITIALIZING", "PROVISIONING"}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/device?size=%d&status=%s", baseURL, pageSize, url.QueryEscape("INITIALIZING,PROVISIONING")),
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/devices?limit=%d&status=%s", baseURL, limit, url.QueryEscape("INITIALIZING,PROVISIONING")),
 		func(r *http.Request) (*http.Response, error) {
 			resp, _ := httpmock.NewJsonResponse(200, respBody)
 			return resp, nil
@@ -167,15 +167,15 @@ func TestGetDevices(t *testing.T) {
 
 	//When
 	c := NewClient(context.Background(), baseURL, testHc)
-	c.PageSize = pageSize
+	c.PageSize = limit
 	devices, err := c.GetDevices(statuses)
 
 	//Then
 	assert.Nil(t, err, "Client should not return an error")
 	assert.NotNil(t, devices, "Client should return a response")
-	assert.Equal(t, len(respBody.Content), len(devices), "Number of objects matches")
-	for i := range respBody.Content {
-		verifyDevice(t, devices[i], respBody.Content[i])
+	assert.Equal(t, len(respBody.Data), len(devices), "Number of objects matches")
+	for i := range respBody.Data {
+		verifyDevice(t, devices[i], respBody.Data[i])
 	}
 }
 
@@ -186,7 +186,7 @@ func TestGetDeviceAdditionalBandwidthDetails(t *testing.T) {
 		assert.Fail(t, "Cannot read test response")
 	}
 	devID := "myDevice"
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/device/additionalbandwidth/%s", baseURL, devID), 200, resp)
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/devices/%s/additionalBandwidths", baseURL, devID), 200, resp)
 	defer httpmock.DeactivateAndReset()
 
 	//when
@@ -209,7 +209,7 @@ func TestUpdateDeviceBasicFields(t *testing.T) {
 	req := api.DeviceUpdateRequest{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("PATCH", fmt.Sprintf("%s/ne/v1/device/%s", baseURL, devID),
+	httpmock.RegisterResponder("PATCH", fmt.Sprintf("%s/ne/v1/devices/%s", baseURL, devID),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -264,7 +264,7 @@ func TestUpdateDeviceAdditionalBandwidth(t *testing.T) {
 	testHc := &http.Client{}
 	req := api.DeviceAdditionalBandwidthUpdateRequest{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/device/additionalbandwidth/%s", baseURL, devID),
+	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/devices/%s/additionalBandwidths", baseURL, devID),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -288,7 +288,7 @@ func TestDeleteDevice(t *testing.T) {
 	devID := "myDevice"
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/device/%s", baseURL, devID),
+	httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/devices/%s", baseURL, devID),
 		httpmock.NewStringResponder(204, ""))
 	defer httpmock.DeactivateAndReset()
 

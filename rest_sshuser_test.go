@@ -19,7 +19,7 @@ func TestSSHUserGet(t *testing.T) {
 		assert.Failf(t, "Cannot read test response due to %s", err.Error())
 	}
 	userID := "myTestUser"
-	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s", baseURL, userID), 200, resp)
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/sshUsers/%s", baseURL, userID), 200, resp)
 	defer httpmock.DeactivateAndReset()
 
 	//when
@@ -38,10 +38,10 @@ func TestSSHUsersGet(t *testing.T) {
 	if err := readJSONData("./test-fixtures/ne_sshusers_get.json", &respBody); err != nil {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
-	pageSize := 100
+	limit := respBody.Pagination.Limit
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user?pageSize=%d&verbose=true", baseURL, pageSize),
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/sshUsers?limit=%d&verbose=true", baseURL, limit),
 		func(r *http.Request) (*http.Response, error) {
 			resp, _ := httpmock.NewJsonResponse(200, respBody)
 			return resp, nil
@@ -51,15 +51,15 @@ func TestSSHUsersGet(t *testing.T) {
 
 	//When
 	c := NewClient(context.Background(), baseURL, testHc)
-	c.PageSize = pageSize
+	c.PageSize = limit
 	users, err := c.GetSSHUsers()
 
 	//Then
 	assert.Nil(t, err, "Client should not return an error")
 	assert.NotNil(t, users, "Client should return a response")
-	assert.Equal(t, IntValue(respBody.TotalCount), len(users))
+	assert.Equal(t, len(respBody.Data), len(users))
 	for i := range users {
-		verifyUser(t, users[i], respBody.List[i])
+		verifyUser(t, users[i], respBody.Data[i])
 	}
 }
 
@@ -77,7 +77,7 @@ func TestSSHUserCreate(t *testing.T) {
 	req := api.SSHUserRequest{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/services/ssh-user", baseURL),
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/sshUsers", baseURL),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -107,7 +107,7 @@ func TestSSHUserUpdate(t *testing.T) {
 	req := api.SSHUserUpdateRequest{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s", baseURL, userID),
+	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/sshUsers/%s", baseURL, userID),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -117,11 +117,11 @@ func TestSSHUserUpdate(t *testing.T) {
 	)
 	removed, added := diffStringSlices(oldDevices, newDevices)
 	for _, dev := range added {
-		httpmock.RegisterResponder("PATCH", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s/association?deviceUuid=%s", baseURL, userID, dev),
+		httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/sshUsers/%s/association?deviceUuid=%s", baseURL, userID, dev),
 			httpmock.NewStringResponder(201, ""))
 	}
 	for _, dev := range removed {
-		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s/association?deviceUuid=%s", baseURL, userID, dev),
+		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/sshUsers/%s/association?deviceUuid=%s", baseURL, userID, dev),
 			httpmock.NewStringResponder(200, ""))
 	}
 	defer httpmock.DeactivateAndReset()
@@ -150,14 +150,14 @@ func TestSSHUserDelete(t *testing.T) {
 		DeviceUUIDs: []string{"dev1", "dev2", "dev3"}}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s", baseURL, userID),
+	httpmock.RegisterResponder("GET", fmt.Sprintf("%s/ne/v1/sshUsers/%s", baseURL, userID),
 		func(r *http.Request) (*http.Response, error) {
 			resp, _ := httpmock.NewJsonResponse(200, userResp)
 			return resp, nil
 		},
 	)
 	for _, dev := range userResp.DeviceUUIDs {
-		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/services/ssh-user/%s/association?deviceUuid=%s", baseURL, userID, dev),
+		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/sshUsers/%s/association?deviceUuid=%s", baseURL, userID, dev),
 			httpmock.NewStringResponder(200, ""))
 	}
 	defer httpmock.DeactivateAndReset()
