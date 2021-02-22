@@ -13,12 +13,16 @@ import (
 func (c RestClient) CreateACLTemplate(template ACLTemplate) (*string, error) {
 	path := "/ne/v1/aclTemplates"
 	reqBody := mapACLTemplateDomainToAPI(template)
-	respBody := api.ACLTemplateCreateResponse{}
-	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.Execute(req, http.MethodPost, path); err != nil {
+	req := c.R().SetBody(&reqBody)
+	resp, err := c.Do(http.MethodPost, path, req)
+	if err != nil {
 		return nil, err
 	}
-	return respBody.UUID, nil
+	uuid, err := getResourceIDFromLocationHeader(resp)
+	if err != nil {
+		return nil, err
+	}
+	return uuid, nil
 }
 
 //GetACLTemplates retrieves list of all ACL templates along with their details

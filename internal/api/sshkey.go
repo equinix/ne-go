@@ -6,8 +6,3 @@ type SSHPublicKey struct {
 	KeyName  *string `json:"keyName,omitempty"`
 	KeyValue *string `json:"keyValue,omitempty"`
 }
-
-//SSHPublicKeyCreateResponse describes SSH public key create response
-type SSHPublicKeyCreateResponse struct {
-	UUID *string `json:"uuid,omitempty"`
-}

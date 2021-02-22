@@ -15,11 +15,6 @@ type SSHUserRequest struct {
 	DeviceUUID *string `json:"deviceUuid,omitempty"`
 }
 
-//SSHUserRequestResponse describes response for SSH user creation request
-type SSHUserRequestResponse struct {
-	UUID *string `json:"uuid,omitempty"`
-}
-
 //SSHUserUpdateRequest describes network edge SSH user update request
 type SSHUserUpdateRequest struct {
 	Password *string `json:"password,omitempty"`

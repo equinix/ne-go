@@ -6,7 +6,7 @@ type ACLTemplate struct {
 	Name              *string                  `json:"name,omitempty"`
 	Description       *string                  `json:"description,omitempty"`
 	MetroCode         *string                  `json:"metroCode,omitempty"`
-	VirtualDeviceUUID *string                  `json:"virtualDeviceUUID,omitempty"`
+	VirtualDeviceUUID *string                  `json:"virtualDeviceUuid,omitempty"`
 	DeviceACLStatus   *string                  `json:"deviceAclstatus,omitempty"`
 	InboundRules      []ACLTemplateInboundRule `json:"inboundRules,omitempty"`
 }
@@ -21,12 +21,6 @@ type ACLTemplateInboundRule struct {
 	FQDN     *string  `json:"fqdn,omitempty"`
 	Subnets  []string `json:"subnets,omitempty"`
 	SeqNO    *int     `json:"seqNo,omitempty"`
-}
-
-//ACLTemplateCreateResponse describes response body for
-//ACL template create request
-type ACLTemplateCreateResponse struct {
-	UUID *string `json:"uuid,omitempty"`
 }
 
 //ACLTemplatesResponse describes response for a get ACL template collection request

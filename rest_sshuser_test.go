@@ -65,10 +65,7 @@ func TestSSHUsersGet(t *testing.T) {
 
 func TestSSHUserCreate(t *testing.T) {
 	//given
-	resp := api.SSHUserRequestResponse{}
-	if err := readJSONData("./test-fixtures/ne_sshuser_create_resp.json", &resp); err != nil {
-		assert.Failf(t, "Cannot read test response due to %s", err.Error())
-	}
+	newUUID := "46eb8aac-a4b9-47af-aa2b-cccfb83ee3d1"
 	user := SSHUser{
 		Username:    String("myUser"),
 		Password:    String("myPassword"),
@@ -82,7 +79,8 @@ func TestSSHUserCreate(t *testing.T) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
 			}
-			resp, _ := httpmock.NewJsonResponse(201, resp)
+			resp := httpmock.NewStringResponse(201, "")
+			resp.Header.Add("Location", "/ne/v1/sshUsers/"+newUUID)
 			return resp, nil
 		},
 	)
@@ -94,7 +92,7 @@ func TestSSHUserCreate(t *testing.T) {
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.Equal(t, resp.UUID, uuid, "UUID matches")
+	assert.Equal(t, newUUID, *uuid, "UUID matches")
 	verifyUserRequest(t, user, req)
 }
 

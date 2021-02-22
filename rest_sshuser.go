@@ -30,12 +30,16 @@ func (c RestClient) CreateSSHUser(username string, password string, device strin
 		Password:   &password,
 		DeviceUUID: &device,
 	}
-	respBody := api.SSHUserRequestResponse{}
-	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.Execute(req, http.MethodPost, path); err != nil {
+	req := c.R().SetBody(&reqBody)
+	resp, err := c.Do(http.MethodPost, path, req)
+	if err != nil {
 		return nil, err
 	}
-	return respBody.UUID, nil
+	uuid, err := getResourceIDFromLocationHeader(resp)
+	if err != nil {
+		return nil, err
+	}
+	return uuid, nil
 }
 
 //GetSSHUsers retrieves list of all SSH users (with details)

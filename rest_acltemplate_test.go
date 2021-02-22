@@ -38,10 +38,7 @@ var testACLTemplate = ACLTemplate{
 
 func TestCreateACLTemplate(t *testing.T) {
 	//given
-	resp := api.ACLTemplateCreateResponse{}
-	if err := readJSONData("./test-fixtures/ne_acltemplate_post_resp.json", &resp); err != nil {
-		assert.Fail(t, "Cannot read test response")
-	}
+	newUUID := "299cd6f2-714e-4265-a07c-48944a6ac3bd"
 	template := testACLTemplate
 	reqBody := api.ACLTemplate{}
 	testHc := &http.Client{}
@@ -51,7 +48,8 @@ func TestCreateACLTemplate(t *testing.T) {
 			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
 			}
-			resp, _ := httpmock.NewJsonResponse(202, resp)
+			resp := httpmock.NewStringResponse(201, "")
+			resp.Header.Add("Location", "/ne/v1/aclTemplates/"+newUUID)
 			return resp, nil
 		},
 	)
@@ -63,7 +61,7 @@ func TestCreateACLTemplate(t *testing.T) {
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.Equal(t, uuid, resp.UUID, "UUID matches")
+	assert.Equal(t, newUUID, *uuid, "UUID matches")
 	verifyACLTemplate(t, template, reqBody)
 }
 

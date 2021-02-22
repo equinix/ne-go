@@ -34,12 +34,16 @@ func (c RestClient) GetSSHPublicKey(uuid string) (*SSHPublicKey, error) {
 func (c RestClient) CreateSSHPublicKey(key SSHPublicKey) (*string, error) {
 	path := "/ne/v1/publicKeys"
 	reqBody := mapSSHPublicKeyDomainToAPI(key)
-	respBody := api.SSHPublicKeyCreateResponse{}
-	req := c.R().SetBody(&reqBody).SetResult(&respBody)
-	if err := c.Execute(req, http.MethodPost, path); err != nil {
+	req := c.R().SetBody(&reqBody)
+	resp, err := c.Do(http.MethodPost, path, req)
+	if err != nil {
 		return nil, err
 	}
-	return respBody.UUID, nil
+	uuid, err := getResourceIDFromLocationHeader(resp)
+	if err != nil {
+		return nil, err
+	}
+	return uuid, nil
 }
 
 //DeleteSSHPublicKey removes SSH Public key with given identifier

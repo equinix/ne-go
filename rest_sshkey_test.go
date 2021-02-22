@@ -61,10 +61,7 @@ func TestGetSSHPublicKey(t *testing.T) {
 
 func TestCreateSSHPublicKey(t *testing.T) {
 	//given
-	resp := api.SSHPublicKeyCreateResponse{}
-	if err := readJSONData("./test-fixtures/ne_sshpubkey_create_resp.json", &resp); err != nil {
-		assert.Fail(t, "Cannot read test response")
-	}
+	newUUID := "e3e5d6ce-5238-4fea-a454-e4a74a7bd060"
 	key := testSSHPublicKey
 	req := api.SSHPublicKey{}
 	testHc := &http.Client{}
@@ -74,7 +71,8 @@ func TestCreateSSHPublicKey(t *testing.T) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
 			}
-			resp, _ := httpmock.NewJsonResponse(201, resp)
+			resp := httpmock.NewStringResponse(201, "")
+			resp.Header.Add("Location", "/ne/v1/publicKeys/"+newUUID)
 			return resp, nil
 		},
 	)
@@ -86,7 +84,7 @@ func TestCreateSSHPublicKey(t *testing.T) {
 
 	//then
 	assert.Nil(t, err, "Error is not returned")
-	assert.Equal(t, resp.UUID, uuid, "UUID matches")
+	assert.Equal(t, newUUID, *uuid, "UUID matches")
 	verifySSHPublicKey(t, req, key)
 }
 
