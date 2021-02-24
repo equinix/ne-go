@@ -115,11 +115,11 @@ func TestSSHUserUpdate(t *testing.T) {
 	)
 	removed, added := diffStringSlices(oldDevices, newDevices)
 	for _, dev := range added {
-		httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/sshUsers/%s/association?deviceUuid=%s", baseURL, userID, dev),
+		httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/sshUsers/%s/devices/%s", baseURL, userID, dev),
 			httpmock.NewStringResponder(201, ""))
 	}
 	for _, dev := range removed {
-		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/sshUsers/%s/association?deviceUuid=%s", baseURL, userID, dev),
+		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/sshUsers/%s/devices/%s", baseURL, userID, dev),
 			httpmock.NewStringResponder(200, ""))
 	}
 	defer httpmock.DeactivateAndReset()
@@ -155,7 +155,7 @@ func TestSSHUserDelete(t *testing.T) {
 		},
 	)
 	for _, dev := range userResp.DeviceUUIDs {
-		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/sshUsers/%s/association?deviceUuid=%s", baseURL, userID, dev),
+		httpmock.RegisterResponder("DELETE", fmt.Sprintf("%s/ne/v1/sshUsers/%s/devices/%s", baseURL, userID, dev),
 			httpmock.NewStringResponder(200, ""))
 	}
 	defer httpmock.DeactivateAndReset()

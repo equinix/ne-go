@@ -144,7 +144,7 @@ func (c RestClient) changeUserPassword(userID string, newPassword string) error 
 }
 
 func (c RestClient) changeDeviceAssociation(changeType string, userID string, deviceID string) error {
-	path := fmt.Sprintf("/ne/v1/sshUsers/%s/association?deviceUuid=%s",
+	path := fmt.Sprintf("/ne/v1/sshUsers/%s/devices/%s",
 		url.PathEscape(userID), url.PathEscape(deviceID))
 	var method string
 	switch changeType {
