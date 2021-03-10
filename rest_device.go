@@ -330,7 +330,7 @@ func (c RestClient) replaceDeviceACLTemplate(uuid string, templateID string) err
 	path := "/ne/v1/devices/" + url.PathEscape(uuid) + "/acl"
 	reqBody := api.DeviceACLTemplateRequest{TemplateUUID: &templateID}
 	req := c.R().SetBody(reqBody)
-	if err := c.Execute(req, http.MethodPut, path); err != nil {
+	if err := c.Execute(req, http.MethodPost, path); err != nil {
 		return err
 	}
 	return nil
