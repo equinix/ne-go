@@ -65,7 +65,7 @@ func TestCreateACLTemplate(t *testing.T) {
 	verifyACLTemplate(t, template, reqBody)
 }
 
-func GetACLTemplates(t *testing.T) {
+func TestGetACLTemplates(t *testing.T) {
 	//Given
 	var respBody api.ACLTemplatesResponse
 	if err := readJSONData("./test-fixtures/ne_acltemplates_get_resp.json", &respBody); err != nil {

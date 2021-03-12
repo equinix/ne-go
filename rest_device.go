@@ -29,9 +29,6 @@ const (
 type restDeviceUpdateRequest struct {
 	uuid                string
 	deviceFields        map[string]interface{}
-	deviceName          string
-	termLength          int
-	notifications       []string
 	additionalBandwidth *int
 	aclTemplateID       *string
 	c                   RestClient
