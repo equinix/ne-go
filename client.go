@@ -60,11 +60,11 @@ const (
 	ACLDeviceStatusProvisioned = "PROVISIONED"
 
 	//ErrorCodeDeviceRemoved is used on attempt to remove device that is deprovisioning or already deprovisioned
-	ErrorCodeDeviceRemoved = "IC-NE-VD-030"
+	ErrorCodeDeviceRemoved = "EQ-4006103"
 
 	//ErrorCodeSSHPublicKeyInvalid is an error code returned when invalid
 	//SSH public key identifier was used
-	ErrorCodeSSHPublicKeyInvalid = "IC-NE-PUBLIC-KEY-03"
+	ErrorCodeSSHPublicKeyInvalid = "EQ-4010206"
 
 	//DeviceAdditionalBandwidthStatusProvisioning additional bandwidth is provisioning
 	DeviceAdditionalBandwidthStatusProvisioning = "PROVISIONING"

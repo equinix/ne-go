@@ -1,3 +1,10 @@
+## 1.0.1 (March 15, 2021)
+
+BUG FIXES:
+
+* fixed errorCode consts for failed removal of device and SSH public key when
+objects were already removed
+
 ## 1.0.0 (March 12, 2021)
 
 NOTES:
