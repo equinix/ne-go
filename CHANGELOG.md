@@ -1,3 +1,9 @@
+## 1.1.0 (Unreleased)
+
+FEATURES:
+
+* Equinix Network Edge device links support ([equinix/terraform-provider-equinix#43](https://github.com/equinix/terraform-provider-equinix/issues/43))
+
 ## 1.0.1 (March 15, 2021)
 
 BUG FIXES:

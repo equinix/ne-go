@@ -1,0 +1,150 @@
+{
+    "pagination": {
+        "offset": 0,
+        "limit": 20,
+        "total": 3
+    },
+    "data": [
+        {
+            "uuid": "59a02d41-041f-4c55-9b1c-6cb5f9a59bdc",
+            "groupName": "Test1",
+            "subnet": "10.0.0.0/27",
+            "status": "DEPROVISIONING",
+            "source": "PORTAL",
+            "createdBy": "test@test.com",
+            "createdDate": "2020-04-29T16:07:16.170Z",
+            "lastUpdatedBy": "test@test.com",
+            "lastUpdatedDate": "2020-11-06T17:15:29.691Z",
+            "links": [],
+            "linkDevices": [
+                {
+                    "deviceUuid": "1890db0e-5488-4b5b-8bd0-464809f3fdac",
+                    "deviceName": "Test_Device",
+                    "metroCode": "LD",
+                    "metroName": "London",
+                    "zoneCode": null,
+                    "zoneName": null,
+                    "deviceTypeCode": "CSR1000V",
+                    "category": "ROUTER",
+                    "ipAssigned": "10.0.0.2/27",
+                    "interfaceId": 10,
+                    "status": "DEPROVISIONING",
+                    "deviceManagementType": "EQUINIX-CONFIGURED",
+                    "networkScope": "DEVICE",
+                    "isDeviceAccessible": true
+                }
+            ],
+            "supportDetails": [
+                {
+                    "name": "device link details",
+                    "value": "http://url/nfv/i1/links?groupUuid=59a02d41-041f-4c55-9b1c-6cb5f9a59bdc",
+                    "type": "url"
+                }
+            ]
+        },
+        {
+            "uuid": "02f7c0ca-daa5-48f2-8717-dd6741af2c89",
+            "groupName": "Test2",
+            "subnet": "11.0.0.0/27",
+            "status": "DEPROVISIONING",
+            "source": "PORTAL",
+            "createdBy": "test@test.com",
+            "createdDate": "2020-04-29T16:14:26.017Z",
+            "lastUpdatedBy": "test@test.com",
+            "lastUpdatedDate": "2020-11-06T17:15:29.691Z",
+            "links": [],
+            "linkDevices": [
+                {
+                    "deviceUuid": "1890db0e-5488-4b5b-8bd0-464809f3fdac",
+                    "deviceName": "Test_Device",
+                    "metroCode": "LD",
+                    "metroName": "London",
+                    "zoneCode": null,
+                    "zoneName": null,
+                    "deviceTypeCode": "CSR1000V",
+                    "category": "ROUTER",
+                    "ipAssigned": "11.0.0.2/27",
+                    "interfaceId": 4,
+                    "status": "DEPROVISIONING",
+                    "deviceManagementType": "EQUINIX-CONFIGURED",
+                    "networkScope": "DEVICE",
+                    "isDeviceAccessible": true
+                }
+            ],
+            "supportDetails": [
+                {
+                    "name": "device link details",
+                    "value": "http://url/nfv/i1/links?groupUuid=02f7c0ca-daa5-48f2-8717-dd6741af2c89",
+                    "type": "url"
+                }
+            ]
+        },
+        {
+            "uuid": "1d562016-7621-47e4-a814-8316b8594248",
+            "groupName": "Test3",
+            "subnet": "172.16.0.0/16",
+            "status": "PROVISIONED",
+            "source": "PORTAL",
+            "createdBy": "test@test.com",
+            "createdDate": "2020-10-12T14:17:11.421Z",
+            "lastUpdatedBy": "test@test.com",
+            "lastUpdatedDate": "2020-11-06T17:15:29.691Z",
+            "links": [
+                {
+                    "accountName": "Test",
+                    "sourceMetroCode": "LD",
+                    "sourceMetroName": "London",
+                    "sourceZoneCode": "Zone1",
+                    "sourceZoneName": "Zone 1",
+                    "destinationMetroCode": "CH",
+                    "destinationMetroName": "Chicago",
+                    "destinationZoneCode": "Zone1",
+                    "destinationZoneName": "Zone 1",
+                    "throughput": "50",
+                    "throughputUnit": "Mbps"
+                }
+            ],
+            "linkDevices": [
+                {
+                    "deviceUuid": "6494b25e-54f4-4f64-9e0b-3e86001435bc",
+                    "deviceName": "Test_Device",
+                    "metroCode": "CH",
+                    "metroName": "Chicago",
+                    "zoneCode": null,
+                    "zoneName": null,
+                    "deviceTypeCode": "VSRX",
+                    "category": "FIREWALL",
+                    "ipAssigned": "172.16.0.1/16",
+                    "interfaceId": 10,
+                    "status": "PROVISIONED",
+                    "deviceManagementType": "EQUINIX-CONFIGURED",
+                    "networkScope": "TENANT",
+                    "isDeviceAccessible": true
+                },
+                {
+                    "deviceUuid": "99f35c75-ffab-4855-893c-d103223ed6ed",
+                    "deviceName": "Test_Device2",
+                    "metroCode": "LD",
+                    "metroName": "London",
+                    "zoneCode": null,
+                    "zoneName": null,
+                    "deviceTypeCode": "VSRX",
+                    "category": "FIREWALL",
+                    "ipAssigned": "172.16.0.2/27",
+                    "interfaceId": 10,
+                    "status": "PROVISIONED",
+                    "deviceManagementType": "EQUINIX-CONFIGURED",
+                    "networkScope": "DEVICE",
+                    "isDeviceAccessible": true
+                }
+            ],
+            "supportDetails": [
+                {
+                    "name": "device link details",
+                    "value": "http://url/nfv/i1/links?groupUuid=1d562016-7621-47e4-a814-8316b8594248",
+                    "type": "url"
+                }
+            ]
+        }
+    ]
+}

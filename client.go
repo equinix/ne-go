@@ -70,6 +70,11 @@ const (
 	DeviceAdditionalBandwidthStatusProvisioning = "PROVISIONING"
 	//DeviceAdditionalBandwidthStatusProvisioned additional bandwidth is provisioned
 	DeviceAdditionalBandwidthStatusProvisioned = "PROVISIONED"
+
+	//DeviceLinkGroupStatusProvisioning indicates that device link is provisioning
+	DeviceLinkGroupStatusProvisioning = "PROVISIONING"
+	//DeviceLinkGroupStatusProvisioned indicates that device link was provisioned
+	DeviceLinkGroupStatusProvisioned = "PROVISIONED"
 )
 
 //Client interface describes operations provided by Network Edge client library
@@ -110,6 +115,11 @@ type Client interface {
 	DeleteACLTemplate(uuid string) error
 
 	UploadLicenseFile(metroCode, deviceTypeCode, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (*string, error)
+
+	GetDeviceLinkGroups() ([]DeviceLinkGroup, error)
+	GetDeviceLinkGroup(uuid string) (*DeviceLinkGroup, error)
+	CreateDeviceLinkGroup(linkGroup DeviceLinkGroup) (*string, error)
+	DeleteDeviceLinkGroup(uuid string) error
 }
 
 //DeviceUpdateRequest describes composite request to update given Network Edge device
@@ -341,4 +351,36 @@ type ACLTemplateInboundRule struct {
 type DeviceAdditionalBandwidthDetails struct {
 	AdditionalBandwidth *int
 	Status              *string
+}
+
+//DeviceLinkGroup describes details of a device link group
+type DeviceLinkGroup struct {
+	UUID    *string
+	Name    *string
+	Subnet  *string
+	Status  *string
+	Devices []DeviceLinkGroupDevice
+	Links   []DeviceLinkGroupLink
+}
+
+//DeviceLinkGroupDevice describes details of a device within device
+//link group
+type DeviceLinkGroupDevice struct {
+	DeviceID    *string
+	ASN         *int
+	InterfaceID *int
+	Status      *string
+	IPAddress   *string
+}
+
+//DeviceLinkGroupLink describes details if a link (connection) within
+//device link group
+type DeviceLinkGroupLink struct {
+	AccountNumber        *string
+	Throughput           *string
+	ThroughputUnit       *string
+	SourceMetroCode      *string
+	DestinationMetroCode *string
+	SourceZoneCode       *string
+	DestinationZoneCode  *string
 }
