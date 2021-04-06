@@ -346,6 +346,7 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.VendorConfig, device.VendorConfiguration, "VendorConfigurations match")
 	assert.NotNil(t, device.UserPublicKey, "UserPublicKey is not nil")
 	verifyDeviceUserPublicKey(t, *device.UserPublicKey, *resp.UserPublicKey)
+	assert.Equal(t, resp.ASN, device.ASN, "ASN matches")
 }
 
 func verifyDeviceInterface(t *testing.T, inf DeviceInterface, apiInf api.DeviceInterface) {

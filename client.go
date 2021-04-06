@@ -250,6 +250,7 @@ type Device struct {
 	Interfaces          []DeviceInterface
 	VendorConfiguration map[string]string
 	UserPublicKey       *DeviceUserPublicKey
+	ASN                 *int
 }
 
 //DeviceInterface describes Network Edge device interface

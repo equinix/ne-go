@@ -35,6 +35,7 @@ type Device struct {
 	Interfaces           []DeviceInterface      `json:"interfaces,omitempty"`
 	VendorConfig         map[string]string      `json:"vendorConfig,omitempty"`
 	UserPublicKey        *DeviceUserPublicKey   `json:"userPublicKey,omitempty"`
+	ASN                  *int                   `json:"asn,omitempty"`
 }
 
 //DeviceRequest describes network edge device creation request

@@ -222,6 +222,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.Interfaces = mapDeviceInterfacesAPIToDomain(apiDevice.Interfaces)
 	device.VendorConfiguration = apiDevice.VendorConfig
 	device.UserPublicKey = mapDeviceUserPublicKeyAPIToDomain(apiDevice.UserPublicKey)
+	device.ASN = apiDevice.ASN
 	return &device
 }
 
