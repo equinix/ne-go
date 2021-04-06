@@ -142,6 +142,70 @@ func TestCreateDeviceLinkGroup(t *testing.T) {
 	verifyDeviceLinkGroup(t, testLinkGroup, request)
 }
 
+func TestUpdateDeviceLinkGroup(t *testing.T) {
+	//given
+	groupID := "test"
+	newGroupName := "newDLGroup"
+	newSubnet := "20.1.1.0/24"
+	newDevices := []DeviceLinkGroupDevice{
+		{
+			DeviceID:    String("c9a5c40c-b90f-4156-8460-6cb5dc98f88d"),
+			ASN:         Int(12345),
+			InterfaceID: Int(5),
+		},
+		{
+			DeviceID:    String("7312336a-d508-4ac2-8d99-3070c30aed94"),
+			ASN:         Int(22335),
+			InterfaceID: Int(4),
+		},
+	}
+	newLinks := []DeviceLinkGroupLink{
+		{
+			AccountNumber:        String("22314"),
+			Throughput:           String("50"),
+			ThroughputUnit:       String("Mbps"),
+			SourceMetroCode:      String("LD"),
+			DestinationMetroCode: String("AM"),
+			SourceZoneCode:       String("Zone1"),
+			DestinationZoneCode:  String("Zone1"),
+		},
+	}
+	req := api.DeviceLinkGroup{}
+	testHc := &http.Client{}
+	httpmock.ActivateNonDefault(testHc)
+	httpmock.RegisterResponder("PATCH", fmt.Sprintf("%s/ne/v1/links/%s", baseURL, groupID),
+		func(r *http.Request) (*http.Response, error) {
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				return httpmock.NewStringResponse(400, ""), nil
+			}
+			return httpmock.NewStringResponse(204, ""), nil
+		},
+	)
+	defer httpmock.DeactivateAndReset()
+
+	//when
+	c := NewClient(context.Background(), baseURL, testHc)
+	err := c.NewDeviceLinkGroupUpdateRequest(groupID).
+		WithGroupName(newGroupName).
+		WithSubnet(newSubnet).
+		WithDevices(newDevices).
+		WithLinks(newLinks).
+		Execute()
+
+	//then
+	assert.Nil(t, err, "Error is not returned")
+	assert.Equal(t, &newSubnet, req.Subnet, "Subnet matches")
+	assert.Equal(t, &newGroupName, req.GroupName, "GroupName matches")
+	assert.Equal(t, len(newDevices), len(req.Devices), "Devices number matches")
+	for i := range newDevices {
+		verifyDeviceLinkGroupDevice(t, newDevices[i], req.Devices[i])
+	}
+	assert.Equal(t, len(newLinks), len(req.Links), "Links number matches")
+	for i := range newLinks {
+		verifyDeviceLinkGroupLink(t, newLinks[i], req.Links[i])
+	}
+}
+
 func TestDeleteDeviceLinkGroup(t *testing.T) {
 	//given
 	uuid := "testLinkGroup"

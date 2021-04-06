@@ -119,6 +119,7 @@ type Client interface {
 	GetDeviceLinkGroups() ([]DeviceLinkGroup, error)
 	GetDeviceLinkGroup(uuid string) (*DeviceLinkGroup, error)
 	CreateDeviceLinkGroup(linkGroup DeviceLinkGroup) (*string, error)
+	NewDeviceLinkGroupUpdateRequest(uuid string) DeviceLinkUpdateRequest
 	DeleteDeviceLinkGroup(uuid string) error
 }
 
@@ -146,6 +147,15 @@ type BGPUpdateRequest interface {
 	WithRemoteASN(remoteASN int) BGPUpdateRequest
 	WithRemoteIPAddress(remoteIPAddress string) BGPUpdateRequest
 	WithAuthenticationKey(authenticationKey string) BGPUpdateRequest
+	Execute() error
+}
+
+//DeviceLinkUpdateRequest descrobes request to update given Device Link Group
+type DeviceLinkUpdateRequest interface {
+	WithGroupName(name string) DeviceLinkUpdateRequest
+	WithSubnet(subnet string) DeviceLinkUpdateRequest
+	WithDevices(devices []DeviceLinkGroupDevice) DeviceLinkUpdateRequest
+	WithLinks(links []DeviceLinkGroupLink) DeviceLinkUpdateRequest
 	Execute() error
 }
 

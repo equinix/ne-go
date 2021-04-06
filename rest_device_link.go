@@ -8,6 +8,15 @@ import (
 	"github.com/equinix/rest-go"
 )
 
+type restDeviceLinkUpdateRequest struct {
+	uuid      string
+	groupName *string
+	subnet    *string
+	devices   []DeviceLinkGroupDevice
+	links     []DeviceLinkGroupLink
+	c         RestClient
+}
+
 //GetDeviceLinkGroups retrieves list of existing device link groups
 //(along with their details)
 func (c RestClient) GetDeviceLinkGroups() ([]DeviceLinkGroup, error) {
@@ -50,10 +59,60 @@ func (c RestClient) CreateDeviceLinkGroup(linkGroup DeviceLinkGroup) (*string, e
 	return respBody.UUID, nil
 }
 
+//NewDeviceLinkGroupUpdateRequest creates new update request for a device link
+//group with a given identifier
+func (c RestClient) NewDeviceLinkGroupUpdateRequest(uuid string) DeviceLinkUpdateRequest {
+	return &restDeviceLinkUpdateRequest{uuid: uuid, c: c}
+}
+
 //DeleteDeviceLinkGroup removes device link group with a given identifier
 func (c RestClient) DeleteDeviceLinkGroup(uuid string) error {
 	path := "/ne/v1/links/" + url.PathEscape(uuid)
 	if err := c.Execute(c.R(), http.MethodDelete, path); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (req *restDeviceLinkUpdateRequest) WithGroupName(name string) DeviceLinkUpdateRequest {
+	req.groupName = &name
+	return req
+}
+
+func (req *restDeviceLinkUpdateRequest) WithSubnet(subnet string) DeviceLinkUpdateRequest {
+	req.subnet = &subnet
+	return req
+}
+
+func (req *restDeviceLinkUpdateRequest) WithDevices(devices []DeviceLinkGroupDevice) DeviceLinkUpdateRequest {
+	req.devices = devices
+	return req
+}
+
+func (req *restDeviceLinkUpdateRequest) WithLinks(links []DeviceLinkGroupLink) DeviceLinkUpdateRequest {
+	req.links = links
+	return req
+}
+
+func (req *restDeviceLinkUpdateRequest) Execute() error {
+	reqBody := api.DeviceLinkGroup{}
+	if StringValue(req.groupName) != "" {
+		reqBody.GroupName = req.groupName
+	}
+	if StringValue(req.subnet) != "" {
+		reqBody.Subnet = req.subnet
+	}
+	reqBody.Links = make([]api.DeviceLinkGroupLink, len(req.links))
+	for i := range req.links {
+		reqBody.Links[i] = mapDeviceLinkGroupLinkDomainToAPI(req.links[i])
+	}
+	reqBody.Devices = make([]api.DeviceLinkGroupDevice, len(req.devices))
+	for i := range req.devices {
+		reqBody.Devices[i] = mapDeviceLinkGroupDeviceDomainToAPI(req.devices[i])
+	}
+	path := "/ne/v1/links/" + url.PathEscape(req.uuid)
+	httpReq := req.c.R().SetBody(&reqBody)
+	if err := req.c.Execute(httpReq, http.MethodPatch, path); err != nil {
 		return err
 	}
 	return nil
