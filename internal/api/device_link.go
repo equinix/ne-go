@@ -12,7 +12,7 @@ type DeviceLinkGroup struct {
 type DeviceLinkGroupDevice struct {
 	DeviceUUID  *string `json:"deviceUuid,omitempty"`
 	ASN         *int    `json:"asn,omitempty"`
-	InterfaceID *int    `json:"interfaceID,omitempty"`
+	InterfaceID *int    `json:"interfaceId,omitempty"`
 	Status      *string `json:"status,omitempty"`
 	IPAddress   *string `json:"ipAssigned,omitempty"`
 }

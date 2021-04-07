@@ -75,6 +75,10 @@ const (
 	DeviceLinkGroupStatusProvisioning = "PROVISIONING"
 	//DeviceLinkGroupStatusProvisioned indicates that device link was provisioned
 	DeviceLinkGroupStatusProvisioned = "PROVISIONED"
+	//DeviceLinkGroupStatusDeprovisioning indicates that device link is deprovisioning
+	DeviceLinkGroupStatusDeprovisioning = "DEPROVISIONING"
+	//DeviceLinkGroupStatusProvisioned indicates that device link was deprovisioned
+	DeviceLinkGroupStatusDeprovisioned = "DEPROVISIONED"
 )
 
 //Client interface describes operations provided by Network Edge client library
