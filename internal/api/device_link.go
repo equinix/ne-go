@@ -6,6 +6,13 @@ type DeviceLinkGroup struct {
 	Subnet    *string                 `json:"subnet,omitempty"`
 	Status    *string                 `json:"status,omitempty"`
 	Devices   []DeviceLinkGroupDevice `json:"linkDevices,omitempty"`
+	Links     []DeviceLinkGroupLink   `json:"links"`
+}
+
+type DeviceLinkGroupUpdateRequest struct {
+	GroupName *string                 `json:"groupName,omitempty"`
+	Subnet    *string                 `json:"subnet,omitempty"`
+	Devices   []DeviceLinkGroupDevice `json:"linkDevices,omitempty"`
 	Links     []DeviceLinkGroupLink   `json:"links,omitempty"`
 }
 

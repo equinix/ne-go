@@ -95,7 +95,7 @@ func (req *restDeviceLinkUpdateRequest) WithLinks(links []DeviceLinkGroupLink) D
 }
 
 func (req *restDeviceLinkUpdateRequest) Execute() error {
-	reqBody := api.DeviceLinkGroup{}
+	reqBody := api.DeviceLinkGroupUpdateRequest{}
 	if StringValue(req.groupName) != "" {
 		reqBody.GroupName = req.groupName
 	}
