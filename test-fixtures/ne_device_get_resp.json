@@ -168,5 +168,6 @@
         "message": "",
         "tenant": "SV-85335-sv5.pod1"
     },
-    "asn": 53126
+    "asn": 53126,
+    "zoneCode": "Zone1"
 }
