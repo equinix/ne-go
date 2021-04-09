@@ -1,8 +1,14 @@
-## 1.1.0 (Unreleased)
+## 1.1.0 (April 09, 2021)
 
 FEATURES:
 
 * Equinix Network Edge device links support ([equinix/terraform-provider-equinix#43](https://github.com/equinix/terraform-provider-equinix/issues/43))
+
+ENHANCEMENTS:
+
+* Equinix Network Edge `Device` model has new attributes
+  * `ASN` - Autonomous System Number - assigned with first device link group
+  * `ZoneCode` - device location zone code
 
 ## 1.0.1 (March 15, 2021)
 
