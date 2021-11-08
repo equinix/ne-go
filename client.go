@@ -251,6 +251,7 @@ type Device struct {
 	InterfaceCount      *int
 	CoreCount           *int
 	IsSelfManaged       *bool
+	WanInterfaceId      *string
 	Interfaces          []DeviceInterface
 	VendorConfiguration map[string]string
 	UserPublicKey       *DeviceUserPublicKey

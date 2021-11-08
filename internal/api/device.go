@@ -59,6 +59,7 @@ type DeviceRequest struct {
 	Version              *string                     `json:"version,omitempty"`
 	InterfaceCount       *int                        `json:"interfaceCount,omitempty"`
 	DeviceManagementType *string                     `json:"deviceManagementType,omitempty"`
+	SshInterfaceId       *string                     `json:"sshInterfaceId,omitempty"`
 	Core                 *int                        `json:"core,omitempty"`
 	AdditionalBandwidth  *int                        `json:"additionalBandwidth,omitempty,string"`
 	ACLTemplateUUID      *string                     `json:"aclTemplateUuid,omitempty"`
@@ -77,6 +78,7 @@ type SecondaryDeviceRequest struct {
 	HostNamePrefix      *string                     `json:"hostNamePrefix,omitempty"`
 	AccountNumber       *string                     `json:"accountNumber,omitempty"`
 	AdditionalBandwidth *int                        `json:"additionalBandwidth,omitempty,string"`
+	SshInterfaceId      *string                     `json:"sshInterfaceId,omitempty"`
 	ACLTemplateUUID     *string                     `json:"aclTemplateUuid,omitempty"`
 	VendorConfig        map[string]string           `json:"vendorConfig,omitempty"`
 	UserPublicKey       *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`

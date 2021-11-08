@@ -295,6 +295,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	if device.IsSelfManaged != nil {
 		if *device.IsSelfManaged {
 			req.DeviceManagementType = String(DeviceManagementTypeSelf)
+			req.SshInterfaceId = device.WanInterfaceId
 		} else {
 			req.DeviceManagementType = String(DeviceManagementTypeEquinix)
 		}
@@ -318,6 +319,10 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.HostNamePrefix = secondary.HostName
 	secReq.AccountNumber = secondary.AccountNumber
 	secReq.AdditionalBandwidth = secondary.AdditionalBandwidth
+	secReq.SshInterfaceId = secondary.WanInterfaceId
+	if secReq.SshInterfaceId == nil {
+		secReq.SshInterfaceId = req.SshInterfaceId
+	}
 	secReq.ACLTemplateUUID = secondary.ACLTemplateUUID
 	secReq.VendorConfig = secondary.VendorConfiguration
 	secReq.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(secondary.UserPublicKey)
