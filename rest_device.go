@@ -296,13 +296,13 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	if device.IsSelfManaged != nil {
 		if *device.IsSelfManaged {
 			req.DeviceManagementType = String(DeviceManagementTypeSelf)
-			req.SshInterfaceId = device.WanInterfaceId
 		} else {
 			req.DeviceManagementType = String(DeviceManagementTypeEquinix)
 		}
 	}
 	req.Core = device.CoreCount
 	req.AdditionalBandwidth = device.AdditionalBandwidth
+	req.SshInterfaceId = device.WanInterfaceId
 	req.ACLTemplateUUID = device.ACLTemplateUUID
 	req.VendorConfig = device.VendorConfiguration
 	req.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(device.UserPublicKey)
