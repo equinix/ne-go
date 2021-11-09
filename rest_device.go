@@ -207,6 +207,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.RedundantUUID = apiDevice.RedundantUUID
 	device.TermLength = apiDevice.TermLength
 	device.AdditionalBandwidth = apiDevice.AdditionalBandwidth
+	device.WanInterfaceId = apiDevice.SshInterfaceId
 	device.OrderReference = apiDevice.OrderReference
 	device.InterfaceCount = apiDevice.InterfaceCount
 	if apiDevice.Core != nil {

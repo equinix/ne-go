@@ -32,6 +32,7 @@ type Device struct {
 	InterfaceCount       *int                   `json:"interfaceCount,omitempty"`
 	Core                 *DeviceCoreInformation `json:"core,omitempty"`
 	DeviceManagementType *string                `json:"deviceManagementType,omitempty"`
+	SshInterfaceId       *string                `json:"sshInterfaceId,omitempty"`
 	Interfaces           []DeviceInterface      `json:"interfaces,omitempty"`
 	VendorConfig         map[string]string      `json:"vendorConfig,omitempty"`
 	UserPublicKey        *DeviceUserPublicKey   `json:"userPublicKey,omitempty"`
