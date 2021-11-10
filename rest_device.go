@@ -207,6 +207,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.RedundantUUID = apiDevice.RedundantUUID
 	device.TermLength = apiDevice.TermLength
 	device.AdditionalBandwidth = apiDevice.AdditionalBandwidth
+	device.WanInterfaceId = apiDevice.SshInterfaceId
 	device.OrderReference = apiDevice.OrderReference
 	device.InterfaceCount = apiDevice.InterfaceCount
 	if apiDevice.Core != nil {
@@ -301,6 +302,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	}
 	req.Core = device.CoreCount
 	req.AdditionalBandwidth = device.AdditionalBandwidth
+	req.SshInterfaceId = device.WanInterfaceId
 	req.ACLTemplateUUID = device.ACLTemplateUUID
 	req.VendorConfig = device.VendorConfiguration
 	req.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(device.UserPublicKey)
@@ -318,6 +320,10 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.HostNamePrefix = secondary.HostName
 	secReq.AccountNumber = secondary.AccountNumber
 	secReq.AdditionalBandwidth = secondary.AdditionalBandwidth
+	secReq.SshInterfaceId = secondary.WanInterfaceId
+	if secReq.SshInterfaceId == nil {
+		secReq.SshInterfaceId = req.SshInterfaceId
+	}
 	secReq.ACLTemplateUUID = secondary.ACLTemplateUUID
 	secReq.VendorConfig = secondary.VendorConfiguration
 	secReq.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(secondary.UserPublicKey)
