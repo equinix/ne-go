@@ -93,6 +93,7 @@ func TestGetACLTemplates(t *testing.T) {
 	assert.Equal(t, len(respBody.Data), len(templates), "Number of objects matches")
 	for i := range respBody.Data {
 		verifyACLTemplate(t, templates[i], respBody.Data[i])
+		verifyACLTemplateDeviceDetails(t, templates[i], respBody.Data[i])
 	}
 }
 
@@ -114,6 +115,7 @@ func TestGetACLTemplate(t *testing.T) {
 	assert.NotNil(t, template, "Returned template is not nil")
 	assert.Nil(t, err, "Error is not returned")
 	verifyACLTemplate(t, *template, resp)
+	verifyACLTemplateDeviceDetails(t, *template, resp)
 }
 
 func TestReplaceACLTemplate(t *testing.T) {
@@ -164,7 +166,6 @@ func verifyACLTemplate(t *testing.T, template ACLTemplate, apiTemplate api.ACLTe
 	assert.Equal(t, template.Name, apiTemplate.Name, "Name matches")
 	assert.Equal(t, template.Description, apiTemplate.Description, "Description matches")
 	assert.Equal(t, template.MetroCode, apiTemplate.MetroCode, "MetroCode matches")
-	assert.Equal(t, template.DeviceUUID, apiTemplate.VirtualDeviceUUID, "DeviceUUID matches")
 	assert.Equal(t, template.DeviceACLStatus, apiTemplate.DeviceACLStatus, "DeviceACLStatus matches")
 	assert.Equal(t, len(template.InboundRules), len(apiTemplate.InboundRules), "Number of InboundRules matches")
 	for i := range template.InboundRules {
@@ -175,9 +176,18 @@ func verifyACLTemplate(t *testing.T, template ACLTemplate, apiTemplate api.ACLTe
 func verifyACLTemplateInboundRule(t *testing.T, rule ACLTemplateInboundRule, apiRule api.ACLTemplateInboundRule) {
 	assert.Equal(t, rule.SeqNo, rule.SeqNo, "SeqNo matches")
 	assert.Equal(t, rule.SrcType, rule.SrcType, "SrcType matches")
-	assert.Equal(t, rule.FQDN, rule.FQDN, "FQDN matches")
 	assert.ElementsMatch(t, rule.Subnets, rule.Subnets, "Subnets matches")
 	assert.Equal(t, rule.Protocol, rule.Protocol, "Protocol matches")
 	assert.Equal(t, rule.SrcPort, rule.SrcPort, "SrcPort matches")
 	assert.Equal(t, rule.DstPort, rule.DstPort, "DstPort matches")
+}
+
+func verifyACLTemplateDeviceDetails(t *testing.T, template ACLTemplate, apiTemplate api.ACLTemplate) {
+	assert.Equal(t, len(template.DeviceDetails), len(apiTemplate.DeviceDetails), "Number of DeviceDetails matches")
+	for i := range template.DeviceDetails {
+		assert.Equal(t, template.DeviceDetails[i].UUID, apiTemplate.DeviceDetails[i].UUID, "UUID matches")
+		assert.Equal(t, template.DeviceDetails[i].Name, apiTemplate.DeviceDetails[i].Name, "Name matches")
+		assert.Equal(t, template.DeviceDetails[i].ACLStatus, apiTemplate.DeviceDetails[i].ACLStatus, "ACL Status matches")
+
+	}
 }

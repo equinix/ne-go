@@ -155,3 +155,7 @@ type DeviceAdditionalBandwidthResponse struct {
 	AdditionalBandwidth *int    `json:"additionalBandwidth,omitempty"`
 	Status              *string `json:"status,omitempty"`
 }
+
+type DeviceACLResponse struct {
+	Status *string `json:"status,omitempty"`
+}

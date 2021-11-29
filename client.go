@@ -93,6 +93,7 @@ type Client interface {
 	GetDevice(uuid string) (*Device, error)
 	GetDevices(statuses []string) ([]Device, error)
 	GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdditionalBandwidthDetails, error)
+	GetDeviceACLDetails(uuid string) (*DeviceACLDetails, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
 
@@ -346,9 +347,9 @@ type ACLTemplate struct {
 	Name            *string
 	Description     *string
 	MetroCode       *string
-	DeviceUUID      *string
 	DeviceACLStatus *string
 	InboundRules    []ACLTemplateInboundRule
+	DeviceDetails   []ACLTemplateDeviceDetails
 }
 
 //ACLTemplateInboundRule describes inbound ACL rule that is part of
@@ -356,11 +357,17 @@ type ACLTemplate struct {
 type ACLTemplateInboundRule struct {
 	SeqNo    *int
 	SrcType  *string
-	FQDN     *string
 	Subnets  []string
+	Subnet   *string
 	Protocol *string
 	SrcPort  *string
 	DstPort  *string
+}
+
+type ACLTemplateDeviceDetails struct {
+	UUID      *string
+	Name      *string
+	ACLStatus *string
 }
 
 //DeviceAdditionalBandwidthDetails describes details of a device
@@ -368,6 +375,12 @@ type ACLTemplateInboundRule struct {
 type DeviceAdditionalBandwidthDetails struct {
 	AdditionalBandwidth *int
 	Status              *string
+}
+
+//DeviceACLDetails describes details of a device
+//additional badwidth
+type DeviceACLDetails struct {
+	Status *string
 }
 
 //DeviceLinkGroup describes details of a device link group

@@ -81,13 +81,12 @@ func (c RestClient) DeleteACLTemplate(uuid string) error {
 
 func mapACLTemplateDomainToAPI(template ACLTemplate) api.ACLTemplate {
 	return api.ACLTemplate{
-		UUID:              template.UUID,
-		Name:              template.Name,
-		Description:       template.Description,
-		MetroCode:         template.MetroCode,
-		VirtualDeviceUUID: template.DeviceUUID,
-		DeviceACLStatus:   template.DeviceACLStatus,
-		InboundRules:      mapACLTemplateInboundRulesDomainToAPI(template.InboundRules),
+		UUID:            template.UUID,
+		Name:            template.Name,
+		Description:     template.Description,
+		MetroCode:       template.MetroCode,
+		DeviceACLStatus: template.DeviceACLStatus,
+		InboundRules:    mapACLTemplateInboundRulesDomainToAPI(template.InboundRules),
 	}
 }
 
@@ -105,7 +104,7 @@ func mapACLTemplateInboundRuleDomainToAPI(rule ACLTemplateInboundRule) api.ACLTe
 		Protocol: rule.Protocol,
 		SrcPort:  rule.SrcPort,
 		DstPort:  rule.DstPort,
-		FQDN:     rule.FQDN,
+		Subnet:   rule.Subnet,
 		Subnets:  rule.Subnets,
 		SeqNO:    rule.SeqNo,
 	}
@@ -117,9 +116,9 @@ func mapACLTemplateAPIToDomain(apiTemplate api.ACLTemplate) ACLTemplate {
 		Name:            apiTemplate.Name,
 		Description:     apiTemplate.Description,
 		MetroCode:       apiTemplate.MetroCode,
-		DeviceUUID:      apiTemplate.VirtualDeviceUUID,
 		DeviceACLStatus: apiTemplate.DeviceACLStatus,
 		InboundRules:    mapACLTemplateInboundRulesAPIToDomain(apiTemplate.InboundRules),
+		DeviceDetails:   mapACLTemplateDeviceDetailsAPIToDomain(apiTemplate.DeviceDetails),
 	}
 }
 
@@ -137,8 +136,24 @@ func mapACLTemplateInboundRuleAPIToDomain(apiRule api.ACLTemplateInboundRule) AC
 		Protocol: apiRule.Protocol,
 		SrcPort:  apiRule.SrcPort,
 		DstPort:  apiRule.DstPort,
-		FQDN:     apiRule.FQDN,
 		Subnets:  apiRule.Subnets,
+		Subnet:   apiRule.Subnet,
 		SeqNo:    apiRule.SeqNO,
+	}
+}
+
+func mapACLTemplateDeviceDetailsAPIToDomain(apiRules []api.ACLTemplateDeviceDetails) []ACLTemplateDeviceDetails {
+	transformed := make([]ACLTemplateDeviceDetails, len(apiRules))
+	for i := range apiRules {
+		transformed[i] = mapACLTemplateDeviceDetailAPIToDomain(apiRules[i])
+	}
+	return transformed
+}
+
+func mapACLTemplateDeviceDetailAPIToDomain(apiRule api.ACLTemplateDeviceDetails) ACLTemplateDeviceDetails {
+	return ACLTemplateDeviceDetails{
+		UUID:      apiRule.UUID,
+		Name:      apiRule.Name,
+		ACLStatus: apiRule.ACLStatus,
 	}
 }

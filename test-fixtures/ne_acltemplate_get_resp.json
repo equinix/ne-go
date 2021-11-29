@@ -4,7 +4,6 @@
     "description": "Test ACL",
     "inboundRules": [
         {
-            "srcType": "SUBNET",
             "seqNo": 1,
             "subnets": [
                 "10.0.0.0/24"
@@ -27,9 +26,19 @@
     ],
     "metroName": "Silicon Valley",
     "metroCode": "SV",
-    "virtualDeviceName": "csr1000v-n",
-    "virtualDeviceUUID": "4ad6ab9c-f470-4dae-a445-926424785e2f",
     "deviceAclstatus": "PROVISIONED",
     "createdBy": "user",
-    "createdDate": "2020-10-29T09:58:05.012Z"
+    "createdDate": "2020-10-29T09:58:05.012Z",
+    "virtualDeviceDetails": [
+        {
+            "name": "test_device1",
+            "uuid": "7e9bf92a-2189-4474-a181-81039c0ccfb1",
+            "aclStatus": "PROVISIONED"
+        },
+        {
+            "name": "test_device2",
+            "uuid": "e54ba802-29c5-4741-a1e5-81c89ca1f172",
+            "aclStatus": "PROVISIONED"
+        }
+    ]
 }
