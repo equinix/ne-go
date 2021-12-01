@@ -97,6 +97,7 @@ func (c RestClient) GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdd
 	return mapDeviceAdditionalBandwidthAPIToDomain(result), nil
 }
 
+//GetDeviceACLDetails retrives device acl template provisioning status
 func (c RestClient) GetDeviceACLDetails(uuid string) (*DeviceACLDetails, error) {
 	path := fmt.Sprintf("/ne/v1/devices/%s/acl", url.PathEscape(uuid))
 	result := api.DeviceACLResponse{}

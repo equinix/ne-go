@@ -346,6 +346,7 @@ type ACLTemplate struct {
 	UUID            *string
 	Name            *string
 	Description     *string
+	DeviceUUID      *string // Deprecated: Refer to DeviceDetails for more information
 	MetroCode       *string // Deprecated: Metro code is not required as template can be used for multiple devices across metros.
 	DeviceACLStatus *string
 	InboundRules    []ACLTemplateInboundRule
@@ -356,6 +357,7 @@ type ACLTemplate struct {
 //Network Edge device ACL template
 type ACLTemplateInboundRule struct {
 	SeqNo    *int
+	FQDN     *string  // Deprecated: FQDN is no longer supported
 	SrcType  *string  // Deprecated: SrcType is not required.
 	Subnets  []string // Deprecated: Use subnet instead.
 	Subnet   *string
