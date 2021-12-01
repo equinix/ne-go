@@ -28,7 +28,19 @@
             "virtualDeviceUUID": "",
             "deviceAclstatus": "",
             "createdBy": "user",
-            "createdDate": "2020-10-05T21:19:15.912Z"
+            "createdDate": "2020-10-05T21:19:15.912Z",
+            "virtualDeviceDetails": [
+                {
+                    "name": "test_device1",
+                    "uuid": "7e9bf92a-2189-4474-a181-81039c0ccfb1",
+                    "aclStatus": "PROVISIONED"
+                },
+                {
+                    "name": "test_device2",
+                    "uuid": "e54ba802-29c5-4741-a1e5-81c89ca1f172",
+                    "aclStatus": "PROVISIONED"
+                }
+            ]
         },
         {
             "name": "test-twp",
@@ -52,7 +64,19 @@
             "virtualDeviceUUID": "35400805-1c84-46db-acd2-796273b86662",
             "deviceAclstatus": "PROVISIONED",
             "createdBy": "user",
-            "createdDate": "2020-10-05T02:31:38.867Z"
+            "createdDate": "2020-10-05T02:31:38.867Z",
+            "virtualDeviceDetails": [
+                {
+                    "name": "test_device1",
+                    "uuid": "7e9bf92a-2189-4474-a181-81039c0ccfb1",
+                    "aclStatus": "PROVISIONED"
+                },
+                {
+                    "name": "test_device2",
+                    "uuid": "e54ba802-29c5-4741-a1e5-81c89ca1f172",
+                    "aclStatus": "PROVISIONED"
+                }
+            ]
         }
     ]
 }

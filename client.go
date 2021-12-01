@@ -93,6 +93,7 @@ type Client interface {
 	GetDevice(uuid string) (*Device, error)
 	GetDevices(statuses []string) ([]Device, error)
 	GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdditionalBandwidthDetails, error)
+	GetDeviceACLDetails(uuid string) (*DeviceACLDetails, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
 
@@ -345,22 +346,31 @@ type ACLTemplate struct {
 	UUID            *string
 	Name            *string
 	Description     *string
-	MetroCode       *string
-	DeviceUUID      *string
+	DeviceUUID      *string // Deprecated: Refer to DeviceDetails for more information
+	MetroCode       *string // Deprecated: Metro code is not required as template can be used for multiple devices across metros.
 	DeviceACLStatus *string
 	InboundRules    []ACLTemplateInboundRule
+	DeviceDetails   []ACLTemplateDeviceDetails
 }
 
 //ACLTemplateInboundRule describes inbound ACL rule that is part of
 //Network Edge device ACL template
 type ACLTemplateInboundRule struct {
 	SeqNo    *int
-	SrcType  *string
-	FQDN     *string
-	Subnets  []string
+	FQDN     *string  // Deprecated: FQDN is no longer supported
+	SrcType  *string  // Deprecated: SrcType is not required.
+	Subnets  []string // Deprecated: Use subnet instead.
+	Subnet   *string
 	Protocol *string
 	SrcPort  *string
 	DstPort  *string
+}
+
+//ACLTemplateDeviceDetails describes Device Details this template applied to
+type ACLTemplateDeviceDetails struct {
+	UUID      *string
+	Name      *string
+	ACLStatus *string
 }
 
 //DeviceAdditionalBandwidthDetails describes details of a device
@@ -368,6 +378,12 @@ type ACLTemplateInboundRule struct {
 type DeviceAdditionalBandwidthDetails struct {
 	AdditionalBandwidth *int
 	Status              *string
+}
+
+//DeviceACLDetails describes details of a device
+//additional badwidth
+type DeviceACLDetails struct {
+	Status *string
 }
 
 //DeviceLinkGroup describes details of a device link group
