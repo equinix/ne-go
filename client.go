@@ -239,6 +239,7 @@ type Device struct {
 	LicenseFile         *string
 	LicenseFileID       *string
 	ACLTemplateUUID     *string
+	MgmtAclTemplateUuid *string
 	SSHIPAddress        *string
 	SSHIPFqdn           *string
 	AccountNumber       *string
@@ -258,6 +259,7 @@ type Device struct {
 	UserPublicKey       *DeviceUserPublicKey
 	ASN                 *int
 	ZoneCode            *string
+	ClusterDetails      *ClusterDetails
 }
 
 //DeviceInterface describes Network Edge device interface
@@ -416,4 +418,29 @@ type DeviceLinkGroupLink struct {
 	DestinationMetroCode *string
 	SourceZoneCode       *string
 	DestinationZoneCode  *string
+}
+
+//ClusterDetails describes Network Edge cluster device details
+type ClusterDetails struct {
+	ClusterName        *string
+	NumOfNodes         *int
+	ClusterNodeDetails []ClusterNodeDetail
+	ClusterId          *string
+	Nodes              []ClusterNode
+}
+
+//ClusterNodeDetail describes Network Edge cluster node configuration
+type ClusterNodeDetail struct {
+	NodeName            *string
+	VendorConfiguration map[string]string
+	LicenseFileId       *string
+	LicenseToken        *string
+}
+
+type ClusterNode struct {
+	UUID                *string
+	Name                *string
+	Node                *int
+	AdminPassword       *string
+	VendorConfiguration map[string]string
 }

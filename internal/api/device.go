@@ -19,6 +19,7 @@ type Device struct {
 	LicenseType          *string                `json:"licenseType,omitempty"`
 	LicenseFileID        *string                `json:"licenseFileId,omitempty"`
 	ACLTemplateUUID      *string                `json:"aclTemplateUuid,omitempty"`
+	MgmtAclTemplateUuid  *string                `json:"mgmtAclTemplateUuid,omitempty"`
 	SSHIPAddress         *string                `json:"sshIpAddress,omitempty"`
 	SSHIPFqdn            *string                `json:"sshIpFqdn,omitempty"`
 	AccountNumber        *string                `json:"accountNumber,omitempty"`
@@ -38,6 +39,7 @@ type Device struct {
 	UserPublicKey        *DeviceUserPublicKey   `json:"userPublicKey,omitempty"`
 	ASN                  *int                   `json:"asn,omitempty"`
 	ZoneCode             *string                `json:"zoneCode,omitempty"`
+	ClusterDetails       *ClusterDetails        `json:"clusterDetails,omitempty"`
 }
 
 //DeviceRequest describes network edge device creation request
@@ -64,9 +66,11 @@ type DeviceRequest struct {
 	Core                 *int                        `json:"core,omitempty"`
 	AdditionalBandwidth  *int                        `json:"additionalBandwidth,omitempty,string"`
 	ACLTemplateUUID      *string                     `json:"aclTemplateUuid,omitempty"`
+	MgmtAclTemplateUuid  *string                     `json:"mgmtAclTemplateUuid,omitempty"`
 	VendorConfig         map[string]string           `json:"vendorConfig,omitempty"`
 	UserPublicKey        *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`
 	Secondary            *SecondaryDeviceRequest     `json:"secondary,omitempty"`
+	ClusterDetails       *ClusterDetailsRequest      `json:"clusterDetails,omitempty"`
 }
 
 //SecondaryDeviceRequest describes secondary device part of device creation request
@@ -122,8 +126,10 @@ type DeviceCoreInformation struct {
 
 //DeviceRequestResponse describes response for device creation request
 type DeviceRequestResponse struct {
-	UUID          *string `json:"uuid,omitempty"`
-	SecondaryUUID *string `json:"secondaryUUID,omitempty"`
+	UUID          *string           `json:"uuid,omitempty"`
+	SecondaryUUID *string           `json:"secondaryUuid,omitempty"`
+	deviceIDs     map[string]string `json:"deviceIds,omitempty"`
+	ClusterID     *string           `json:"clusterId,omitempty"`
 }
 
 //DeviceUpdateRequest describes network device update request
@@ -158,4 +164,35 @@ type DeviceAdditionalBandwidthResponse struct {
 
 type DeviceACLResponse struct {
 	Status *string `json:"status,omitempty"`
+}
+
+//ClusterDetailsRequest describes cluster details of device creation request
+type ClusterDetailsRequest struct {
+	ClusterName        *string                             `json:"clusterName,omitempty"`
+	NumOfNodes         *int                                `json:"numOfNodes,omitempty"`
+	ClusterNodeDetails map[string]ClusterNodeDetailRequest `json:"clusterNodeDetails,omitempty"`
+}
+
+//ClusterNodeDetailRequest describes cluster node configuration of device creation request
+type ClusterNodeDetailRequest struct {
+	VendorConfiguration map[string]string `json:"vendorConfig,omitempty"`
+	LicenseFileId       *string           `json:"licenseFileId,omitempty"`
+	LicenseToken        *string           `json:"licenseToken,omitempty"`
+}
+
+//ClusterDetails describes cluster details for device response
+type ClusterDetails struct {
+	ClusterId   *string       `json:"clusterId,omitempty"`
+	ClusterName *string       `json:"clusterName,omitempty"`
+	NumOfNodes  *int          `json:"numOfNodes,omitempty"`
+	Nodes       []ClusterNode `json:"nodes,omitempty"`
+}
+
+//ClusterNode describes cluster node details for device response
+type ClusterNode struct {
+	UUID                *string           `json:"uuid,omitempty"`
+	Name                *string           `json:"name,omitempty"`
+	Node                *int              `json:"node,omitempty"`
+	AdminPassword       *string           `json:"adminPwd,omitempty"`
+	VendorConfiguration map[string]string `json:"vendorConfig,omitempty"`
 }
