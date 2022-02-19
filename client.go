@@ -15,6 +15,10 @@ const (
 	DeviceStateWaitingPrimary = "WAITING_FOR_PRIMARY"
 	//DeviceStateWaitingSecondary primary Network Edge device is waiting for provisioning of its redundant (secondary) device
 	DeviceStateWaitingSecondary = "WAITING_FOR_SECONDARY"
+	//DeviceStateWaitingClusterNodes primary Network Edge device is waiting for provisioning of its cluster devices
+	DeviceStateWaitingClusterNodes = "WAITING_FOR_REPLICA_CLUSTER_NODES"
+	//DeviceStateClusterSetUpInProgress The cluster setup is in progress
+	DeviceStateClusterSetUpInProgress = "CLUSTER_SETUP_IN_PROGRESS"
 	//DeviceStateFailed Network Edge device creation and provisioning have failed
 	DeviceStateFailed = "FAILED"
 	//DeviceStateProvisioned Network Edge device was successfully provisioned and is fully operational
@@ -32,6 +36,8 @@ const (
 	DeviceLicenseStateApplied = "APPLIED"
 	//DeviceLicenseStateFailed license registration has failed
 	DeviceLicenseStateFailed = "REGISTRATION_FAILED"
+	//DeviceLicenseStateWaitingClusterSetUp license is waiting for cluster setup
+	DeviceLicenseStateWaitingClusterSetUp = "WAITING_FOR_CLUSTER_SETUP"
 
 	//BGPStateIdle BGP peer state is idle
 	BGPStateIdle = "Idle"
