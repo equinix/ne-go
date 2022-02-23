@@ -128,7 +128,7 @@ type DeviceCoreInformation struct {
 type DeviceRequestResponse struct {
 	UUID          *string           `json:"uuid,omitempty"`
 	SecondaryUUID *string           `json:"secondaryUuid,omitempty"`
-	deviceIDs     map[string]string `json:"deviceIds,omitempty"`
+	DeviceIDs     map[string]string `json:"deviceIds,omitempty"`
 	ClusterID     *string           `json:"clusterId,omitempty"`
 }
 

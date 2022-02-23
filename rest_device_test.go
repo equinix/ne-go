@@ -127,6 +127,78 @@ func TestCreateRedundantDevice(t *testing.T) {
 	verifyRedundantDeviceRequest(t, primary, secondary, req)
 }
 
+func TestCreateClusterDevice(t *testing.T) {
+	//given
+	resp := api.DeviceRequestResponse{}
+	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
+		assert.Fail(t, "Cannot read test response")
+	}
+	device := Device{
+		Name:                String("PANW-cluster"),
+		MetroCode:           String("SV"),
+		TypeCode:            String("PA-VM"),
+		IsSelfManaged:       Bool(true),
+		IsBYOL:              Bool(true),
+		PackageCode:         String("VM100"),
+		Notifications:       []string{"test1@example.com", "test2@example.com"},
+		HostName:            String("panwHostName"),
+		TermLength:          Int(24),
+		AccountNumber:       String("177643"),
+		Version:             String("10.1.3"),
+		InterfaceCount:      Int(10),
+		CoreCount:           Int(2),
+		ACLTemplateUUID:     String("4972e8d2-417f-4821-91a8-f4a61a6dcdc3"),
+		MgmtAclTemplateUuid: String("4972e8d2-417f-4821-91a8-f4a61a6dcdc3"),
+		UserPublicKey: &DeviceUserPublicKey{
+			Username: String("testUserName"),
+			KeyName:  String("testKey"),
+		},
+		ClusterDetails: &ClusterDetails{
+			ClusterName: String("clusterName"),
+			ClusterNodeDetails: []ClusterNodeDetail{
+				{
+					NodeName: String("node0"),
+					VendorConfiguration: map[string]string{
+						"hostName": "panw-host0",
+					},
+					LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
+					LicenseToken:  String("licenseToken"),
+				},
+				{
+					NodeName: String("node1"),
+					VendorConfiguration: map[string]string{
+						"hostName": "panw-host1",
+					},
+					LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
+					LicenseToken:  String("licenseToken"),
+				},
+			},
+		},
+	}
+	req := api.DeviceRequest{}
+	testHc := &http.Client{}
+	httpmock.ActivateNonDefault(testHc)
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/devices", baseURL),
+		func(r *http.Request) (*http.Response, error) {
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				return httpmock.NewStringResponse(400, ""), nil
+			}
+			resp, _ := httpmock.NewJsonResponse(202, resp)
+			return resp, nil
+		},
+	)
+	defer httpmock.DeactivateAndReset()
+
+	//when
+	c := NewClient(context.Background(), baseURL, testHc)
+	uuid, err := c.CreateDevice(device)
+
+	//then
+	assert.Nil(t, err, "Error is not returned")
+	assert.Equal(t, uuid, resp.UUID, "UUID matches")
+	verifyClusterDeviceRequest(t, device, req)
+}
+
 func TestGetDevice(t *testing.T) {
 	//given
 	resp := api.Device{}
@@ -413,6 +485,37 @@ func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req a
 	verifyDeviceUserPublicKeyRequest(t, *secondary.UserPublicKey, *req.Secondary.UserPublicKey)
 }
 
+func verifyClusterDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
+	assert.Equal(t, device.Name, req.VirtualDeviceName, "Name matches")
+	assert.Equal(t, device.MetroCode, req.MetroCode, "MetroCode matches")
+	assert.Equal(t, device.TypeCode, req.DeviceTypeCode, "TypeCode matches")
+	if *device.IsSelfManaged {
+		assert.Equal(t, DeviceManagementTypeSelf, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
+	} else {
+		assert.Equal(t, DeviceManagementTypeEquinix, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
+	}
+	if *device.IsBYOL {
+		assert.Equal(t, DeviceLicenseModeBYOL, StringValue(req.LicenseMode), "LicenseMode matches")
+	} else {
+		assert.Equal(t, DeviceLicenseModeSubscription, StringValue(req.LicenseMode), "LicenseMode matches")
+	}
+	assert.Equal(t, device.PackageCode, req.PackageCode, "PackageCode matches")
+	assert.ElementsMatch(t, device.Notifications, req.Notifications, "Notifications matches")
+	assert.Equal(t, device.HostName, req.HostNamePrefix, "HostName matches")
+	termLengthStr := strconv.Itoa(*device.TermLength)
+	assert.Equal(t, &termLengthStr, req.TermLength, "TermLength matches")
+	assert.Equal(t, device.AccountNumber, req.AccountNumber, "AccountNumber matches")
+	assert.Equal(t, device.Version, req.Version, "Version matches")
+	assert.Equal(t, device.InterfaceCount, req.InterfaceCount, "InterfaceCount matches")
+	assert.Equal(t, device.CoreCount, req.Core, "Core matches")
+	assert.Equal(t, device.ACLTemplateUUID, req.ACLTemplateUUID, "ACLTemplateUUID matches")
+	assert.Equal(t, device.MgmtAclTemplateUuid, req.MgmtAclTemplateUuid, "MgmtAclTemplateUuid matches")
+	assert.NotNil(t, req.UserPublicKey, "UserPublicKey is not nil")
+	verifyDeviceUserPublicKeyRequest(t, *device.UserPublicKey, *req.UserPublicKey)
+	assert.NotNil(t, req.ClusterDetails, "ClusterDetails are not nil")
+	verifyClusterDetailsRequest(t, *device.ClusterDetails, *req.ClusterDetails)
+}
+
 func verifyDeviceUserPublicKey(t *testing.T, userKey DeviceUserPublicKey, apiUserKey api.DeviceUserPublicKey) {
 	assert.Equal(t, apiUserKey.Username, userKey.Username, "Username matches")
 	assert.Equal(t, apiUserKey.KeyName, userKey.KeyName, "KeyName matches")
@@ -421,4 +524,19 @@ func verifyDeviceUserPublicKey(t *testing.T, userKey DeviceUserPublicKey, apiUse
 func verifyDeviceUserPublicKeyRequest(t *testing.T, userKey DeviceUserPublicKey, apiUserKeyReq api.DeviceUserPublicKeyRequest) {
 	assert.Equal(t, apiUserKeyReq.Username, userKey.Username, "Username matches")
 	assert.Equal(t, apiUserKeyReq.KeyName, userKey.KeyName, "KeyName matches")
+}
+
+func verifyClusterDetailsRequest(t *testing.T, clusterDetails ClusterDetails, apiClusterDetailsReq api.ClusterDetailsRequest) {
+	assert.Equal(t, clusterDetails.ClusterName, apiClusterDetailsReq.ClusterName, "ClusterName matches")
+	for i := range clusterDetails.ClusterNodeDetails {
+		verifyClusterNodeDetailRequest(t, clusterDetails.ClusterNodeDetails[i], apiClusterDetailsReq.ClusterNodeDetails)
+	}
+}
+
+func verifyClusterNodeDetailRequest(t *testing.T, clusterNodeDetail ClusterNodeDetail, apiClusterNodeDetailReqMap map[string]api.ClusterNodeDetailRequest) {
+	apiClusterNodeDetailReq := apiClusterNodeDetailReqMap[*clusterNodeDetail.NodeName]
+	assert.NotNil(t, apiClusterNodeDetailReq, "ClusterNodeDetailReq is not nil")
+	assert.Equal(t, clusterNodeDetail.VendorConfiguration, apiClusterNodeDetailReq.VendorConfiguration, "VendorConfigurations match")
+	assert.Equal(t, clusterNodeDetail.LicenseFileId, apiClusterNodeDetailReq.LicenseFileId, "LicenseFileId matches")
+	assert.Equal(t, clusterNodeDetail.LicenseToken, apiClusterNodeDetailReq.LicenseToken, "LicenseToken matches")
 }
