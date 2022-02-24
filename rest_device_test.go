@@ -155,17 +155,15 @@ func TestCreateClusterDevice(t *testing.T) {
 		},
 		ClusterDetails: &ClusterDetails{
 			ClusterName: String("clusterName"),
-			ClusterNodeDetails: []ClusterNodeDetail{
-				{
-					NodeName: String("node0"),
+			ClusterNodeDetails: map[string]*ClusterNodeDetail{
+				"node0": {
 					VendorConfiguration: map[string]string{
 						"hostName": "panw-host0",
 					},
 					LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
 					LicenseToken:  String("licenseToken"),
 				},
-				{
-					NodeName: String("node1"),
+				"node1": {
 					VendorConfiguration: map[string]string{
 						"hostName": "panw-host1",
 					},
@@ -528,14 +526,15 @@ func verifyDeviceUserPublicKeyRequest(t *testing.T, userKey DeviceUserPublicKey,
 
 func verifyClusterDetailsRequest(t *testing.T, clusterDetails ClusterDetails, apiClusterDetailsReq api.ClusterDetailsRequest) {
 	assert.Equal(t, clusterDetails.ClusterName, apiClusterDetailsReq.ClusterName, "ClusterName matches")
-	for i := range clusterDetails.ClusterNodeDetails {
-		verifyClusterNodeDetailRequest(t, clusterDetails.ClusterNodeDetails[i], apiClusterDetailsReq.ClusterNodeDetails)
+	apiClusterNodeDetailReqMap := apiClusterDetailsReq.ClusterNodeDetails
+	assert.NotNil(t, apiClusterNodeDetailReqMap, "ClusterNodeDetails are not nil")
+	for k, v := range clusterDetails.ClusterNodeDetails {
+		verifyClusterNodeDetailRequest(t, v, apiClusterNodeDetailReqMap[k])
 	}
 }
 
-func verifyClusterNodeDetailRequest(t *testing.T, clusterNodeDetail ClusterNodeDetail, apiClusterNodeDetailReqMap map[string]api.ClusterNodeDetailRequest) {
-	apiClusterNodeDetailReq := apiClusterNodeDetailReqMap[*clusterNodeDetail.NodeName]
-	assert.NotNil(t, apiClusterNodeDetailReq, "ClusterNodeDetailReq is not nil")
+func verifyClusterNodeDetailRequest(t *testing.T, clusterNodeDetail *ClusterNodeDetail, apiClusterNodeDetailReq api.ClusterNodeDetailRequest) {
+	assert.NotNil(t, apiClusterNodeDetailReq, "ClusterNodeDetailRequest is not nil")
 	assert.Equal(t, clusterNodeDetail.VendorConfiguration, apiClusterNodeDetailReq.VendorConfiguration, "VendorConfigurations match")
 	assert.Equal(t, clusterNodeDetail.LicenseFileId, apiClusterNodeDetailReq.LicenseFileId, "LicenseFileId matches")
 	assert.Equal(t, clusterNodeDetail.LicenseToken, apiClusterNodeDetailReq.LicenseToken, "LicenseToken matches")

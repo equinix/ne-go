@@ -309,9 +309,8 @@ func mapDeviceClusterDetailsDomainToAPI(clusterDetails *ClusterDetails) *api.Clu
 	req.ClusterName = clusterDetails.ClusterName
 	req.NumOfNodes = clusterDetails.NumOfNodes
 	clusterNodeDetailsRequest := make(map[string]api.ClusterNodeDetailRequest)
-	for i := range clusterDetails.ClusterNodeDetails {
-		clusterNodeDetail := clusterDetails.ClusterNodeDetails[i]
-		clusterNodeDetailsRequest[*clusterNodeDetail.NodeName] = *mapDeviceClusterNodeDetailDomainToAPI(&clusterNodeDetail)
+	for k, v := range clusterDetails.ClusterNodeDetails {
+		clusterNodeDetailsRequest[k] = *mapDeviceClusterNodeDetailDomainToAPI(v)
 	}
 	req.ClusterNodeDetails = clusterNodeDetailsRequest
 	return &req
