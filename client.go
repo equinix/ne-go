@@ -15,6 +15,10 @@ const (
 	DeviceStateWaitingPrimary = "WAITING_FOR_PRIMARY"
 	//DeviceStateWaitingSecondary primary Network Edge device is waiting for provisioning of its redundant (secondary) device
 	DeviceStateWaitingSecondary = "WAITING_FOR_SECONDARY"
+	//DeviceStateWaitingClusterNodes primary Network Edge device is waiting for provisioning of its cluster devices
+	DeviceStateWaitingClusterNodes = "WAITING_FOR_REPLICA_CLUSTER_NODES"
+	//DeviceStateClusterSetUpInProgress The cluster setup is in progress
+	DeviceStateClusterSetUpInProgress = "CLUSTER_SETUP_IN_PROGRESS"
 	//DeviceStateFailed Network Edge device creation and provisioning have failed
 	DeviceStateFailed = "FAILED"
 	//DeviceStateProvisioned Network Edge device was successfully provisioned and is fully operational
@@ -32,6 +36,8 @@ const (
 	DeviceLicenseStateApplied = "APPLIED"
 	//DeviceLicenseStateFailed license registration has failed
 	DeviceLicenseStateFailed = "REGISTRATION_FAILED"
+	//DeviceLicenseStateWaitingClusterSetUp license is waiting for cluster setup
+	DeviceLicenseStateWaitingClusterSetUp = "WAITING_FOR_CLUSTER_SETUP"
 
 	//BGPStateIdle BGP peer state is idle
 	BGPStateIdle = "Idle"
@@ -239,6 +245,7 @@ type Device struct {
 	LicenseFile         *string
 	LicenseFileID       *string
 	ACLTemplateUUID     *string
+	MgmtAclTemplateUuid *string
 	SSHIPAddress        *string
 	SSHIPFqdn           *string
 	AccountNumber       *string
@@ -258,6 +265,7 @@ type Device struct {
 	UserPublicKey       *DeviceUserPublicKey
 	ASN                 *int
 	ZoneCode            *string
+	ClusterDetails      *ClusterDetails
 }
 
 //DeviceInterface describes Network Edge device interface
@@ -416,4 +424,28 @@ type DeviceLinkGroupLink struct {
 	DestinationMetroCode *string
 	SourceZoneCode       *string
 	DestinationZoneCode  *string
+}
+
+//ClusterDetails describes Network Edge cluster device details
+type ClusterDetails struct {
+	ClusterName        *string
+	NumOfNodes         *int
+	ClusterNodeDetails map[string]*ClusterNodeDetail
+	ClusterId          *string
+	Nodes              []ClusterNode
+}
+
+//ClusterNodeDetail describes Network Edge cluster node configuration
+type ClusterNodeDetail struct {
+	VendorConfiguration map[string]string
+	LicenseFileId       *string
+	LicenseToken        *string
+}
+
+type ClusterNode struct {
+	UUID                *string
+	Name                *string
+	Node                *int
+	AdminPassword       *string
+	VendorConfiguration map[string]string
 }

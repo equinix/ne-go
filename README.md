@@ -17,7 +17,7 @@ resources from Terraform provider plugin.
 Library gives possibility to manage virtual network devices and associated network
 services.
 
-**NOTE**: scope of this library is limited to needs of Terraform provider plugin
+**NOTE**: Scope of this library is limited to needs of Terraform provider plugin
 and it is not providing full capabilities of Equinix Network Edge API
 
 ## Usage

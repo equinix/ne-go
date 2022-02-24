@@ -209,6 +209,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.LicenseToken = apiDevice.LicenseToken
 	device.LicenseFileID = apiDevice.LicenseFileID
 	device.ACLTemplateUUID = apiDevice.ACLTemplateUUID
+	device.MgmtAclTemplateUuid = apiDevice.MgmtAclTemplateUuid
 	device.SSHIPAddress = apiDevice.SSHIPAddress
 	device.SSHIPFqdn = apiDevice.SSHIPFqdn
 	device.AccountNumber = apiDevice.AccountNumber
@@ -236,6 +237,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.UserPublicKey = mapDeviceUserPublicKeyAPIToDomain(apiDevice.UserPublicKey)
 	device.ASN = apiDevice.ASN
 	device.ZoneCode = apiDevice.ZoneCode
+	device.ClusterDetails = mapDeviceClusterDetailsAPIToDomain(apiDevice.ClusterDetails)
 	return &device
 }
 
@@ -273,6 +275,55 @@ func mapDeviceUserPublicKeyDomainToAPI(userKey *DeviceUserPublicKey) *api.Device
 	return &api.DeviceUserPublicKeyRequest{
 		Username: userKey.Username,
 		KeyName:  userKey.KeyName,
+	}
+}
+
+func mapDeviceClusterDetailsAPIToDomain(apiClusterDetails *api.ClusterDetails) *ClusterDetails {
+	if apiClusterDetails == nil {
+		return nil
+	}
+	clusterDetails := ClusterDetails{}
+	clusterDetails.ClusterId = apiClusterDetails.ClusterId
+	clusterDetails.ClusterName = apiClusterDetails.ClusterName
+	clusterDetails.NumOfNodes = apiClusterDetails.NumOfNodes
+	apiNodes := apiClusterDetails.Nodes
+	transformed := make([]ClusterNode, len(apiNodes))
+	for i := range apiNodes {
+		transformed[i] = ClusterNode{
+			UUID:                apiNodes[i].UUID,
+			Name:                apiNodes[i].Name,
+			Node:                apiNodes[i].Node,
+			AdminPassword:       apiNodes[i].AdminPassword,
+			VendorConfiguration: apiNodes[i].VendorConfiguration,
+		}
+	}
+	clusterDetails.Nodes = transformed
+	return &clusterDetails
+}
+
+func mapDeviceClusterDetailsDomainToAPI(clusterDetails *ClusterDetails) *api.ClusterDetailsRequest {
+	if clusterDetails == nil {
+		return nil
+	}
+	req := api.ClusterDetailsRequest{}
+	req.ClusterName = clusterDetails.ClusterName
+	req.NumOfNodes = clusterDetails.NumOfNodes
+	clusterNodeDetailsRequest := make(map[string]api.ClusterNodeDetailRequest)
+	for k, v := range clusterDetails.ClusterNodeDetails {
+		clusterNodeDetailsRequest[k] = *mapDeviceClusterNodeDetailDomainToAPI(v)
+	}
+	req.ClusterNodeDetails = clusterNodeDetailsRequest
+	return &req
+}
+
+func mapDeviceClusterNodeDetailDomainToAPI(clusterNodeDetail *ClusterNodeDetail) *api.ClusterNodeDetailRequest {
+	if clusterNodeDetail == nil {
+		return nil
+	}
+	return &api.ClusterNodeDetailRequest{
+		VendorConfiguration: clusterNodeDetail.VendorConfiguration,
+		LicenseFileId:       clusterNodeDetail.LicenseFileId,
+		LicenseToken:        clusterNodeDetail.LicenseToken,
 	}
 }
 
@@ -315,8 +366,10 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.AdditionalBandwidth = device.AdditionalBandwidth
 	req.SshInterfaceId = device.WanInterfaceId
 	req.ACLTemplateUUID = device.ACLTemplateUUID
+	req.MgmtAclTemplateUuid = device.MgmtAclTemplateUuid
 	req.VendorConfig = device.VendorConfiguration
 	req.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(device.UserPublicKey)
+	req.ClusterDetails = mapDeviceClusterDetailsDomainToAPI(device.ClusterDetails)
 	return req
 }
 
