@@ -389,6 +389,7 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 		secReq.SshInterfaceId = req.SshInterfaceId
 	}
 	secReq.ACLTemplateUUID = secondary.ACLTemplateUUID
+	secReq.MgmtAclTemplateUuid = secondary.MgmtAclTemplateUuid
 	secReq.VendorConfig = secondary.VendorConfiguration
 	secReq.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(secondary.UserPublicKey)
 	req.Secondary = &secReq

@@ -85,6 +85,7 @@ type SecondaryDeviceRequest struct {
 	AdditionalBandwidth *int                        `json:"additionalBandwidth,omitempty,string"`
 	SshInterfaceId      *string                     `json:"sshInterfaceId,omitempty"`
 	ACLTemplateUUID     *string                     `json:"aclTemplateUuid,omitempty"`
+	MgmtAclTemplateUuid *string                     `json:"mgmtAclTemplateUuid,omitempty"`
 	VendorConfig        map[string]string           `json:"vendorConfig,omitempty"`
 	UserPublicKey       *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`
 }
