@@ -156,21 +156,19 @@ func TestCreateClusterDevice(t *testing.T) {
 		},
 		ClusterDetails: &ClusterDetails{
 			ClusterName: String("clusterName"),
-			ClusterNodeDetails: map[string]*ClusterNodeDetail{
-				"node0": {
-					VendorConfiguration: map[string]string{
-						"hostName": "panw-host0",
-					},
-					LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
-					LicenseToken:  String("licenseToken"),
+			Node0: &ClusterNodeDetail{
+				VendorConfiguration: map[string]string{
+					"hostname": "panw-host0",
 				},
-				"node1": {
-					VendorConfiguration: map[string]string{
-						"hostName": "panw-host1",
-					},
-					LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
-					LicenseToken:  String("licenseToken"),
+				LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
+				LicenseToken:  String("licenseToken"),
+			},
+			Node1: &ClusterNodeDetail{
+				VendorConfiguration: map[string]string{
+					"hostname": "panw-host1",
 				},
+				LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
+				LicenseToken:  String("licenseToken"),
 			},
 		},
 	}
@@ -530,9 +528,8 @@ func verifyClusterDetailsRequest(t *testing.T, clusterDetails ClusterDetails, ap
 	assert.Equal(t, clusterDetails.ClusterName, apiClusterDetailsReq.ClusterName, "ClusterName matches")
 	apiClusterNodeDetailReqMap := apiClusterDetailsReq.ClusterNodeDetails
 	assert.NotNil(t, apiClusterNodeDetailReqMap, "ClusterNodeDetails are not nil")
-	for k, v := range clusterDetails.ClusterNodeDetails {
-		verifyClusterNodeDetailRequest(t, v, apiClusterNodeDetailReqMap[k])
-	}
+	verifyClusterNodeDetailRequest(t, clusterDetails.Node0, apiClusterNodeDetailReqMap["node0"])
+	verifyClusterNodeDetailRequest(t, clusterDetails.Node1, apiClusterNodeDetailReqMap["node1"])
 }
 
 func verifyClusterNodeDetailRequest(t *testing.T, clusterNodeDetail *ClusterNodeDetail, apiClusterNodeDetailReq api.ClusterNodeDetailRequest) {

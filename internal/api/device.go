@@ -170,7 +170,6 @@ type DeviceACLResponse struct {
 //ClusterDetailsRequest describes cluster details of device creation request
 type ClusterDetailsRequest struct {
 	ClusterName        *string                             `json:"clusterName,omitempty"`
-	NumOfNodes         *int                                `json:"numOfNodes,omitempty"`
 	ClusterNodeDetails map[string]ClusterNodeDetailRequest `json:"clusterNodeDetails,omitempty"`
 }
 

@@ -428,24 +428,18 @@ type DeviceLinkGroupLink struct {
 
 //ClusterDetails describes Network Edge cluster device details
 type ClusterDetails struct {
-	ClusterName        *string
-	NumOfNodes         *int
-	ClusterNodeDetails map[string]*ClusterNodeDetail
-	ClusterId          *string
-	Nodes              []ClusterNode
+	ClusterId   *string
+	ClusterName *string
+	NumOfNodes  *int
+	Node0       *ClusterNodeDetail
+	Node1       *ClusterNodeDetail
 }
 
-//ClusterNodeDetail describes Network Edge cluster node configuration
+//ClusterNodeDetail describes Network Edge cluster node details
 type ClusterNodeDetail struct {
+	UUID                *string
+	Name                *string
 	VendorConfiguration map[string]string
 	LicenseFileId       *string
 	LicenseToken        *string
-}
-
-type ClusterNode struct {
-	UUID                *string
-	Name                *string
-	Node                *int
-	AdminPassword       *string
-	VendorConfiguration map[string]string
 }
