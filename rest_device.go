@@ -287,16 +287,25 @@ func mapDeviceClusterDetailsAPIToDomain(apiClusterDetails *api.ClusterDetails) *
 	clusterDetails.ClusterName = apiClusterDetails.ClusterName
 	clusterDetails.NumOfNodes = apiClusterDetails.NumOfNodes
 	apiNodes := apiClusterDetails.Nodes
-	transformed := make([]*ClusterNodeDetail, len(apiNodes))
+	transformed := make([]ClusterNode, len(apiNodes))
+	clusterNodeDetails := make([]*ClusterNodeDetail, len(apiNodes))
 	for i := range apiNodes {
-		transformed[i] = &ClusterNodeDetail{
+		transformed[i] = ClusterNode{
+			UUID:                apiNodes[i].UUID,
+			Name:                apiNodes[i].Name,
+			Node:                apiNodes[i].Node,
+			AdminPassword:       apiNodes[i].AdminPassword,
+			VendorConfiguration: apiNodes[i].VendorConfiguration,
+		}
+		clusterNodeDetails[i] = &ClusterNodeDetail{
 			UUID:                apiNodes[i].UUID,
 			Name:                apiNodes[i].Name,
 			VendorConfiguration: apiNodes[i].VendorConfiguration,
 		}
 	}
-	clusterDetails.Node0 = transformed[0]
-	clusterDetails.Node1 = transformed[1]
+	clusterDetails.Nodes = transformed
+	clusterDetails.Node0 = clusterNodeDetails[0]
+	clusterDetails.Node1 = clusterNodeDetails[1]
 	return &clusterDetails
 }
 
@@ -307,6 +316,9 @@ func mapDeviceClusterDetailsDomainToAPI(clusterDetails *ClusterDetails) *api.Clu
 	req := api.ClusterDetailsRequest{}
 	req.ClusterName = clusterDetails.ClusterName
 	clusterNodeDetailsRequest := make(map[string]api.ClusterNodeDetailRequest)
+	for k, v := range clusterDetails.ClusterNodeDetails {
+		clusterNodeDetailsRequest[k] = *mapDeviceClusterNodeDetailDomainToAPI(v)
+	}
 	clusterNodeDetailsRequest["node0"] = *mapDeviceClusterNodeDetailDomainToAPI(clusterDetails.Node0)
 	clusterNodeDetailsRequest["node1"] = *mapDeviceClusterNodeDetailDomainToAPI(clusterDetails.Node1)
 	req.ClusterNodeDetails = clusterNodeDetailsRequest
