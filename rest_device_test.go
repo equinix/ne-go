@@ -95,6 +95,7 @@ func TestCreateRedundantDevice(t *testing.T) {
 		AccountNumber:       String("99999"),
 		AdditionalBandwidth: Int(200),
 		ACLTemplateUUID:     String("4972e8d2-417f-4821-91a8-f4a61a6dcdc3"),
+		MgmtAclTemplateUuid: String("4972e8d2-417f-4821-91a8-f4a61a6dcdc3"),
 		VendorConfiguration: map[string]string{
 			"serialNumber": "2222222",
 			"controller1":  "2.2.2.2",
@@ -155,21 +156,19 @@ func TestCreateClusterDevice(t *testing.T) {
 		},
 		ClusterDetails: &ClusterDetails{
 			ClusterName: String("clusterName"),
-			ClusterNodeDetails: map[string]*ClusterNodeDetail{
-				"node0": {
-					VendorConfiguration: map[string]string{
-						"hostName": "panw-host0",
-					},
-					LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
-					LicenseToken:  String("licenseToken"),
+			Node0: &ClusterNodeDetail{
+				VendorConfiguration: map[string]string{
+					"hostname": "panw-host0",
 				},
-				"node1": {
-					VendorConfiguration: map[string]string{
-						"hostName": "panw-host1",
-					},
-					LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
-					LicenseToken:  String("licenseToken"),
+				LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
+				LicenseToken:  String("licenseToken"),
+			},
+			Node1: &ClusterNodeDetail{
+				VendorConfiguration: map[string]string{
+					"hostname": "panw-host1",
 				},
+				LicenseFileId: String("8d180057-8309-4c59-b645-f630f010ad43"),
+				LicenseToken:  String("licenseToken"),
 			},
 		},
 	}
@@ -478,6 +477,7 @@ func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req a
 	assert.Equal(t, secondary.AccountNumber, req.Secondary.AccountNumber, "Secondary AccountNumber matches")
 	assert.Equal(t, secondary.AdditionalBandwidth, req.Secondary.AdditionalBandwidth, "Secondary AdditionalBandwidth matches")
 	assert.Equal(t, secondary.ACLTemplateUUID, req.Secondary.ACLTemplateUUID, "Secondary ACLTemplateUUID matches")
+	assert.Equal(t, secondary.MgmtAclTemplateUuid, req.Secondary.MgmtAclTemplateUuid, "Secondary MgmtAclTemplateUuid matches")
 	assert.Equal(t, secondary.VendorConfiguration, req.Secondary.VendorConfig, "Secondary VendorConfigurations match")
 	assert.NotNil(t, req.Secondary.UserPublicKey, "UserPublicKey is not nil")
 	verifyDeviceUserPublicKeyRequest(t, *secondary.UserPublicKey, *req.Secondary.UserPublicKey)
@@ -528,9 +528,8 @@ func verifyClusterDetailsRequest(t *testing.T, clusterDetails ClusterDetails, ap
 	assert.Equal(t, clusterDetails.ClusterName, apiClusterDetailsReq.ClusterName, "ClusterName matches")
 	apiClusterNodeDetailReqMap := apiClusterDetailsReq.ClusterNodeDetails
 	assert.NotNil(t, apiClusterNodeDetailReqMap, "ClusterNodeDetails are not nil")
-	for k, v := range clusterDetails.ClusterNodeDetails {
-		verifyClusterNodeDetailRequest(t, v, apiClusterNodeDetailReqMap[k])
-	}
+	verifyClusterNodeDetailRequest(t, clusterDetails.Node0, apiClusterNodeDetailReqMap["node0"])
+	verifyClusterNodeDetailRequest(t, clusterDetails.Node1, apiClusterNodeDetailReqMap["node1"])
 }
 
 func verifyClusterNodeDetailRequest(t *testing.T, clusterNodeDetail *ClusterNodeDetail, apiClusterNodeDetailReq api.ClusterNodeDetailRequest) {

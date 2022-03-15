@@ -288,6 +288,7 @@ func mapDeviceClusterDetailsAPIToDomain(apiClusterDetails *api.ClusterDetails) *
 	clusterDetails.NumOfNodes = apiClusterDetails.NumOfNodes
 	apiNodes := apiClusterDetails.Nodes
 	transformed := make([]ClusterNode, len(apiNodes))
+	clusterNodeDetails := make([]*ClusterNodeDetail, len(apiNodes))
 	for i := range apiNodes {
 		transformed[i] = ClusterNode{
 			UUID:                apiNodes[i].UUID,
@@ -296,8 +297,15 @@ func mapDeviceClusterDetailsAPIToDomain(apiClusterDetails *api.ClusterDetails) *
 			AdminPassword:       apiNodes[i].AdminPassword,
 			VendorConfiguration: apiNodes[i].VendorConfiguration,
 		}
+		clusterNodeDetails[i] = &ClusterNodeDetail{
+			UUID:                apiNodes[i].UUID,
+			Name:                apiNodes[i].Name,
+			VendorConfiguration: apiNodes[i].VendorConfiguration,
+		}
 	}
 	clusterDetails.Nodes = transformed
+	clusterDetails.Node0 = clusterNodeDetails[0]
+	clusterDetails.Node1 = clusterNodeDetails[1]
 	return &clusterDetails
 }
 
@@ -307,11 +315,9 @@ func mapDeviceClusterDetailsDomainToAPI(clusterDetails *ClusterDetails) *api.Clu
 	}
 	req := api.ClusterDetailsRequest{}
 	req.ClusterName = clusterDetails.ClusterName
-	req.NumOfNodes = clusterDetails.NumOfNodes
 	clusterNodeDetailsRequest := make(map[string]api.ClusterNodeDetailRequest)
-	for k, v := range clusterDetails.ClusterNodeDetails {
-		clusterNodeDetailsRequest[k] = *mapDeviceClusterNodeDetailDomainToAPI(v)
-	}
+	clusterNodeDetailsRequest["node0"] = *mapDeviceClusterNodeDetailDomainToAPI(clusterDetails.Node0)
+	clusterNodeDetailsRequest["node1"] = *mapDeviceClusterNodeDetailDomainToAPI(clusterDetails.Node1)
 	req.ClusterNodeDetails = clusterNodeDetailsRequest
 	return &req
 }
@@ -389,6 +395,7 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 		secReq.SshInterfaceId = req.SshInterfaceId
 	}
 	secReq.ACLTemplateUUID = secondary.ACLTemplateUUID
+	secReq.MgmtAclTemplateUuid = secondary.MgmtAclTemplateUuid
 	secReq.VendorConfig = secondary.VendorConfiguration
 	secReq.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(secondary.UserPublicKey)
 	req.Secondary = &secReq
