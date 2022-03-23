@@ -31,6 +31,7 @@ type restDeviceUpdateRequest struct {
 	deviceFields        map[string]interface{}
 	additionalBandwidth *int
 	aclTemplateID       *string
+	mgmtAclTemplateUuid *string
 	c                   RestClient
 }
 
@@ -156,6 +157,12 @@ func (req *restDeviceUpdateRequest) WithACLTemplate(templateID string) DeviceUpd
 	return req
 }
 
+//WithMgmtAclTemplate sets new MGMT ACL template identifier in a composite device update request
+func (req *restDeviceUpdateRequest) WithMgmtAclTemplate(mgmtAclTemplateUuid string) DeviceUpdateRequest {
+	req.mgmtAclTemplateUuid = &mgmtAclTemplateUuid
+	return req
+}
+
 //Execute attempts to update device according new data set in composite update request.
 //This is not atomic operation and if any update will fail, other changes won't be reverted.
 //UpdateError will be returned if any of requested data failed to update
@@ -164,9 +171,14 @@ func (req *restDeviceUpdateRequest) Execute() error {
 	if err := req.c.replaceDeviceFields(req.uuid, req.deviceFields); err != nil {
 		updateErr.AddChangeError(changeTypeUpdate, "deviceFields", req.deviceFields, err)
 	}
-	if req.aclTemplateID != nil {
-		if err := req.c.replaceDeviceACLTemplate(req.uuid, *req.aclTemplateID); err != nil {
-			updateErr.AddChangeError(changeTypeUpdate, "aclTemplateUuid", *req.aclTemplateID, err)
+	if req.aclTemplateID != nil || req.mgmtAclTemplateUuid != nil {
+		if err := req.c.replaceDeviceACLTemplate(req.uuid, req.aclTemplateID, req.mgmtAclTemplateUuid); err != nil {
+			if req.aclTemplateID != nil {
+				updateErr.AddChangeError(changeTypeUpdate, "aclTemplateUuid", *req.aclTemplateID, err)
+			}
+			if req.mgmtAclTemplateUuid != nil {
+				updateErr.AddChangeError(changeTypeUpdate, "mgmtAclTemplateUuid", *req.mgmtAclTemplateUuid, err)
+			}
 		}
 	}
 	if req.additionalBandwidth != nil {
@@ -402,9 +414,15 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	return req
 }
 
-func (c RestClient) replaceDeviceACLTemplate(uuid string, templateID string) error {
+func (c RestClient) replaceDeviceACLTemplate(uuid string, wanAclTemplateUuid *string, mgmtAclTemplateUuid *string) error {
 	path := "/ne/v1/devices/" + url.PathEscape(uuid) + "/acl"
-	reqBody := api.DeviceACLTemplateRequest{TemplateUUID: &templateID}
+	reqBody := api.DeviceACLTemplateRequest{}
+	if wanAclTemplateUuid != nil {
+		reqBody.TemplateUUID = wanAclTemplateUuid
+	}
+	if mgmtAclTemplateUuid != nil {
+		reqBody.MgmtAclTemplateUuid = mgmtAclTemplateUuid
+	}
 	req := c.R().SetBody(reqBody)
 	if err := c.Execute(req, http.MethodPost, path); err != nil {
 		return err
