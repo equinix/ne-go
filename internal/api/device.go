@@ -153,8 +153,8 @@ type DevicesResponse struct {
 
 //DeviceACLTemplateRequest describes request for updating device ACL template
 type DeviceACLTemplateRequest struct {
-	TemplateUUID        *string `json:"aclTemplateUuid"`
-	MgmtAclTemplateUuid *string `json:"mgmtAclTemplateUuid"`
+	TemplateUUID        *string `json:"aclTemplateUuid,omitempty"`
+	MgmtAclTemplateUuid *string `json:"mgmtAclTemplateUuid,omitempty"`
 }
 
 //DeviceAdditionalBandwidthResponse describes response for device additional

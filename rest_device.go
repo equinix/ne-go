@@ -416,12 +416,9 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 
 func (c RestClient) replaceDeviceACLTemplate(uuid string, wanAclTemplateUuid *string, mgmtAclTemplateUuid *string) error {
 	path := "/ne/v1/devices/" + url.PathEscape(uuid) + "/acl"
-	reqBody := api.DeviceACLTemplateRequest{}
-	if wanAclTemplateUuid != nil {
-		reqBody.TemplateUUID = wanAclTemplateUuid
-	}
-	if mgmtAclTemplateUuid != nil {
-		reqBody.MgmtAclTemplateUuid = mgmtAclTemplateUuid
+	reqBody := api.DeviceACLTemplateRequest{
+		TemplateUUID:        wanAclTemplateUuid,
+		MgmtAclTemplateUuid: mgmtAclTemplateUuid,
 	}
 	req := c.R().SetBody(reqBody)
 	if err := c.Execute(req, http.MethodPost, path); err != nil {
