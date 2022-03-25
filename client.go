@@ -141,6 +141,7 @@ type DeviceUpdateRequest interface {
 	WithNotifications(notifications []string) DeviceUpdateRequest
 	WithAdditionalBandwidth(additionalBandwidth int) DeviceUpdateRequest
 	WithACLTemplate(templateID string) DeviceUpdateRequest
+	WithMgmtAclTemplate(mgmtAclTemplateUuid string) DeviceUpdateRequest
 	Execute() error
 }
 
