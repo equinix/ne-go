@@ -477,7 +477,7 @@ func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req a
 	assert.Equal(t, secondary.AccountNumber, req.Secondary.AccountNumber, "Secondary AccountNumber matches")
 	assert.Equal(t, secondary.AdditionalBandwidth, req.Secondary.AdditionalBandwidth, "Secondary AdditionalBandwidth matches")
 	assert.Equal(t, secondary.ACLTemplateUUID, req.Secondary.ACLTemplateUUID, "Secondary ACLTemplateUUID matches")
-	assert.Equal(t, secondary.MgmtAclTemplateUuid, req.Secondary.MgmtAclTemplateUuid, "Secondary MgmtAclTemplateUuid matches")
+	assert.Equal(t, secondary.MgmtAclTemplateUuid, req.Secondary.MgmtAclTemplateUUID, "Secondary MgmtAclTemplateUuid matches")
 	assert.Equal(t, secondary.VendorConfiguration, req.Secondary.VendorConfig, "Secondary VendorConfigurations match")
 	assert.NotNil(t, req.Secondary.UserPublicKey, "UserPublicKey is not nil")
 	verifyDeviceUserPublicKeyRequest(t, *secondary.UserPublicKey, *req.Secondary.UserPublicKey)
@@ -507,7 +507,7 @@ func verifyClusterDeviceRequest(t *testing.T, device Device, req api.DeviceReque
 	assert.Equal(t, device.InterfaceCount, req.InterfaceCount, "InterfaceCount matches")
 	assert.Equal(t, device.CoreCount, req.Core, "Core matches")
 	assert.Equal(t, device.ACLTemplateUUID, req.ACLTemplateUUID, "ACLTemplateUUID matches")
-	assert.Equal(t, device.MgmtAclTemplateUuid, req.MgmtAclTemplateUuid, "MgmtAclTemplateUuid matches")
+	assert.Equal(t, device.MgmtAclTemplateUuid, req.MgmtAclTemplateUUID, "MgmtAclTemplateUuid matches")
 	assert.NotNil(t, req.UserPublicKey, "UserPublicKey is not nil")
 	verifyDeviceUserPublicKeyRequest(t, *device.UserPublicKey, *req.UserPublicKey)
 	assert.NotNil(t, req.ClusterDetails, "ClusterDetails are not nil")
@@ -535,6 +535,6 @@ func verifyClusterDetailsRequest(t *testing.T, clusterDetails ClusterDetails, ap
 func verifyClusterNodeDetailRequest(t *testing.T, clusterNodeDetail *ClusterNodeDetail, apiClusterNodeDetailReq api.ClusterNodeDetailRequest) {
 	assert.NotNil(t, apiClusterNodeDetailReq, "ClusterNodeDetailRequest is not nil")
 	assert.Equal(t, clusterNodeDetail.VendorConfiguration, apiClusterNodeDetailReq.VendorConfiguration, "VendorConfigurations match")
-	assert.Equal(t, clusterNodeDetail.LicenseFileId, apiClusterNodeDetailReq.LicenseFileId, "LicenseFileId matches")
+	assert.Equal(t, clusterNodeDetail.LicenseFileId, apiClusterNodeDetailReq.LicenseFileID, "LicenseFileId matches")
 	assert.Equal(t, clusterNodeDetail.LicenseToken, apiClusterNodeDetailReq.LicenseToken, "LicenseToken matches")
 }
