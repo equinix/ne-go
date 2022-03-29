@@ -19,7 +19,7 @@ type Device struct {
 	LicenseType          *string                `json:"licenseType,omitempty"`
 	LicenseFileID        *string                `json:"licenseFileId,omitempty"`
 	ACLTemplateUUID      *string                `json:"aclTemplateUuid,omitempty"`
-	MgmtAclTemplateUuid  *string                `json:"mgmtAclTemplateUuid,omitempty"`
+	MgmtAclTemplateUUID  *string                `json:"mgmtAclTemplateUuid,omitempty"`
 	SSHIPAddress         *string                `json:"sshIpAddress,omitempty"`
 	SSHIPFqdn            *string                `json:"sshIpFqdn,omitempty"`
 	AccountNumber        *string                `json:"accountNumber,omitempty"`
@@ -33,7 +33,7 @@ type Device struct {
 	InterfaceCount       *int                   `json:"interfaceCount,omitempty"`
 	Core                 *DeviceCoreInformation `json:"core,omitempty"`
 	DeviceManagementType *string                `json:"deviceManagementType,omitempty"`
-	SshInterfaceId       *string                `json:"sshInterfaceId,omitempty"`
+	SshInterfaceID       *string                `json:"sshInterfaceId,omitempty"`
 	Interfaces           []DeviceInterface      `json:"interfaces,omitempty"`
 	VendorConfig         map[string]string      `json:"vendorConfig,omitempty"`
 	UserPublicKey        *DeviceUserPublicKey   `json:"userPublicKey,omitempty"`
@@ -66,7 +66,7 @@ type DeviceRequest struct {
 	Core                 *int                        `json:"core,omitempty"`
 	AdditionalBandwidth  *int                        `json:"additionalBandwidth,omitempty,string"`
 	ACLTemplateUUID      *string                     `json:"aclTemplateUuid,omitempty"`
-	MgmtAclTemplateUuid  *string                     `json:"mgmtAclTemplateUuid,omitempty"`
+	MgmtAclTemplateUUID  *string                     `json:"mgmtAclTemplateUuid,omitempty"`
 	VendorConfig         map[string]string           `json:"vendorConfig,omitempty"`
 	UserPublicKey        *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`
 	Secondary            *SecondaryDeviceRequest     `json:"secondary,omitempty"`
@@ -83,9 +83,9 @@ type SecondaryDeviceRequest struct {
 	HostNamePrefix      *string                     `json:"hostNamePrefix,omitempty"`
 	AccountNumber       *string                     `json:"accountNumber,omitempty"`
 	AdditionalBandwidth *int                        `json:"additionalBandwidth,omitempty,string"`
-	SshInterfaceId      *string                     `json:"sshInterfaceId,omitempty"`
+	SshInterfaceID      *string                     `json:"sshInterfaceId,omitempty"`
 	ACLTemplateUUID     *string                     `json:"aclTemplateUuid,omitempty"`
-	MgmtAclTemplateUuid *string                     `json:"mgmtAclTemplateUuid,omitempty"`
+	MgmtAclTemplateUUID *string                     `json:"mgmtAclTemplateUuid,omitempty"`
 	VendorConfig        map[string]string           `json:"vendorConfig,omitempty"`
 	UserPublicKey       *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`
 }
@@ -154,7 +154,7 @@ type DevicesResponse struct {
 //DeviceACLTemplateRequest describes request for updating device ACL template
 type DeviceACLTemplateRequest struct {
 	TemplateUUID        *string `json:"aclTemplateUuid,omitempty"`
-	MgmtAclTemplateUuid *string `json:"mgmtAclTemplateUuid,omitempty"`
+	MgmtAclTemplateUUID *string `json:"mgmtAclTemplateUuid,omitempty"`
 }
 
 //DeviceAdditionalBandwidthResponse describes response for device additional
@@ -177,13 +177,13 @@ type ClusterDetailsRequest struct {
 //ClusterNodeDetailRequest describes cluster node configuration of device creation request
 type ClusterNodeDetailRequest struct {
 	VendorConfiguration map[string]string `json:"vendorConfig,omitempty"`
-	LicenseFileId       *string           `json:"licenseFileId,omitempty"`
+	LicenseFileID       *string           `json:"licenseFileId,omitempty"`
 	LicenseToken        *string           `json:"licenseToken,omitempty"`
 }
 
 //ClusterDetails describes cluster details for device response
 type ClusterDetails struct {
-	ClusterId   *string       `json:"clusterId,omitempty"`
+	ClusterID   *string       `json:"clusterId,omitempty"`
 	ClusterName *string       `json:"clusterName,omitempty"`
 	NumOfNodes  *int          `json:"numOfNodes,omitempty"`
 	Nodes       []ClusterNode `json:"nodes,omitempty"`
