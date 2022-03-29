@@ -221,7 +221,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.LicenseToken = apiDevice.LicenseToken
 	device.LicenseFileID = apiDevice.LicenseFileID
 	device.ACLTemplateUUID = apiDevice.ACLTemplateUUID
-	device.MgmtAclTemplateUuid = apiDevice.MgmtAclTemplateUuid
+	device.MgmtAclTemplateUuid = apiDevice.MgmtAclTemplateUUID
 	device.SSHIPAddress = apiDevice.SSHIPAddress
 	device.SSHIPFqdn = apiDevice.SSHIPFqdn
 	device.AccountNumber = apiDevice.AccountNumber
@@ -231,7 +231,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.RedundantUUID = apiDevice.RedundantUUID
 	device.TermLength = apiDevice.TermLength
 	device.AdditionalBandwidth = apiDevice.AdditionalBandwidth
-	device.WanInterfaceId = apiDevice.SshInterfaceId
+	device.WanInterfaceId = apiDevice.SshInterfaceID
 	device.OrderReference = apiDevice.OrderReference
 	device.InterfaceCount = apiDevice.InterfaceCount
 	if apiDevice.Core != nil {
@@ -295,7 +295,7 @@ func mapDeviceClusterDetailsAPIToDomain(apiClusterDetails *api.ClusterDetails) *
 		return nil
 	}
 	clusterDetails := ClusterDetails{}
-	clusterDetails.ClusterId = apiClusterDetails.ClusterId
+	clusterDetails.ClusterId = apiClusterDetails.ClusterID
 	clusterDetails.ClusterName = apiClusterDetails.ClusterName
 	clusterDetails.NumOfNodes = apiClusterDetails.NumOfNodes
 	apiNodes := apiClusterDetails.Nodes
@@ -340,7 +340,7 @@ func mapDeviceClusterNodeDetailDomainToAPI(clusterNodeDetail *ClusterNodeDetail)
 	}
 	return &api.ClusterNodeDetailRequest{
 		VendorConfiguration: clusterNodeDetail.VendorConfiguration,
-		LicenseFileId:       clusterNodeDetail.LicenseFileId,
+		LicenseFileID:       clusterNodeDetail.LicenseFileId,
 		LicenseToken:        clusterNodeDetail.LicenseToken,
 	}
 }
@@ -384,7 +384,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.AdditionalBandwidth = device.AdditionalBandwidth
 	req.SshInterfaceId = device.WanInterfaceId
 	req.ACLTemplateUUID = device.ACLTemplateUUID
-	req.MgmtAclTemplateUuid = device.MgmtAclTemplateUuid
+	req.MgmtAclTemplateUUID = device.MgmtAclTemplateUuid
 	req.VendorConfig = device.VendorConfiguration
 	req.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(device.UserPublicKey)
 	req.ClusterDetails = mapDeviceClusterDetailsDomainToAPI(device.ClusterDetails)
@@ -402,12 +402,12 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.HostNamePrefix = secondary.HostName
 	secReq.AccountNumber = secondary.AccountNumber
 	secReq.AdditionalBandwidth = secondary.AdditionalBandwidth
-	secReq.SshInterfaceId = secondary.WanInterfaceId
-	if secReq.SshInterfaceId == nil {
-		secReq.SshInterfaceId = req.SshInterfaceId
+	secReq.SshInterfaceID = secondary.WanInterfaceId
+	if secReq.SshInterfaceID == nil {
+		secReq.SshInterfaceID = req.SshInterfaceId
 	}
 	secReq.ACLTemplateUUID = secondary.ACLTemplateUUID
-	secReq.MgmtAclTemplateUuid = secondary.MgmtAclTemplateUuid
+	secReq.MgmtAclTemplateUUID = secondary.MgmtAclTemplateUuid
 	secReq.VendorConfig = secondary.VendorConfiguration
 	secReq.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(secondary.UserPublicKey)
 	req.Secondary = &secReq
@@ -418,7 +418,7 @@ func (c RestClient) replaceDeviceACLTemplate(uuid string, wanAclTemplateUuid *st
 	path := "/ne/v1/devices/" + url.PathEscape(uuid) + "/acl"
 	reqBody := api.DeviceACLTemplateRequest{
 		TemplateUUID:        wanAclTemplateUuid,
-		MgmtAclTemplateUuid: mgmtAclTemplateUuid,
+		MgmtAclTemplateUUID: mgmtAclTemplateUuid,
 	}
 	req := c.R().SetBody(reqBody)
 	if err := c.Execute(req, http.MethodPost, path); err != nil {
