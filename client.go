@@ -365,14 +365,15 @@ type ACLTemplate struct {
 //ACLTemplateInboundRule describes inbound ACL rule that is part of
 //Network Edge device ACL template
 type ACLTemplateInboundRule struct {
-	SeqNo    *int
-	FQDN     *string  // Deprecated: FQDN is no longer supported
-	SrcType  *string  // Deprecated: SrcType is not required.
-	Subnets  []string // Deprecated: Use subnet instead.
-	Subnet   *string
-	Protocol *string
-	SrcPort  *string
-	DstPort  *string
+	SeqNo       *int
+	FQDN        *string  // Deprecated: FQDN is no longer supported
+	SrcType     *string  // Deprecated: SrcType is not required.
+	Subnets     []string // Deprecated: Use subnet instead.
+	Subnet      *string
+	Protocol    *string
+	SrcPort     *string
+	DstPort     *string
+	Description *string
 }
 
 //ACLTemplateDeviceDetails describes Device Details this template applied to

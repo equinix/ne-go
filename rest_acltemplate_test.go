@@ -18,12 +18,13 @@ var testACLTemplate = ACLTemplate{
 	MetroCode:   String("SV"),
 	InboundRules: []ACLTemplateInboundRule{
 		{
-			SrcType:  String("SUBNET"),
-			SeqNo:    Int(1),
-			Subnets:  []string{"10.0.0.0/24"},
-			Protocol: String("TCP"),
-			SrcPort:  String("any"),
-			DstPort:  String("22"),
+			SrcType:     String("SUBNET"),
+			SeqNo:       Int(1),
+			Subnets:     []string{"10.0.0.0/24"},
+			Protocol:    String("TCP"),
+			SrcPort:     String("any"),
+			DstPort:     String("22"),
+			Description: String("Description of the rule"),
 		},
 		{
 			SrcType:  String("DOMAIN"),
@@ -174,12 +175,13 @@ func verifyACLTemplate(t *testing.T, template ACLTemplate, apiTemplate api.ACLTe
 }
 
 func verifyACLTemplateInboundRule(t *testing.T, rule ACLTemplateInboundRule, apiRule api.ACLTemplateInboundRule) {
-	assert.Equal(t, rule.SeqNo, rule.SeqNo, "SeqNo matches")
-	assert.Equal(t, rule.SrcType, rule.SrcType, "SrcType matches")
-	assert.ElementsMatch(t, rule.Subnets, rule.Subnets, "Subnets matches")
-	assert.Equal(t, rule.Protocol, rule.Protocol, "Protocol matches")
-	assert.Equal(t, rule.SrcPort, rule.SrcPort, "SrcPort matches")
-	assert.Equal(t, rule.DstPort, rule.DstPort, "DstPort matches")
+	assert.Equal(t, rule.SeqNo, apiRule.SeqNO, "SeqNo matches")
+	assert.Equal(t, rule.SrcType, apiRule.SrcType, "SrcType matches")
+	assert.ElementsMatch(t, rule.Subnets, apiRule.Subnets, "Subnets matches")
+	assert.Equal(t, rule.Protocol, apiRule.Protocol, "Protocol matches")
+	assert.Equal(t, rule.SrcPort, apiRule.SrcPort, "SrcPort matches")
+	assert.Equal(t, rule.DstPort, apiRule.DstPort, "DstPort matches")
+	assert.Equal(t, rule.Description, apiRule.Description, "Description matches")
 }
 
 func verifyACLTemplateDeviceDetails(t *testing.T, template ACLTemplate, apiTemplate api.ACLTemplate) {
@@ -188,6 +190,5 @@ func verifyACLTemplateDeviceDetails(t *testing.T, template ACLTemplate, apiTempl
 		assert.Equal(t, template.DeviceDetails[i].UUID, apiTemplate.DeviceDetails[i].UUID, "UUID matches")
 		assert.Equal(t, template.DeviceDetails[i].Name, apiTemplate.DeviceDetails[i].Name, "Name matches")
 		assert.Equal(t, template.DeviceDetails[i].ACLStatus, apiTemplate.DeviceDetails[i].ACLStatus, "ACL Status matches")
-
 	}
 }

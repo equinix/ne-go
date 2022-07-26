@@ -10,7 +10,8 @@
             ],
             "protocol": "TCP",
             "srcPort": "any",
-            "dstPort": "22"
+            "dstPort": "22",
+            "description": "Description of the rule"
         },
         {
             "srcType": "DOMAIN",
