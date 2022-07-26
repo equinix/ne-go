@@ -19,7 +19,8 @@
                     ],
                     "protocol": "IP",
                     "srcPort": "any",
-                    "dstPort": "any"
+                    "dstPort": "any",
+                    "description": "Description of the rule"
                 }
             ],
             "metroName": "Sydney",

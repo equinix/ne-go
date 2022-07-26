@@ -15,13 +15,14 @@ type ACLTemplate struct {
 //ACLTemplateInboundRule describes inbound ACL rule that is part of
 //Network Edge device ACL template
 type ACLTemplateInboundRule struct {
-	SrcType  *string  `json:"srcType,omitempty"`
-	Protocol *string  `json:"protocol,omitempty"`
-	SrcPort  *string  `json:"srcPort,omitempty"`
-	DstPort  *string  `json:"dstPort,omitempty"`
-	Subnets  []string `json:"subnets,omitempty"`
-	Subnet   *string  `json:"subnet,omitempty"`
-	SeqNO    *int     `json:"seqNo,omitempty"`
+	SrcType     *string  `json:"srcType,omitempty"`
+	Protocol    *string  `json:"protocol,omitempty"`
+	SrcPort     *string  `json:"srcPort,omitempty"`
+	DstPort     *string  `json:"dstPort,omitempty"`
+	Subnets     []string `json:"subnets,omitempty"`
+	Subnet      *string  `json:"subnet,omitempty"`
+	SeqNO       *int     `json:"seqNo,omitempty"`
+	Description *string  `json:"description,omitempty"`
 }
 
 type ACLTemplateDeviceDetails struct {

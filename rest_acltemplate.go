@@ -100,13 +100,14 @@ func mapACLTemplateInboundRulesDomainToAPI(rules []ACLTemplateInboundRule) []api
 
 func mapACLTemplateInboundRuleDomainToAPI(rule ACLTemplateInboundRule) api.ACLTemplateInboundRule {
 	return api.ACLTemplateInboundRule{
-		SrcType:  rule.SrcType,
-		Protocol: rule.Protocol,
-		SrcPort:  rule.SrcPort,
-		DstPort:  rule.DstPort,
-		Subnet:   rule.Subnet,
-		Subnets:  rule.Subnets,
-		SeqNO:    rule.SeqNo,
+		SrcType:     rule.SrcType,
+		Protocol:    rule.Protocol,
+		SrcPort:     rule.SrcPort,
+		DstPort:     rule.DstPort,
+		Subnet:      rule.Subnet,
+		Subnets:     rule.Subnets,
+		SeqNO:       rule.SeqNo,
+		Description: rule.Description,
 	}
 }
 
@@ -132,13 +133,14 @@ func mapACLTemplateInboundRulesAPIToDomain(apiRules []api.ACLTemplateInboundRule
 
 func mapACLTemplateInboundRuleAPIToDomain(apiRule api.ACLTemplateInboundRule) ACLTemplateInboundRule {
 	return ACLTemplateInboundRule{
-		SrcType:  apiRule.SrcType,
-		Protocol: apiRule.Protocol,
-		SrcPort:  apiRule.SrcPort,
-		DstPort:  apiRule.DstPort,
-		Subnets:  apiRule.Subnets,
-		Subnet:   apiRule.Subnet,
-		SeqNo:    apiRule.SeqNO,
+		SrcType:     apiRule.SrcType,
+		Protocol:    apiRule.Protocol,
+		SrcPort:     apiRule.SrcPort,
+		DstPort:     apiRule.DstPort,
+		Subnets:     apiRule.Subnets,
+		Subnet:      apiRule.Subnet,
+		SeqNo:       apiRule.SeqNO,
+		Description: apiRule.Description,
 	}
 }
 
