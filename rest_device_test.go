@@ -308,7 +308,7 @@ func TestUpdateDeviceACLTemplate(t *testing.T) {
 	testHc := &http.Client{}
 	req := api.DeviceACLTemplateRequest{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("PUT", fmt.Sprintf("%s/ne/v1/devices/%s/acl", baseURL, devID),
+	httpmock.RegisterResponder("PATCH", fmt.Sprintf("%s/ne/v1/devices/%s/acl", baseURL, devID),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil

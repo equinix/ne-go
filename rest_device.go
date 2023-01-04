@@ -423,7 +423,7 @@ func (c RestClient) replaceDeviceACLTemplate(uuid string, wanAclTemplateUuid *st
 		MgmtAclTemplateUUID: mgmtAclTemplateUuid,
 	}
 	req := c.R().SetBody(reqBody)
-	if err := c.Execute(req, http.MethodPut, path); err != nil {
+	if err := c.Execute(req, http.MethodPatch, path); err != nil {
 		return err
 	}
 	return nil
