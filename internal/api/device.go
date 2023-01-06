@@ -18,6 +18,7 @@ type Device struct {
 	LicenseToken         *string                `json:"licenseToken,omitempty"`
 	LicenseType          *string                `json:"licenseType,omitempty"`
 	LicenseFileID        *string                `json:"licenseFileId,omitempty"`
+	CloudInitFileID      *string                `json:"CloudInitFileId,omitempty"`
 	ACLTemplateUUID      *string                `json:"aclTemplateUuid,omitempty"`
 	MgmtAclTemplateUUID  *string                `json:"mgmtAclTemplateUuid,omitempty"`
 	SSHIPAddress         *string                `json:"sshIpAddress,omitempty"`
@@ -52,6 +53,7 @@ type DeviceRequest struct {
 	LicenseMode          *string                     `json:"licenseMode,omitempty"`
 	LicenseToken         *string                     `json:"licenseToken,omitempty"`
 	LicenseFileID        *string                     `json:"licenseFileId,omitempty"`
+	CloudInitFileID      *string                     `json:"cloudInitFileId,omitempty"`
 	PackageCode          *string                     `json:"packageCode,omitempty"`
 	VirtualDeviceName    *string                     `json:"virtualDeviceName,omitempty"`
 	Notifications        []string                    `json:"notifications,omitempty"`
@@ -78,6 +80,7 @@ type SecondaryDeviceRequest struct {
 	MetroCode           *string                     `json:"metroCode,omitempty"`
 	LicenseToken        *string                     `json:"licenseToken,omitempty"`
 	LicenseFileID       *string                     `json:"licenseFileId,omitempty"`
+	CloudInitFileID     *string                     `json:"cloudInitFileId,omitempty"`
 	VirtualDeviceName   *string                     `json:"virtualDeviceName,omitempty"`
 	Notifications       []string                    `json:"notifications,omitempty"`
 	HostNamePrefix      *string                     `json:"hostNamePrefix,omitempty"`

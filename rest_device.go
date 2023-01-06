@@ -364,6 +364,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	}
 	req.LicenseToken = device.LicenseToken
 	req.LicenseFileID = device.LicenseFileID
+	req.CloudInitFileID = device.CloudInitFileID
 	req.PackageCode = device.PackageCode
 	req.VirtualDeviceName = device.Name
 	req.Notifications = device.Notifications
@@ -397,6 +398,7 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.MetroCode = secondary.MetroCode
 	secReq.LicenseToken = secondary.LicenseToken
 	secReq.LicenseFileID = secondary.LicenseFileID
+	secReq.CloudInitFileID = secondary.CloudInitFileID
 	secReq.VirtualDeviceName = secondary.Name
 	secReq.Notifications = secondary.Notifications
 	secReq.HostNamePrefix = secondary.HostName
@@ -421,7 +423,7 @@ func (c RestClient) replaceDeviceACLTemplate(uuid string, wanAclTemplateUuid *st
 		MgmtAclTemplateUUID: mgmtAclTemplateUuid,
 	}
 	req := c.R().SetBody(reqBody)
-	if err := c.Execute(req, http.MethodPost, path); err != nil {
+	if err := c.Execute(req, http.MethodPatch, path); err != nil {
 		return err
 	}
 	return nil

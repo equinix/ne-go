@@ -126,6 +126,7 @@ type Client interface {
 	DeleteACLTemplate(uuid string) error
 
 	UploadLicenseFile(metroCode, deviceTypeCode, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (*string, error)
+	UploadFile(metroCode, deviceTypeCode, processType, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (*string, error)
 
 	GetDeviceLinkGroups() ([]DeviceLinkGroup, error)
 	GetDeviceLinkGroup(uuid string) (*DeviceLinkGroup, error)
@@ -244,7 +245,9 @@ type Device struct {
 	IsBYOL              *bool
 	LicenseToken        *string
 	LicenseFile         *string
+	CloudInitFile       *string
 	LicenseFileID       *string
+	CloudInitFileID     *string
 	ACLTemplateUUID     *string
 	MgmtAclTemplateUuid *string
 	SSHIPAddress        *string

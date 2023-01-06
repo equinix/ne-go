@@ -21,6 +21,7 @@ var testDevice = Device{
 	IsBYOL:              Bool(true),
 	LicenseToken:        String("somelicensetokenaaaaazzzzz"),
 	LicenseFileID:       String("8d180057-8309-4c59-b645-f630f010ad43"),
+	CloudInitFileID:     String("9318885d-4b8c-48a5-9aa4-24387834ebae"),
 	MetroCode:           String("SV"),
 	Notifications:       []string{"test1@example.com", "test2@example.com"},
 	PackageCode:         String("VM100"),
@@ -307,7 +308,7 @@ func TestUpdateDeviceACLTemplate(t *testing.T) {
 	testHc := &http.Client{}
 	req := api.DeviceACLTemplateRequest{}
 	httpmock.ActivateNonDefault(testHc)
-	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/devices/%s/acl", baseURL, devID),
+	httpmock.RegisterResponder("PATCH", fmt.Sprintf("%s/ne/v1/devices/%s/acl", baseURL, devID),
 		func(r *http.Request) (*http.Response, error) {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				return httpmock.NewStringResponse(400, ""), nil
@@ -444,6 +445,7 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	}
 	assert.Equal(t, device.LicenseToken, req.LicenseToken, "LicenseToken matches")
 	assert.Equal(t, device.LicenseFileID, req.LicenseFileID, "LicenseFileID matches")
+	assert.Equal(t, device.CloudInitFileID, req.CloudInitFileID, "CloudInitFileID matches")
 	assert.Equal(t, device.PackageCode, req.PackageCode, "PackageCode matches")
 	assert.Equal(t, device.Name, req.VirtualDeviceName, "Name matches")
 	assert.ElementsMatch(t, device.Notifications, req.Notifications, "Notifications matches")
