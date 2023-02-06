@@ -55,3 +55,32 @@ func TestUploadFile(t *testing.T) {
 	assert.Nil(t, err, "Error is not returned")
 	assert.Equal(t, resp.FileUUID, id, "File identifier matches")
 }
+
+func TestGetFile(t *testing.T) {
+	//given
+	resp := api.File{}
+	if err := readJSONData("./test-fixtures/ne_file_get_resp.json", &resp); err != nil {
+		assert.Fail(t, "Cannot read test response")
+	}
+	fileID := "26728391-2706-4135-87f2-19822bcb4721"
+	testHc := setupMockedClient("GET", fmt.Sprintf("%s/ne/v1/files/%s", baseURL, fileID), 200, resp)
+	defer httpmock.DeactivateAndReset()
+
+	//when
+	c := NewClient(context.Background(), baseURL, testHc)
+	file, err := c.GetFile(fileID)
+
+	//then
+	assert.NotNil(t, file, "Returned file is not nil")
+	assert.Nil(t, err, "Error is not returned")
+	verifyFile(t, resp, *file)
+}
+
+func verifyFile(t *testing.T, apiFile api.File, file File) {
+	assert.Equal(t, apiFile.UUID, file.UUID, "UUID matches")
+	assert.Equal(t, apiFile.FileName, file.FileName, "FileName matches")
+	assert.Equal(t, apiFile.MetroCode, file.MetroCode, "MetroCode matches")
+	assert.Equal(t, apiFile.DeviceTypeCode, file.DeviceTypeCode, "DeviceTypeCode matches")
+	assert.Equal(t, apiFile.ProcessType, file.ProcessType, "ProcessType matches")
+	assert.Equal(t, apiFile.Status, file.Status, "Status matches")
+}

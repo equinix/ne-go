@@ -4,6 +4,7 @@ import (
 	"github.com/equinix/ne-go/internal/api"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 const (
@@ -33,4 +34,27 @@ func (c RestClient) UploadFile(metroCode, deviceTypeCode, processType, deviceMan
 		return nil, err
 	}
 	return respBody.FileUUID, nil
+}
+
+//GetFile retrieves file metadata with a given UUID
+func (c RestClient) GetFile(uuid string) (*File, error) {
+	path := "/ne/v1/files/" + url.PathEscape(uuid)
+	respBody := api.File{}
+	req := c.R().SetResult(&respBody)
+	if err := c.Execute(req, http.MethodGet, path); err != nil {
+		return nil, err
+	}
+	file := mapFileAPIToDomain(respBody)
+	return &file, nil
+}
+
+func mapFileAPIToDomain(apiFile api.File) File {
+	return File{
+		UUID:           apiFile.UUID,
+		FileName:       apiFile.FileName,
+		MetroCode:      apiFile.MetroCode,
+		DeviceTypeCode: apiFile.DeviceTypeCode,
+		ProcessType:    apiFile.ProcessType,
+		Status:         apiFile.Status,
+	}
 }
