@@ -127,6 +127,7 @@ type Client interface {
 
 	UploadLicenseFile(metroCode, deviceTypeCode, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (*string, error)
 	UploadFile(metroCode, deviceTypeCode, processType, deviceManagementMode, licenseMode, fileName string, reader io.Reader) (*string, error)
+	GetFile(uuid string) (*File, error)
 
 	GetDeviceLinkGroups() ([]DeviceLinkGroup, error)
 	GetDeviceLinkGroup(uuid string) (*DeviceLinkGroup, error)
@@ -457,4 +458,14 @@ type ClusterNode struct { // Deprecated: Use ClusterNodeDetail instead
 	Node                *int
 	AdminPassword       *string
 	VendorConfiguration map[string]string
+}
+
+//File describes Network Edge uploaded file
+type File struct {
+	UUID           *string
+	FileName       *string
+	MetroCode      *string
+	DeviceTypeCode *string
+	ProcessType    *string
+	Status         *string
 }
