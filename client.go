@@ -349,9 +349,10 @@ type BGPConfiguration struct {
 
 //SSHPublicKey describes Network Edge SSH user public key
 type SSHPublicKey struct {
-	UUID  *string
-	Name  *string
-	Value *string
+	UUID      *string
+	Name      *string
+	Value     *string
+	ProjectId *string
 }
 
 //ACLTemplate describes Network Edge device ACL template

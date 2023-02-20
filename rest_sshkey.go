@@ -65,16 +65,18 @@ func mapSSHPublicKeysAPIToDomain(apiKeys []api.SSHPublicKey) []SSHPublicKey {
 
 func mapSSHPublicKeyAPIToDomain(apiKey api.SSHPublicKey) SSHPublicKey {
 	return SSHPublicKey{
-		UUID:  apiKey.UUID,
-		Name:  apiKey.KeyName,
-		Value: apiKey.KeyValue,
+		UUID:      apiKey.UUID,
+		Name:      apiKey.KeyName,
+		Value:     apiKey.KeyValue,
+		ProjectId: apiKey.ProjectId,
 	}
 }
 
 func mapSSHPublicKeyDomainToAPI(key SSHPublicKey) api.SSHPublicKey {
 	return api.SSHPublicKey{
-		UUID:     key.UUID,
-		KeyName:  key.Name,
-		KeyValue: key.Value,
+		UUID:      key.UUID,
+		KeyName:   key.Name,
+		KeyValue:  key.Value,
+		ProjectId: key.ProjectId,
 	}
 }
