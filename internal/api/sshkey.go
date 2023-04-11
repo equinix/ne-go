@@ -5,4 +5,5 @@ type SSHPublicKey struct {
 	UUID     *string `json:"uuid,omitempty"`
 	KeyName  *string `json:"keyName,omitempty"`
 	KeyValue *string `json:"keyValue,omitempty"`
+	KeyType  *string `json:"keyType,omitempty"`
 }
