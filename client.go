@@ -352,6 +352,7 @@ type SSHPublicKey struct {
 	UUID  *string
 	Name  *string
 	Value *string
+	Type  *string
 }
 
 //ACLTemplate describes Network Edge device ACL template
