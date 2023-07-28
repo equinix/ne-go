@@ -75,7 +75,70 @@ func TestCreateDevice(t *testing.T) {
 	//then
 	assert.Nil(t, err, "Error is not returned")
 	assert.Equal(t, uuid, resp.UUID, "UUID matches")
-	verifyDeviceRequest(t, device, req)
+	verifyDeviceRequest(t, device, req, false)
+}
+
+func TestCreateZnpdDevice(t *testing.T) {
+	//given
+	resp := api.DeviceRequestResponse{}
+	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
+		assert.Fail(t, "Cannot read test response")
+	}
+	device := Device{
+		AdditionalBandwidth: Int(100),
+		TypeCode:            String("PA-VM"),
+		HostName:            String("myhostSRmy"),
+		IsBYOL:              Bool(true),
+		LicenseToken:        String("somelicensetokenaaaaazzzzz"),
+		LicenseFileID:       String("8d180057-8309-4c59-b645-f630f010ad43"),
+		CloudInitFileID:     String("9318885d-4b8c-48a5-9aa4-24387834ebae"),
+		MetroCode:           String("SV"),
+		Notifications:       []string{"test1@example.com", "test2@example.com"},
+		PackageCode:         String("VM100"),
+		TermLength:          Int(24),
+		Throughput:          Int(1),
+		ThroughputUnit:      String("Gbps"),
+		Connectivity:        String("private"),
+		Name:                String("PaloAltoSRmy"),
+		ACLTemplateUUID:     String("4792d9ab-b8aa-49cc-8fe2-b56ced6c9c2f"),
+		AccountNumber:       String("1777643"),
+		OrderReference:      String("orderRef"),
+		PurchaseOrderNumber: String("PO123456789"),
+		InterfaceCount:      Int(10),
+		CoreCount:           Int(2),
+		Version:             String("10.09.05"),
+		IsSelfManaged:       Bool(true),
+		VendorConfiguration: map[string]string{
+			"serialNumber": "12312312",
+			"controller1":  "1.1.1.1",
+		},
+		UserPublicKey: &DeviceUserPublicKey{
+			Username: String("testUserName"),
+			KeyName:  String("testKey"),
+		},
+	}
+	req := api.DeviceRequest{}
+	testHc := &http.Client{}
+	httpmock.ActivateNonDefault(testHc)
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/ne/v1/devices", baseURL),
+		func(r *http.Request) (*http.Response, error) {
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				return httpmock.NewStringResponse(400, ""), nil
+			}
+			resp, _ := httpmock.NewJsonResponse(202, resp)
+			return resp, nil
+		},
+	)
+	defer httpmock.DeactivateAndReset()
+
+	//when
+	c := NewClient(context.Background(), baseURL, testHc)
+	uuid, err := c.CreateDevice(device)
+
+	//then
+	assert.Nil(t, err, "Error is not returned")
+	assert.Equal(t, uuid, resp.UUID, "UUID matches")
+	verifyDeviceRequest(t, device, req, true)
 }
 
 func TestCreateRedundantDevice(t *testing.T) {
@@ -431,7 +494,7 @@ func verifyDeviceInterface(t *testing.T, inf DeviceInterface, apiInf api.DeviceI
 	assert.Equal(t, apiInf.Type, inf.Type, "Type matches")
 }
 
-func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
+func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest, isZnpd bool) {
 	assert.Equal(t, device.Throughput, req.Throughput, "Throughput matches")
 	assert.Equal(t, device.ThroughputUnit, req.ThroughputUnit, "ThroughputUnit matches")
 	assert.Equal(t, device.MetroCode, req.MetroCode, "MetroCode matches")
@@ -456,7 +519,11 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.Version, req.Version, "Version matches")
 	assert.Equal(t, device.InterfaceCount, req.InterfaceCount, "InterfaceCount matches")
 	if *device.IsSelfManaged {
-		assert.Equal(t, DeviceManagementTypeSelf, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
+		if isZnpd {
+			assert.Equal(t, DeviceManagementTypeSelfZnpd, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
+		} else {
+			assert.Equal(t, DeviceManagementTypeSelf, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
+		}
 	} else {
 		assert.Equal(t, DeviceManagementTypeEquinix, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
 	}
@@ -469,7 +536,7 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 }
 
 func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req api.DeviceRequest) {
-	verifyDeviceRequest(t, primary, req)
+	verifyDeviceRequest(t, primary, req, false)
 	assert.Equal(t, secondary.MetroCode, req.Secondary.MetroCode, "Secondary MetroCode matches")
 	assert.Equal(t, secondary.LicenseToken, req.Secondary.LicenseToken, "LicenseFileID matches")
 	assert.Equal(t, secondary.LicenseFileID, req.Secondary.LicenseFileID, "LicenseFileID matches")

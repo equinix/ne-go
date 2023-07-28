@@ -41,6 +41,7 @@ type Device struct {
 	ASN                  *int                   `json:"asn,omitempty"`
 	ZoneCode             *string                `json:"zoneCode,omitempty"`
 	ClusterDetails       *ClusterDetails        `json:"clusterDetails,omitempty"`
+	Connectivity         *string                `json:"connectivity,omitempty"`
 }
 
 //DeviceRequest describes network edge device creation request
@@ -73,6 +74,7 @@ type DeviceRequest struct {
 	UserPublicKey        *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`
 	Secondary            *SecondaryDeviceRequest     `json:"secondary,omitempty"`
 	ClusterDetails       *ClusterDetailsRequest      `json:"clusterDetails,omitempty"`
+	Connectivity         *string                     `json:"connectivity,omitempty"`
 }
 
 //SecondaryDeviceRequest describes secondary device part of device creation request

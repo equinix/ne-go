@@ -34,6 +34,8 @@ const (
 	DeviceLicenseStateRegistered = "REGISTERED"
 	//DeviceLicenseStateApplied license was successfully applied
 	DeviceLicenseStateApplied = "APPLIED"
+	//DeviceLicenseStateNA license state not applicable
+	DeviceLicenseStateNA = "N/A"
 	//DeviceLicenseStateFailed license registration has failed
 	DeviceLicenseStateFailed = "REGISTRATION_FAILED"
 	//DeviceLicenseStateWaitingClusterSetUp license is waiting for cluster setup
@@ -264,6 +266,7 @@ type Device struct {
 	InterfaceCount      *int
 	CoreCount           *int
 	IsSelfManaged       *bool
+	Connectivity        *string
 	WanInterfaceId      *string
 	Interfaces          []DeviceInterface
 	VendorConfiguration map[string]string
