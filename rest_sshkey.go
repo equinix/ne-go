@@ -69,6 +69,7 @@ func mapSSHPublicKeyAPIToDomain(apiKey api.SSHPublicKey) SSHPublicKey {
 		Name:      apiKey.KeyName,
 		Value:     apiKey.KeyValue,
 		ProjectId: apiKey.ProjectId,
+		Type:      apiKey.KeyType,
 	}
 }
 
@@ -78,5 +79,6 @@ func mapSSHPublicKeyDomainToAPI(key SSHPublicKey) api.SSHPublicKey {
 		KeyName:   key.Name,
 		KeyValue:  key.Value,
 		ProjectId: key.ProjectId,
+		KeyType:   key.Type,
 	}
 }

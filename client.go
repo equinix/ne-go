@@ -353,6 +353,7 @@ type SSHPublicKey struct {
 	Name      *string
 	Value     *string
 	ProjectId *string
+	Type  *string
 }
 
 //ACLTemplate describes Network Edge device ACL template
