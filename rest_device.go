@@ -24,13 +24,6 @@ const (
 	//DeviceLicenseModeBYOL indicates device software license mode where
 	//customer provides his own, externally procured device license
 	DeviceLicenseModeBYOL = "BYOL"
-	//Connectivity type ZNPD indicates device with no internet
-	ConnectivityZnpd = "ZNPD"
-	//ZNPD indicates device with no internet
-	Znpd = "PRIVATE"
-	//DeviceManagementTypeSelfZnpd indicates device management mode where customer
-	//fully manages the device and device is created with no internet access
-	DeviceManagementTypeSelfZnpd = "SELF-CONFIGURED-ZNPD"
 )
 
 type restDeviceUpdateRequest struct {
@@ -246,14 +239,12 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	}
 	if apiDevice.DeviceManagementType != nil {
 		if *apiDevice.DeviceManagementType == DeviceManagementTypeSelf {
-			if apiDevice.Connectivity != nil && strings.EqualFold(*apiDevice.Connectivity, ConnectivityZnpd) {
-				device.Connectivity = String(Znpd)
-			}
 			device.IsSelfManaged = Bool(true)
 		} else {
 			device.IsSelfManaged = Bool(false)
 		}
 	}
+	device.Connectivity = apiDevice.Connectivity
 	device.Interfaces = mapDeviceInterfacesAPIToDomain(apiDevice.Interfaces)
 	device.VendorConfiguration = apiDevice.VendorConfig
 	device.UserPublicKey = mapDeviceUserPublicKeyAPIToDomain(apiDevice.UserPublicKey)
@@ -386,15 +377,12 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.InterfaceCount = device.InterfaceCount
 	if device.IsSelfManaged != nil {
 		if *device.IsSelfManaged {
-			if device.Connectivity != nil && strings.EqualFold(*device.Connectivity, Znpd) {
-				req.DeviceManagementType = String(DeviceManagementTypeSelfZnpd)
-			} else {
-				req.DeviceManagementType = String(DeviceManagementTypeSelf)
-			}
+			req.DeviceManagementType = String(DeviceManagementTypeSelf)
 		} else {
 			req.DeviceManagementType = String(DeviceManagementTypeEquinix)
 		}
 	}
+	req.Connectivity = device.Connectivity
 	req.Core = device.CoreCount
 	req.AdditionalBandwidth = device.AdditionalBandwidth
 	req.SshInterfaceId = device.WanInterfaceId
