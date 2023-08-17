@@ -75,10 +75,10 @@ func TestCreateDevice(t *testing.T) {
 	//then
 	assert.Nil(t, err, "Error is not returned")
 	assert.Equal(t, uuid, resp.UUID, "UUID matches")
-	verifyDeviceRequest(t, device, req, false)
+	verifyDeviceRequest(t, device, req)
 }
 
-func TestCreateZnpdDevice(t *testing.T) {
+func TestCreateDeviceWithConnectivityTypeAsPrivate(t *testing.T) {
 	//given
 	resp := api.DeviceRequestResponse{}
 	if err := readJSONData("./test-fixtures/ne_device_create_resp.json", &resp); err != nil {
@@ -138,7 +138,7 @@ func TestCreateZnpdDevice(t *testing.T) {
 	//then
 	assert.Nil(t, err, "Error is not returned")
 	assert.Equal(t, uuid, resp.UUID, "UUID matches")
-	verifyDeviceRequest(t, device, req, true)
+	verifyDeviceRequest(t, device, req)
 }
 
 func TestCreateRedundantDevice(t *testing.T) {
@@ -494,7 +494,7 @@ func verifyDeviceInterface(t *testing.T, inf DeviceInterface, apiInf api.DeviceI
 	assert.Equal(t, apiInf.Type, inf.Type, "Type matches")
 }
 
-func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest, isZnpd bool) {
+func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.Throughput, req.Throughput, "Throughput matches")
 	assert.Equal(t, device.ThroughputUnit, req.ThroughputUnit, "ThroughputUnit matches")
 	assert.Equal(t, device.MetroCode, req.MetroCode, "MetroCode matches")
@@ -519,11 +519,8 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest, isZ
 	assert.Equal(t, device.Version, req.Version, "Version matches")
 	assert.Equal(t, device.InterfaceCount, req.InterfaceCount, "InterfaceCount matches")
 	if *device.IsSelfManaged {
-		if isZnpd {
-			assert.Equal(t, DeviceManagementTypeSelfZnpd, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
-		} else {
-			assert.Equal(t, DeviceManagementTypeSelf, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
-		}
+
+		assert.Equal(t, DeviceManagementTypeSelf, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
 	} else {
 		assert.Equal(t, DeviceManagementTypeEquinix, StringValue(req.DeviceManagementType), "DeviceManagementType matches")
 	}
@@ -536,7 +533,7 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest, isZ
 }
 
 func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req api.DeviceRequest) {
-	verifyDeviceRequest(t, primary, req, false)
+	verifyDeviceRequest(t, primary, req)
 	assert.Equal(t, secondary.MetroCode, req.Secondary.MetroCode, "Secondary MetroCode matches")
 	assert.Equal(t, secondary.LicenseToken, req.Secondary.LicenseToken, "LicenseFileID matches")
 	assert.Equal(t, secondary.LicenseFileID, req.Secondary.LicenseFileID, "LicenseFileID matches")
