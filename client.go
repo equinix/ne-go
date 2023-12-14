@@ -1,4 +1,4 @@
-//Package ne implements Network Edge client
+// Package ne implements Network Edge client
 package ne
 
 import (
@@ -27,6 +27,10 @@ const (
 	DeviceStateDeprovisioning = "DEPROVISIONING"
 	//DeviceStateDeprovisioned Network Edge device was successfully deprovisioned
 	DeviceStateDeprovisioned = "DEPROVISIONED"
+	//DeviceStateResourceUpgradeInProgress Network Edge device is in process of resource upgrade
+	DeviceStateResourceUpgradeInProgress = "RESOURCE_UPGRADE_IN_PROGRESS"
+	//DeviceStateResourceUpgradeFailed Network Edge device resource upgrade has failed
+	DeviceStateResourceUpgradeFailed = "RESOURCE_UPGRADE_FAILED"
 
 	//DeviceLicenseStateApplying license is in registration process
 	DeviceLicenseStateApplying = "APPLYING_LICENSE"
@@ -89,7 +93,7 @@ const (
 	DeviceLinkGroupStatusDeprovisioned = "DEPROVISIONED"
 )
 
-//Client interface describes operations provided by Network Edge client library
+// Client interface describes operations provided by Network Edge client library
 type Client interface {
 	GetAccounts(metroCode string) ([]Account, error)
 	GetDeviceTypes() ([]DeviceType, error)
@@ -138,25 +142,26 @@ type Client interface {
 	DeleteDeviceLinkGroup(uuid string) error
 }
 
-//DeviceUpdateRequest describes composite request to update given Network Edge device
+// DeviceUpdateRequest describes composite request to update given Network Edge device
 type DeviceUpdateRequest interface {
 	WithDeviceName(deviceName string) DeviceUpdateRequest
 	WithTermLength(termLength int) DeviceUpdateRequest
 	WithNotifications(notifications []string) DeviceUpdateRequest
+	WithCore(core int) DeviceUpdateRequest
 	WithAdditionalBandwidth(additionalBandwidth int) DeviceUpdateRequest
 	WithACLTemplate(templateID string) DeviceUpdateRequest
 	WithMgmtAclTemplate(mgmtAclTemplateUuid string) DeviceUpdateRequest
 	Execute() error
 }
 
-//SSHUserUpdateRequest describes composite request to update given Network Edge SSH user
+// SSHUserUpdateRequest describes composite request to update given Network Edge SSH user
 type SSHUserUpdateRequest interface {
 	WithNewPassword(password string) SSHUserUpdateRequest
 	WithDeviceChange(old []string, new []string) SSHUserUpdateRequest
 	Execute() error
 }
 
-//BGPUpdateRequest describes request to update given BGP configuration
+// BGPUpdateRequest describes request to update given BGP configuration
 type BGPUpdateRequest interface {
 	WithLocalIPAddress(localIPAddress string) BGPUpdateRequest
 	WithLocalASN(localASN int) BGPUpdateRequest
@@ -166,7 +171,7 @@ type BGPUpdateRequest interface {
 	Execute() error
 }
 
-//DeviceLinkUpdateRequest descrobes request to update given Device Link Group
+// DeviceLinkUpdateRequest descrobes request to update given Device Link Group
 type DeviceLinkUpdateRequest interface {
 	WithGroupName(name string) DeviceLinkUpdateRequest
 	WithSubnet(subnet string) DeviceLinkUpdateRequest
@@ -175,7 +180,7 @@ type DeviceLinkUpdateRequest interface {
 	Execute() error
 }
 
-//Error describes Network Edge error that occurs during API call processing
+// Error describes Network Edge error that occurs during API call processing
 type Error struct {
 	//ErrorCode is short error identifier
 	ErrorCode string
@@ -183,7 +188,7 @@ type Error struct {
 	ErrorMessage string
 }
 
-//ChangeError describes single error that occurred during update of selected target property
+// ChangeError describes single error that occurred during update of selected target property
 type ChangeError struct {
 	Type   string
 	Target string
@@ -195,12 +200,12 @@ func (e ChangeError) Error() string {
 	return fmt.Sprintf("change type '%s', target '%s', value '%s', cause: '%s'", e.Type, e.Target, e.Value, e.Cause)
 }
 
-//UpdateError describes error that occurred during composite update request and consists of multiple atomic change errors
+// UpdateError describes error that occurred during composite update request and consists of multiple atomic change errors
 type UpdateError struct {
 	Failed []ChangeError
 }
 
-//AddChangeError functions add new atomic change error to update error structure
+// AddChangeError functions add new atomic change error to update error structure
 func (e *UpdateError) AddChangeError(changeType string, target string, value interface{}, cause error) {
 	e.Failed = append(e.Failed, ChangeError{
 		Type:   changeType,
@@ -209,7 +214,7 @@ func (e *UpdateError) AddChangeError(changeType string, target string, value int
 		Cause:  cause})
 }
 
-//ChangeErrorsCount returns number of atomic change errors in a given composite update error
+// ChangeErrorsCount returns number of atomic change errors in a given composite update error
 func (e UpdateError) ChangeErrorsCount() int {
 	return len(e.Failed)
 }
@@ -222,7 +227,7 @@ func (e UpdateError) Error() string {
 	return str
 }
 
-//Account describes Network Edge customer account details
+// Account describes Network Edge customer account details
 type Account struct {
 	Name   *string
 	Number *string
@@ -230,7 +235,7 @@ type Account struct {
 	UCMID  *string
 }
 
-//Device describes Network Edge device
+// Device describes Network Edge device
 type Device struct {
 	UUID                *string
 	Name                *string
@@ -276,7 +281,7 @@ type Device struct {
 	ClusterDetails      *ClusterDetails
 }
 
-//DeviceInterface describes Network Edge device interface
+// DeviceInterface describes Network Edge device interface
 type DeviceInterface struct {
 	ID                *int
 	Name              *string
@@ -288,14 +293,14 @@ type DeviceInterface struct {
 	Type              *string
 }
 
-//DeviceUserPublicKey describes public SSH key along with username that is
-//provisioned on a network device.
+// DeviceUserPublicKey describes public SSH key along with username that is
+// provisioned on a network device.
 type DeviceUserPublicKey struct {
 	Username *string
 	KeyName  *string
 }
 
-//DeviceType describes Network Edge device type
+// DeviceType describes Network Edge device type
 type DeviceType struct {
 	Name        *string
 	Code        *string
@@ -305,8 +310,8 @@ type DeviceType struct {
 	MetroCodes  []string
 }
 
-//DevicePlatform describes Network Edge platform configurations
-//available for a given device type
+// DevicePlatform describes Network Edge platform configurations
+// available for a given device type
 type DevicePlatform struct {
 	Flavor          *string
 	CoreCount       *int
@@ -317,7 +322,7 @@ type DevicePlatform struct {
 	LicenseOptions  []string
 }
 
-//DeviceSoftwareVersion describes available software packages and versions for a Network Edge device
+// DeviceSoftwareVersion describes available software packages and versions for a Network Edge device
 type DeviceSoftwareVersion struct {
 	Version          *string
 	ImageName        *string
@@ -328,7 +333,7 @@ type DeviceSoftwareVersion struct {
 	PackageCodes     []string
 }
 
-//SSHUser describes Network Edge SSH user
+// SSHUser describes Network Edge SSH user
 type SSHUser struct {
 	UUID        *string
 	Username    *string
@@ -336,7 +341,7 @@ type SSHUser struct {
 	DeviceUUIDs []string
 }
 
-//BGPConfiguration describes Network Edge BGP configuration
+// BGPConfiguration describes Network Edge BGP configuration
 type BGPConfiguration struct {
 	UUID               *string
 	ConnectionUUID     *string
@@ -350,7 +355,7 @@ type BGPConfiguration struct {
 	ProvisioningStatus *string
 }
 
-//SSHPublicKey describes Network Edge SSH user public key
+// SSHPublicKey describes Network Edge SSH user public key
 type SSHPublicKey struct {
 	UUID  *string
 	Name  *string
@@ -358,7 +363,7 @@ type SSHPublicKey struct {
 	Type  *string
 }
 
-//ACLTemplate describes Network Edge device ACL template
+// ACLTemplate describes Network Edge device ACL template
 type ACLTemplate struct {
 	UUID            *string
 	Name            *string
@@ -370,8 +375,8 @@ type ACLTemplate struct {
 	DeviceDetails   []ACLTemplateDeviceDetails
 }
 
-//ACLTemplateInboundRule describes inbound ACL rule that is part of
-//Network Edge device ACL template
+// ACLTemplateInboundRule describes inbound ACL rule that is part of
+// Network Edge device ACL template
 type ACLTemplateInboundRule struct {
 	SeqNo       *int
 	FQDN        *string  // Deprecated: FQDN is no longer supported
@@ -384,27 +389,27 @@ type ACLTemplateInboundRule struct {
 	Description *string
 }
 
-//ACLTemplateDeviceDetails describes Device Details this template applied to
+// ACLTemplateDeviceDetails describes Device Details this template applied to
 type ACLTemplateDeviceDetails struct {
 	UUID      *string
 	Name      *string
 	ACLStatus *string
 }
 
-//DeviceAdditionalBandwidthDetails describes details of a device
-//additional badwidth
+// DeviceAdditionalBandwidthDetails describes details of a device
+// additional badwidth
 type DeviceAdditionalBandwidthDetails struct {
 	AdditionalBandwidth *int
 	Status              *string
 }
 
-//DeviceACLDetails describes details of a device
-//additional badwidth
+// DeviceACLDetails describes details of a device
+// additional badwidth
 type DeviceACLDetails struct {
 	Status *string
 }
 
-//DeviceLinkGroup describes details of a device link group
+// DeviceLinkGroup describes details of a device link group
 type DeviceLinkGroup struct {
 	UUID    *string
 	Name    *string
@@ -414,8 +419,8 @@ type DeviceLinkGroup struct {
 	Links   []DeviceLinkGroupLink
 }
 
-//DeviceLinkGroupDevice describes details of a device within device
-//link group
+// DeviceLinkGroupDevice describes details of a device within device
+// link group
 type DeviceLinkGroupDevice struct {
 	DeviceID    *string
 	ASN         *int
@@ -424,8 +429,8 @@ type DeviceLinkGroupDevice struct {
 	IPAddress   *string
 }
 
-//DeviceLinkGroupLink describes details if a link (connection) within
-//device link group
+// DeviceLinkGroupLink describes details if a link (connection) within
+// device link group
 type DeviceLinkGroupLink struct {
 	AccountNumber        *string
 	Throughput           *string
@@ -436,7 +441,7 @@ type DeviceLinkGroupLink struct {
 	DestinationZoneCode  *string
 }
 
-//ClusterDetails describes Network Edge cluster device details
+// ClusterDetails describes Network Edge cluster device details
 type ClusterDetails struct {
 	ClusterName        *string
 	NumOfNodes         *int
@@ -447,7 +452,7 @@ type ClusterDetails struct {
 	Node1              *ClusterNodeDetail
 }
 
-//ClusterNodeDetail describes Network Edge cluster node details
+// ClusterNodeDetail describes Network Edge cluster node details
 type ClusterNodeDetail struct {
 	UUID                *string
 	Name                *string
@@ -464,7 +469,7 @@ type ClusterNode struct { // Deprecated: Use ClusterNodeDetail instead
 	VendorConfiguration map[string]string
 }
 
-//File describes Network Edge uploaded file
+// File describes Network Edge uploaded file
 type File struct {
 	UUID           *string
 	FileName       *string
