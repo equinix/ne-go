@@ -1,6 +1,6 @@
 package api
 
-//Device describes network edge device
+// Device describes network edge device
 type Device struct {
 	UUID                 *string                `json:"uuid,omitempty"`
 	Name                 *string                `json:"name,omitempty"`
@@ -44,7 +44,7 @@ type Device struct {
 	Connectivity         *string                `json:"connectivity,omitempty"`
 }
 
-//DeviceRequest describes network edge device creation request
+// DeviceRequest describes network edge device creation request
 type DeviceRequest struct {
 	Throughput           *int                        `json:"throughput,omitempty,string"`
 	ThroughputUnit       *string                     `json:"throughputUnit,omitempty"`
@@ -77,7 +77,7 @@ type DeviceRequest struct {
 	Connectivity         *string                     `json:"connectivity,omitempty"`
 }
 
-//SecondaryDeviceRequest describes secondary device part of device creation request
+// SecondaryDeviceRequest describes secondary device part of device creation request
 type SecondaryDeviceRequest struct {
 	MetroCode           *string                     `json:"metroCode,omitempty"`
 	LicenseToken        *string                     `json:"licenseToken,omitempty"`
@@ -95,7 +95,7 @@ type SecondaryDeviceRequest struct {
 	UserPublicKey       *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`
 }
 
-//DeviceInterface describes device network interface
+// DeviceInterface describes device network interface
 type DeviceInterface struct {
 	ID                *int    `json:"id,omitempty"`
 	Name              *string `json:"name,omitempty"`
@@ -107,30 +107,30 @@ type DeviceInterface struct {
 	Type              *string `json:"type,omitempty"`
 }
 
-//DeviceUserPublicKey describes public SSH key along with username that is
-//provisioned on a network device
+// DeviceUserPublicKey describes public SSH key along with username that is
+// provisioned on a network device
 type DeviceUserPublicKey struct {
 	Username *string `json:"username,omitempty"`
 	KeyName  *string `json:"publicKeyName,omitempty"`
 	Key      *string `json:"publicKey,omitempty"`
 }
 
-//DeviceUserPublicKeyRequest describes public SSH key along with username that
-//will be provisioned on a network device. SSH key has to be created beforehand
-//and referred by its name
+// DeviceUserPublicKeyRequest describes public SSH key along with username that
+// will be provisioned on a network device. SSH key has to be created beforehand
+// and referred by its name
 type DeviceUserPublicKeyRequest struct {
 	Username *string `json:"username,omitempty"`
 	KeyName  *string `json:"keyName,omitempty"`
 }
 
-//DeviceCoreInformation describes device core and memory information
+// DeviceCoreInformation describes device core and memory information
 type DeviceCoreInformation struct {
 	Core   *int    `json:"core,omitempty"`
 	Memory *int    `json:"memory,omitempty"`
 	Unit   *string `json:"unit,omitempty"`
 }
 
-//DeviceRequestResponse describes response for device creation request
+// DeviceRequestResponse describes response for device creation request
 type DeviceRequestResponse struct {
 	UUID          *string           `json:"uuid,omitempty"`
 	SecondaryUUID *string           `json:"secondaryUuid,omitempty"`
@@ -138,32 +138,33 @@ type DeviceRequestResponse struct {
 	ClusterID     *string           `json:"clusterId,omitempty"`
 }
 
-//DeviceUpdateRequest describes network device update request
+// DeviceUpdateRequest describes network device update request
 type DeviceUpdateRequest struct {
 	Notifications     []string `json:"notifications"`
 	TermLength        *int     `json:"termLength,omitempty"`
 	VirtualDeviceName *string  `json:"virtualDeviceName,omitempty"`
+	Core              *int     `json:"core,omitempty"`
 }
 
-//DeviceAdditionalBandwidthUpdateRequest describes network device additional bandwidth update request
+// DeviceAdditionalBandwidthUpdateRequest describes network device additional bandwidth update request
 type DeviceAdditionalBandwidthUpdateRequest struct {
 	AdditionalBandwidth *int `json:"additionalBandwidth"`
 }
 
-//DevicesResponse describes response for a get device list request
+// DevicesResponse describes response for a get device list request
 type DevicesResponse struct {
 	Pagination Pagination `json:"pagination,omitempty"`
 	Data       []Device   `json:"data,omitempty"`
 }
 
-//DeviceACLTemplateRequest describes request for updating device ACL template
+// DeviceACLTemplateRequest describes request for updating device ACL template
 type DeviceACLTemplateRequest struct {
 	TemplateUUID        *string `json:"aclTemplateUuid,omitempty"`
 	MgmtAclTemplateUUID *string `json:"mgmtAclTemplateUuid,omitempty"`
 }
 
-//DeviceAdditionalBandwidthResponse describes response for device additional
-//bandwidth get request
+// DeviceAdditionalBandwidthResponse describes response for device additional
+// bandwidth get request
 type DeviceAdditionalBandwidthResponse struct {
 	AdditionalBandwidth *int    `json:"additionalBandwidth,omitempty"`
 	Status              *string `json:"status,omitempty"`
@@ -173,20 +174,20 @@ type DeviceACLResponse struct {
 	Status *string `json:"status,omitempty"`
 }
 
-//ClusterDetailsRequest describes cluster details of device creation request
+// ClusterDetailsRequest describes cluster details of device creation request
 type ClusterDetailsRequest struct {
 	ClusterName        *string                             `json:"clusterName,omitempty"`
 	ClusterNodeDetails map[string]ClusterNodeDetailRequest `json:"clusterNodeDetails,omitempty"`
 }
 
-//ClusterNodeDetailRequest describes cluster node configuration of device creation request
+// ClusterNodeDetailRequest describes cluster node configuration of device creation request
 type ClusterNodeDetailRequest struct {
 	VendorConfiguration map[string]string `json:"vendorConfig,omitempty"`
 	LicenseFileID       *string           `json:"licenseFileId,omitempty"`
 	LicenseToken        *string           `json:"licenseToken,omitempty"`
 }
 
-//ClusterDetails describes cluster details for device response
+// ClusterDetails describes cluster details for device response
 type ClusterDetails struct {
 	ClusterID   *string       `json:"clusterId,omitempty"`
 	ClusterName *string       `json:"clusterName,omitempty"`
@@ -194,7 +195,7 @@ type ClusterDetails struct {
 	Nodes       []ClusterNode `json:"nodes,omitempty"`
 }
 
-//ClusterNode describes cluster node details for device response
+// ClusterNode describes cluster node details for device response
 type ClusterNode struct {
 	UUID                *string           `json:"uuid,omitempty"`
 	Name                *string           `json:"name,omitempty"`

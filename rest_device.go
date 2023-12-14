@@ -35,7 +35,7 @@ type restDeviceUpdateRequest struct {
 	c                   RestClient
 }
 
-//CreateDevice creates given Network Edge device and returns its UUID upon successful creation
+// CreateDevice creates given Network Edge device and returns its UUID upon successful creation
 func (c RestClient) CreateDevice(device Device) (*string, error) {
 	path := "/ne/v1/devices"
 	reqBody := createDeviceRequest(device)
@@ -47,8 +47,8 @@ func (c RestClient) CreateDevice(device Device) (*string, error) {
 	return respBody.UUID, nil
 }
 
-//CreateRedundantDevice creates HA device setup from given primary and secondary devices and
-//returns their UUIDS upon successful creation
+// CreateRedundantDevice creates HA device setup from given primary and secondary devices and
+// returns their UUIDS upon successful creation
 func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (*string, *string, error) {
 	path := "/ne/v1/devices"
 	reqBody := createRedundantDeviceRequest(primary, secondary)
@@ -60,7 +60,7 @@ func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (*st
 	return respBody.UUID, respBody.SecondaryUUID, nil
 }
 
-//GetDevice fetches details of a device with a given UUID
+// GetDevice fetches details of a device with a given UUID
 func (c RestClient) GetDevice(uuid string) (*Device, error) {
 	path := "/ne/v1/devices/" + url.PathEscape(uuid)
 	result := api.Device{}
@@ -71,7 +71,7 @@ func (c RestClient) GetDevice(uuid string) (*Device, error) {
 	return mapDeviceAPIToDomain(result), nil
 }
 
-//GetDevices retrieves list of devices (along with their details) with given list of statuses
+// GetDevices retrieves list of devices (along with their details) with given list of statuses
 func (c RestClient) GetDevices(statuses []string) ([]Device, error) {
 	path := "/ne/v1/devices"
 	content, err := c.GetOffsetPaginated(path, &api.DevicesResponse{},
@@ -87,7 +87,7 @@ func (c RestClient) GetDevices(statuses []string) ([]Device, error) {
 	return transformed, nil
 }
 
-//GetDeviceAdditionalBandwidthDetails retrives details of given device's additional bandwidth
+// GetDeviceAdditionalBandwidthDetails retrives details of given device's additional bandwidth
 func (c RestClient) GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdditionalBandwidthDetails, error) {
 	path := fmt.Sprintf("/ne/v1/devices/%s/additionalBandwidths", url.PathEscape(uuid))
 	result := api.DeviceAdditionalBandwidthResponse{}
@@ -98,7 +98,7 @@ func (c RestClient) GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdd
 	return mapDeviceAdditionalBandwidthAPIToDomain(result), nil
 }
 
-//GetDeviceACLDetails retrives device acl template provisioning status
+// GetDeviceACLDetails retrives device acl template provisioning status
 func (c RestClient) GetDeviceACLDetails(uuid string) (*DeviceACLDetails, error) {
 	path := fmt.Sprintf("/ne/v1/devices/%s/acl", url.PathEscape(uuid))
 	result := api.DeviceACLResponse{}
@@ -109,7 +109,7 @@ func (c RestClient) GetDeviceACLDetails(uuid string) (*DeviceACLDetails, error) 
 	return mapDeviceACLAPIToDomain(result), nil
 }
 
-//NewDeviceUpdateRequest creates new composite update request for a device with a given UUID
+// NewDeviceUpdateRequest creates new composite update request for a device with a given UUID
 func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 	return &restDeviceUpdateRequest{
 		uuid:         uuid,
@@ -117,7 +117,7 @@ func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 		c:            c}
 }
 
-//DeleteDevice deletes device with a given UUID
+// DeleteDevice deletes device with a given UUID
 func (c RestClient) DeleteDevice(uuid string) error {
 	path := "/ne/v1/devices/" + url.PathEscape(uuid)
 	req := c.R().SetQueryParam("deleteRedundantDevice", "true")
@@ -127,45 +127,51 @@ func (c RestClient) DeleteDevice(uuid string) error {
 	return nil
 }
 
-//WithDeviceName sets new device name in a composite device update request
+// WithDeviceName sets new device name in a composite device update request
 func (req *restDeviceUpdateRequest) WithDeviceName(deviceName string) DeviceUpdateRequest {
 	req.deviceFields["deviceName"] = deviceName
 	return req
 }
 
-//WithTermLength sets new term length in a composite device update request
+// WithTermLength sets new term length in a composite device update request
 func (req *restDeviceUpdateRequest) WithTermLength(termLength int) DeviceUpdateRequest {
 	req.deviceFields["termLength"] = termLength
 	return req
 }
 
-//WithNotifications sets new notifications in a composite device update request
+// WithNotifications sets new notifications in a composite device update request
 func (req *restDeviceUpdateRequest) WithNotifications(notifications []string) DeviceUpdateRequest {
 	req.deviceFields["notifications"] = notifications
 	return req
 }
 
-//WithAdditionalBandwidth sets new additional bandwidth in a composite device update request
+// WithCore sets new core count in a composite device update request
+func (req *restDeviceUpdateRequest) WithCore(core int) DeviceUpdateRequest {
+	req.deviceFields["core"] = core
+	return req
+}
+
+// WithAdditionalBandwidth sets new additional bandwidth in a composite device update request
 func (req *restDeviceUpdateRequest) WithAdditionalBandwidth(additionalBandwidth int) DeviceUpdateRequest {
 	req.additionalBandwidth = &additionalBandwidth
 	return req
 }
 
-//WithACLTemplate sets new ACL template identifier in a composite device update request
+// WithACLTemplate sets new ACL template identifier in a composite device update request
 func (req *restDeviceUpdateRequest) WithACLTemplate(templateID string) DeviceUpdateRequest {
 	req.aclTemplateID = &templateID
 	return req
 }
 
-//WithMgmtAclTemplate sets new MGMT ACL template identifier in a composite device update request
+// WithMgmtAclTemplate sets new MGMT ACL template identifier in a composite device update request
 func (req *restDeviceUpdateRequest) WithMgmtAclTemplate(mgmtAclTemplateUuid string) DeviceUpdateRequest {
 	req.mgmtAclTemplateUuid = &mgmtAclTemplateUuid
 	return req
 }
 
-//Execute attempts to update device according new data set in composite update request.
-//This is not atomic operation and if any update will fail, other changes won't be reverted.
-//UpdateError will be returned if any of requested data failed to update
+// Execute attempts to update device according new data set in composite update request.
+// This is not atomic operation and if any update will fail, other changes won't be reverted.
+// UpdateError will be returned if any of requested data failed to update
 func (req *restDeviceUpdateRequest) Execute() error {
 	updateErr := UpdateError{}
 	if err := req.c.replaceDeviceFields(req.uuid, req.deviceFields); err != nil {
@@ -454,6 +460,10 @@ func (c RestClient) replaceDeviceFields(uuid string, fields map[string]interface
 	}
 	if v, ok := fields["notifications"]; ok {
 		reqBody.Notifications = v.([]string)
+		okToSend = true
+	}
+	if v, ok := fields["core"]; ok {
+		reqBody.Core = Int(v.(int))
 		okToSend = true
 	}
 	if okToSend {
