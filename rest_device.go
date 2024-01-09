@@ -151,6 +151,12 @@ func (req *restDeviceUpdateRequest) WithCore(core int) DeviceUpdateRequest {
 	return req
 }
 
+// WithClusterName sets new cluster name in a composite device update request
+func (req *restDeviceUpdateRequest) WithClusterName(clusterName string) DeviceUpdateRequest {
+	req.deviceFields["clusterName"] = clusterName
+	return req
+}
+
 // WithAdditionalBandwidth sets new additional bandwidth in a composite device update request
 func (req *restDeviceUpdateRequest) WithAdditionalBandwidth(additionalBandwidth int) DeviceUpdateRequest {
 	req.additionalBandwidth = &additionalBandwidth
@@ -464,6 +470,10 @@ func (c RestClient) replaceDeviceFields(uuid string, fields map[string]interface
 	}
 	if v, ok := fields["core"]; ok {
 		reqBody.Core = Int(v.(int))
+		okToSend = true
+	}
+	if v, ok := fields["clusterName"]; ok {
+		reqBody.ClusterName = String(v.(string))
 		okToSend = true
 	}
 	if okToSend {
