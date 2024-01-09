@@ -144,6 +144,7 @@ type DeviceUpdateRequest struct {
 	TermLength        *int     `json:"termLength,omitempty"`
 	VirtualDeviceName *string  `json:"virtualDeviceName,omitempty"`
 	Core              *int     `json:"core,omitempty"`
+	ClusterName       *string  `json:"clusterName,omitempty"`
 }
 
 // DeviceAdditionalBandwidthUpdateRequest describes network device additional bandwidth update request
