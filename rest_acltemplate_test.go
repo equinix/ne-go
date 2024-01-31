@@ -16,6 +16,7 @@ var testACLTemplate = ACLTemplate{
 	Name:        String("test"),
 	Description: String("Test ACL"),
 	MetroCode:   String("SV"),
+	ProjectID:   String("68ccfd49-39b1-478e-957a-67c72f719d7a"),
 	InboundRules: []ACLTemplateInboundRule{
 		{
 			SrcType:     String("SUBNET"),
@@ -166,6 +167,7 @@ func verifyACLTemplate(t *testing.T, template ACLTemplate, apiTemplate api.ACLTe
 	assert.Equal(t, template.UUID, apiTemplate.UUID, "UUID matches")
 	assert.Equal(t, template.Name, apiTemplate.Name, "Name matches")
 	assert.Equal(t, template.Description, apiTemplate.Description, "Description matches")
+	assert.Equal(t, template.ProjectID, apiTemplate.ProjectID, "ProjectID matches")
 	assert.Equal(t, template.MetroCode, apiTemplate.MetroCode, "MetroCode matches")
 	assert.Equal(t, template.DeviceACLStatus, apiTemplate.DeviceACLStatus, "DeviceACLStatus matches")
 	assert.Equal(t, len(template.InboundRules), len(apiTemplate.InboundRules), "Number of InboundRules matches")

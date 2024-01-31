@@ -8,8 +8,8 @@ import (
 	"github.com/equinix/rest-go"
 )
 
-//CreateACLTemplate creates new ACL template with a given model
-//On successful creation, template's UUID is returned
+// CreateACLTemplate creates new ACL template with a given model
+// On successful creation, template's UUID is returned
 func (c RestClient) CreateACLTemplate(template ACLTemplate) (*string, error) {
 	path := "/ne/v1/aclTemplates"
 	reqBody := mapACLTemplateDomainToAPI(template)
@@ -25,7 +25,7 @@ func (c RestClient) CreateACLTemplate(template ACLTemplate) (*string, error) {
 	return uuid, nil
 }
 
-//GetACLTemplates retrieves list of all ACL templates along with their details
+// GetACLTemplates retrieves list of all ACL templates along with their details
 func (c RestClient) GetACLTemplates() ([]ACLTemplate, error) {
 	path := "/ne/v1/aclTemplates"
 	content, err := c.GetOffsetPaginated(path, &api.ACLTemplatesResponse{},
@@ -40,7 +40,7 @@ func (c RestClient) GetACLTemplates() ([]ACLTemplate, error) {
 	return transformed, nil
 }
 
-//GetACLTemplate retrieves ACL template with a given UUID
+// GetACLTemplate retrieves ACL template with a given UUID
 func (c RestClient) GetACLTemplate(uuid string) (*ACLTemplate, error) {
 	path := "/ne/v1/aclTemplates/" + url.PathEscape(uuid)
 	respBody := api.ACLTemplate{}
@@ -52,8 +52,8 @@ func (c RestClient) GetACLTemplate(uuid string) (*ACLTemplate, error) {
 	return &template, nil
 }
 
-//ReplaceACLTemplate replaces ACL template under given UUID with
-//a new one with a given model
+// ReplaceACLTemplate replaces ACL template under given UUID with
+// a new one with a given model
 func (c RestClient) ReplaceACLTemplate(uuid string, template ACLTemplate) error {
 	path := "/ne/v1/aclTemplates/" + url.PathEscape(uuid)
 	updateTemplate := ACLTemplate{
@@ -70,7 +70,7 @@ func (c RestClient) ReplaceACLTemplate(uuid string, template ACLTemplate) error 
 	return nil
 }
 
-//DeleteACLTemplate removes ACL template with a given UUID
+// DeleteACLTemplate removes ACL template with a given UUID
 func (c RestClient) DeleteACLTemplate(uuid string) error {
 	path := "/ne/v1/aclTemplates/" + url.PathEscape(uuid)
 	if err := c.Execute(c.R(), http.MethodDelete, path); err != nil {
@@ -87,6 +87,7 @@ func mapACLTemplateDomainToAPI(template ACLTemplate) api.ACLTemplate {
 		MetroCode:       template.MetroCode,
 		DeviceACLStatus: template.DeviceACLStatus,
 		InboundRules:    mapACLTemplateInboundRulesDomainToAPI(template.InboundRules),
+		ProjectID:       template.ProjectID,
 	}
 }
 
@@ -120,6 +121,7 @@ func mapACLTemplateAPIToDomain(apiTemplate api.ACLTemplate) ACLTemplate {
 		DeviceACLStatus: apiTemplate.DeviceACLStatus,
 		InboundRules:    mapACLTemplateInboundRulesAPIToDomain(apiTemplate.InboundRules),
 		DeviceDetails:   mapACLTemplateDeviceDetailsAPIToDomain(apiTemplate.DeviceDetails),
+		ProjectID:       apiTemplate.ProjectID,
 	}
 }
 
