@@ -61,7 +61,6 @@ func (c RestClient) ReplaceACLTemplate(uuid string, template ACLTemplate) error 
 		Description:  template.Description,
 		MetroCode:    template.MetroCode,
 		InboundRules: template.InboundRules,
-		ProjectID:    template.ProjectID,
 	}
 	reqBody := mapACLTemplateDomainToAPI(updateTemplate)
 	req := c.R().SetBody(&reqBody)

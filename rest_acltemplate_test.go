@@ -123,7 +123,7 @@ func TestGetACLTemplate(t *testing.T) {
 func TestReplaceACLTemplate(t *testing.T) {
 	//given
 	templateID := "db66bf49-b2d8-4e64-8719-d46406b54039"
-	template := testACLTemplate
+	template := updateACLRequestPayload()
 	reqBody := api.ACLTemplate{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -193,4 +193,10 @@ func verifyACLTemplateDeviceDetails(t *testing.T, template ACLTemplate, apiTempl
 		assert.Equal(t, template.DeviceDetails[i].Name, apiTemplate.DeviceDetails[i].Name, "Name matches")
 		assert.Equal(t, template.DeviceDetails[i].ACLStatus, apiTemplate.DeviceDetails[i].ACLStatus, "ACL Status matches")
 	}
+}
+
+func updateACLRequestPayload() ACLTemplate {
+	updateRequestPayload := testACLTemplate
+	updateRequestPayload.ProjectID = nil
+	return updateRequestPayload
 }
