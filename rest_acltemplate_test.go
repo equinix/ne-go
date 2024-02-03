@@ -164,10 +164,10 @@ func TestDeleteACLTemplate(t *testing.T) {
 }
 
 func verifyACLTemplate(t *testing.T, template ACLTemplate, apiTemplate api.ACLTemplate) {
+	assert.Equal(t, template.ProjectID, apiTemplate.ProjectID, "ProjectID matches")
 	assert.Equal(t, template.UUID, apiTemplate.UUID, "UUID matches")
 	assert.Equal(t, template.Name, apiTemplate.Name, "Name matches")
 	assert.Equal(t, template.Description, apiTemplate.Description, "Description matches")
-	assert.Equal(t, template.ProjectID, apiTemplate.ProjectID, "ProjectID matches")
 	assert.Equal(t, template.MetroCode, apiTemplate.MetroCode, "MetroCode matches")
 	assert.Equal(t, template.DeviceACLStatus, apiTemplate.DeviceACLStatus, "DeviceACLStatus matches")
 	assert.Equal(t, len(template.InboundRules), len(apiTemplate.InboundRules), "Number of InboundRules matches")
