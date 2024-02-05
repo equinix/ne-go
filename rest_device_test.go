@@ -26,6 +26,7 @@ var testDevice = Device{
 	Notifications:       []string{"test1@example.com", "test2@example.com"},
 	PackageCode:         String("VM100"),
 	TermLength:          Int(24),
+	ProjectID:           String("68ccfd49-39b1-478e-957a-67c72f719d7a"),
 	Throughput:          Int(1),
 	ThroughputUnit:      String("Gbps"),
 	Name:                String("PaloAltoSRmy"),
@@ -501,6 +502,7 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.TypeCode, req.DeviceTypeCode, "TypeCode matches")
 	termLengthStr := strconv.Itoa(*device.TermLength)
 	assert.Equal(t, &termLengthStr, req.TermLength, "TermLength matches")
+	assert.Equal(t, device.ProjectID, req.ProjectID, "Project Id matches")
 	if *device.IsBYOL {
 		assert.Equal(t, DeviceLicenseModeBYOL, StringValue(req.LicenseMode), "LicenseMode matches")
 	} else {

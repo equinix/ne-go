@@ -242,6 +242,7 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.RedundancyType = apiDevice.RedundancyType
 	device.RedundantUUID = apiDevice.RedundantUUID
 	device.TermLength = apiDevice.TermLength
+	device.ProjectID = apiDevice.ProjectID
 	device.AdditionalBandwidth = apiDevice.AdditionalBandwidth
 	device.WanInterfaceId = apiDevice.SshInterfaceID
 	device.OrderReference = apiDevice.OrderReference
@@ -395,6 +396,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 		}
 	}
 	req.Connectivity = device.Connectivity
+	req.ProjectID = device.ProjectID
 	req.Core = device.CoreCount
 	req.AdditionalBandwidth = device.AdditionalBandwidth
 	req.SshInterfaceId = device.WanInterfaceId

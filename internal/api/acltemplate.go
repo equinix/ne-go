@@ -1,6 +1,6 @@
 package api
 
-//ACLTemplate describes Network Edge device ACL template
+// ACLTemplate describes Network Edge device ACL template
 type ACLTemplate struct {
 	UUID              *string                    `json:"uuid,omitempty"`
 	Name              *string                    `json:"name,omitempty"`
@@ -10,10 +10,11 @@ type ACLTemplate struct {
 	DeviceACLStatus   *string                    `json:"deviceAclstatus,omitempty"`
 	InboundRules      []ACLTemplateInboundRule   `json:"inboundRules,omitempty"`
 	DeviceDetails     []ACLTemplateDeviceDetails `json:"virtualDeviceDetails,omitempty"`
+	ProjectID         *string                    `json:"projectId,omitempty"`
 }
 
-//ACLTemplateInboundRule describes inbound ACL rule that is part of
-//Network Edge device ACL template
+// ACLTemplateInboundRule describes inbound ACL rule that is part of
+// Network Edge device ACL template
 type ACLTemplateInboundRule struct {
 	SrcType     *string  `json:"srcType,omitempty"`
 	Protocol    *string  `json:"protocol,omitempty"`
@@ -31,7 +32,7 @@ type ACLTemplateDeviceDetails struct {
 	ACLStatus *string `json:"aclStatus,omitempty"`
 }
 
-//ACLTemplatesResponse describes response for a get ACL template collection request
+// ACLTemplatesResponse describes response for a get ACL template collection request
 type ACLTemplatesResponse struct {
 	Pagination Pagination    `json:"pagination,omitempty"`
 	Data       []ACLTemplate `json:"data,omitempty"`

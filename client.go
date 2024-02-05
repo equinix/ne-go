@@ -280,6 +280,7 @@ type Device struct {
 	ASN                 *int
 	ZoneCode            *string
 	ClusterDetails      *ClusterDetails
+	ProjectID           *string
 }
 
 // DeviceInterface describes Network Edge device interface
@@ -358,10 +359,11 @@ type BGPConfiguration struct {
 
 // SSHPublicKey describes Network Edge SSH user public key
 type SSHPublicKey struct {
-	UUID  *string
-	Name  *string
-	Value *string
-	Type  *string
+	UUID      *string
+	Name      *string
+	Value     *string
+	Type      *string
+	ProjectID *string
 }
 
 // ACLTemplate describes Network Edge device ACL template
@@ -374,6 +376,7 @@ type ACLTemplate struct {
 	DeviceACLStatus *string
 	InboundRules    []ACLTemplateInboundRule
 	DeviceDetails   []ACLTemplateDeviceDetails
+	ProjectID       *string
 }
 
 // ACLTemplateInboundRule describes inbound ACL rule that is part of
@@ -412,12 +415,13 @@ type DeviceACLDetails struct {
 
 // DeviceLinkGroup describes details of a device link group
 type DeviceLinkGroup struct {
-	UUID    *string
-	Name    *string
-	Subnet  *string
-	Status  *string
-	Devices []DeviceLinkGroupDevice
-	Links   []DeviceLinkGroupLink
+	UUID      *string
+	Name      *string
+	Subnet    *string
+	ProjectID *string
+	Status    *string
+	Devices   []DeviceLinkGroupDevice
+	Links     []DeviceLinkGroupLink
 }
 
 // DeviceLinkGroupDevice describes details of a device within device

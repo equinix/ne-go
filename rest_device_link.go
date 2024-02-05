@@ -17,8 +17,8 @@ type restDeviceLinkUpdateRequest struct {
 	c         RestClient
 }
 
-//GetDeviceLinkGroups retrieves list of existing device link groups
-//(along with their details)
+// GetDeviceLinkGroups retrieves list of existing device link groups
+// (along with their details)
 func (c RestClient) GetDeviceLinkGroups() ([]DeviceLinkGroup, error) {
 	path := "/ne/v1/links"
 	content, err := c.GetOffsetPaginated(path, &api.DeviceLinkGroupsGetResponse{},
@@ -34,8 +34,8 @@ func (c RestClient) GetDeviceLinkGroups() ([]DeviceLinkGroup, error) {
 	return transformed, nil
 }
 
-//GetDeviceLinkGroups retrieves details of a device link group
-//with a given identifier
+// GetDeviceLinkGroups retrieves details of a device link group
+// with a given identifier
 func (c RestClient) GetDeviceLinkGroup(uuid string) (*DeviceLinkGroup, error) {
 	path := "/ne/v1/links/" + url.PathEscape(uuid)
 	result := api.DeviceLinkGroup{}
@@ -46,8 +46,8 @@ func (c RestClient) GetDeviceLinkGroup(uuid string) (*DeviceLinkGroup, error) {
 	return mapDeviceLinkGroupAPIToDomain(result), nil
 }
 
-//CreateDeviceLinkGroup creates given device link group and returns
-//its identifier upon successful creation
+// CreateDeviceLinkGroup creates given device link group and returns
+// its identifier upon successful creation
 func (c RestClient) CreateDeviceLinkGroup(linkGroup DeviceLinkGroup) (*string, error) {
 	path := "/ne/v1/links"
 	reqBody := mapDeviceLinkGroupDomainToAPI(linkGroup)
@@ -59,13 +59,13 @@ func (c RestClient) CreateDeviceLinkGroup(linkGroup DeviceLinkGroup) (*string, e
 	return respBody.UUID, nil
 }
 
-//NewDeviceLinkGroupUpdateRequest creates new update request for a device link
-//group with a given identifier
+// NewDeviceLinkGroupUpdateRequest creates new update request for a device link
+// group with a given identifier
 func (c RestClient) NewDeviceLinkGroupUpdateRequest(uuid string) DeviceLinkUpdateRequest {
 	return &restDeviceLinkUpdateRequest{uuid: uuid, c: c}
 }
 
-//DeleteDeviceLinkGroup removes device link group with a given identifier
+// DeleteDeviceLinkGroup removes device link group with a given identifier
 func (c RestClient) DeleteDeviceLinkGroup(uuid string) error {
 	path := "/ne/v1/links/" + url.PathEscape(uuid)
 	if err := c.Execute(c.R(), http.MethodDelete, path); err != nil {
@@ -128,6 +128,7 @@ func mapDeviceLinkGroupAPIToDomain(apiLinkGroup api.DeviceLinkGroup) *DeviceLink
 	linkGroup.Name = apiLinkGroup.GroupName
 	linkGroup.Subnet = apiLinkGroup.Subnet
 	linkGroup.Status = apiLinkGroup.Status
+	linkGroup.ProjectID = apiLinkGroup.ProjectID
 	linkGroup.Devices = make([]DeviceLinkGroupDevice, len(apiLinkGroup.Devices))
 	for i := range apiLinkGroup.Devices {
 		linkGroup.Devices[i] = mapDeviceLinkGroupDeviceAPIToDomain(apiLinkGroup.Devices[i])
@@ -165,6 +166,7 @@ func mapDeviceLinkGroupDomainToAPI(linkGroup DeviceLinkGroup) api.DeviceLinkGrou
 	apiLinkGroup := api.DeviceLinkGroup{}
 	apiLinkGroup.GroupName = linkGroup.Name
 	apiLinkGroup.Subnet = linkGroup.Subnet
+	apiLinkGroup.ProjectID = linkGroup.ProjectID
 	apiLinkGroup.Devices = make([]api.DeviceLinkGroupDevice, len(linkGroup.Devices))
 	for i := range linkGroup.Devices {
 		apiLinkGroup.Devices[i] = mapDeviceLinkGroupDeviceDomainToAPI(linkGroup.Devices[i])
