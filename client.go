@@ -230,10 +230,11 @@ func (e UpdateError) Error() string {
 
 // Account describes Network Edge customer account details
 type Account struct {
-	Name   *string
-	Number *string
-	Status *string
-	UCMID  *string
+	Name      *string
+	Number    *string
+	Status    *string
+	UCMID     *string
+	ProjectID *string
 }
 
 // Device describes Network Edge device
