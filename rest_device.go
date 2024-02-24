@@ -264,6 +264,8 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	device.ASN = apiDevice.ASN
 	device.ZoneCode = apiDevice.ZoneCode
 	device.ClusterDetails = mapDeviceClusterDetailsAPIToDomain(apiDevice.ClusterDetails)
+	device.DiverseFromDeviceUUID = apiDevice.DiverseFromDeviceUUID
+	device.DiverseFromDeviceName = apiDevice.DiverseFromDeviceName
 	return &device
 }
 
@@ -405,6 +407,7 @@ func createDeviceRequest(device Device) api.DeviceRequest {
 	req.VendorConfig = device.VendorConfiguration
 	req.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(device.UserPublicKey)
 	req.ClusterDetails = mapDeviceClusterDetailsDomainToAPI(device.ClusterDetails)
+	req.DiverseFromDeviceUUID = device.DiverseFromDeviceUUID
 	return req
 }
 
