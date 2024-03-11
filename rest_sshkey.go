@@ -7,7 +7,7 @@ import (
 	"github.com/equinix/ne-go/internal/api"
 )
 
-//GetSSHPublicKeys retrieves list of available SSH public keys
+// GetSSHPublicKeys retrieves list of available SSH public keys
 func (c RestClient) GetSSHPublicKeys() ([]SSHPublicKey, error) {
 	path := "/ne/v1/publicKeys"
 	respBody := make([]api.SSHPublicKey, 0)
@@ -18,7 +18,7 @@ func (c RestClient) GetSSHPublicKeys() ([]SSHPublicKey, error) {
 	return mapSSHPublicKeysAPIToDomain(respBody), nil
 }
 
-//GetSSHPublicKey retrieves SSH public key with a given identifier
+// GetSSHPublicKey retrieves SSH public key with a given identifier
 func (c RestClient) GetSSHPublicKey(uuid string) (*SSHPublicKey, error) {
 	path := "/ne/v1/publicKeys/" + url.PathEscape(uuid)
 	respBody := api.SSHPublicKey{}
@@ -30,7 +30,7 @@ func (c RestClient) GetSSHPublicKey(uuid string) (*SSHPublicKey, error) {
 	return &mapped, nil
 }
 
-//CreateSSHPublicKey creates new SSH public key with a given details
+// CreateSSHPublicKey creates new SSH public key with a given details
 func (c RestClient) CreateSSHPublicKey(key SSHPublicKey) (*string, error) {
 	path := "/ne/v1/publicKeys"
 	reqBody := mapSSHPublicKeyDomainToAPI(key)
@@ -46,7 +46,7 @@ func (c RestClient) CreateSSHPublicKey(key SSHPublicKey) (*string, error) {
 	return uuid, nil
 }
 
-//DeleteSSHPublicKey removes SSH Public key with given identifier
+// DeleteSSHPublicKey removes SSH Public key with given identifier
 func (c RestClient) DeleteSSHPublicKey(uuid string) error {
 	path := "/ne/v1/publicKeys/" + url.PathEscape(uuid)
 	if err := c.Execute(c.R(), http.MethodDelete, path); err != nil {
@@ -65,18 +65,20 @@ func mapSSHPublicKeysAPIToDomain(apiKeys []api.SSHPublicKey) []SSHPublicKey {
 
 func mapSSHPublicKeyAPIToDomain(apiKey api.SSHPublicKey) SSHPublicKey {
 	return SSHPublicKey{
-		UUID:  apiKey.UUID,
-		Name:  apiKey.KeyName,
-		Value: apiKey.KeyValue,
-		Type:  apiKey.KeyType,
+		UUID:      apiKey.UUID,
+		Name:      apiKey.KeyName,
+		Value:     apiKey.KeyValue,
+		Type:      apiKey.KeyType,
+		ProjectID: apiKey.ProjectID,
 	}
 }
 
 func mapSSHPublicKeyDomainToAPI(key SSHPublicKey) api.SSHPublicKey {
 	return api.SSHPublicKey{
-		UUID:     key.UUID,
-		KeyName:  key.Name,
-		KeyValue: key.Value,
-		KeyType:  key.Type,
+		UUID:      key.UUID,
+		KeyName:   key.Name,
+		KeyValue:  key.Value,
+		KeyType:   key.Type,
+		ProjectID: key.ProjectID,
 	}
 }

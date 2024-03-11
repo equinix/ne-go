@@ -38,4 +38,5 @@ func verifyAccount(t *testing.T, apiAccount api.Account, account Account) {
 	assert.Equal(t, apiAccount.Number, account.Number, "Account Number matches")
 	assert.Equal(t, apiAccount.Status, account.Status, "Account Status matches")
 	assert.Equal(t, apiAccount.UCMID, account.UCMID, "Account UCMID matches")
+	assert.Equal(t, apiAccount.ProjectID, account.ProjectID, "ProjectID matches")
 }

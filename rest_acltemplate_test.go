@@ -16,6 +16,7 @@ var testACLTemplate = ACLTemplate{
 	Name:        String("test"),
 	Description: String("Test ACL"),
 	MetroCode:   String("SV"),
+	ProjectID:   String("68ccfd49-39b1-478e-957a-67c72f719d7a"),
 	InboundRules: []ACLTemplateInboundRule{
 		{
 			SrcType:     String("SUBNET"),
@@ -122,7 +123,7 @@ func TestGetACLTemplate(t *testing.T) {
 func TestReplaceACLTemplate(t *testing.T) {
 	//given
 	templateID := "db66bf49-b2d8-4e64-8719-d46406b54039"
-	template := testACLTemplate
+	template := updateACLRequestPayload()
 	reqBody := api.ACLTemplate{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -163,6 +164,7 @@ func TestDeleteACLTemplate(t *testing.T) {
 }
 
 func verifyACLTemplate(t *testing.T, template ACLTemplate, apiTemplate api.ACLTemplate) {
+	assert.Equal(t, template.ProjectID, apiTemplate.ProjectID, "ProjectID matches")
 	assert.Equal(t, template.UUID, apiTemplate.UUID, "UUID matches")
 	assert.Equal(t, template.Name, apiTemplate.Name, "Name matches")
 	assert.Equal(t, template.Description, apiTemplate.Description, "Description matches")
@@ -191,4 +193,10 @@ func verifyACLTemplateDeviceDetails(t *testing.T, template ACLTemplate, apiTempl
 		assert.Equal(t, template.DeviceDetails[i].Name, apiTemplate.DeviceDetails[i].Name, "Name matches")
 		assert.Equal(t, template.DeviceDetails[i].ACLStatus, apiTemplate.DeviceDetails[i].ACLStatus, "ACL Status matches")
 	}
+}
+
+func updateACLRequestPayload() ACLTemplate {
+	updateRequestPayload := testACLTemplate
+	updateRequestPayload.ProjectID = nil
+	return updateRequestPayload
 }
