@@ -27,6 +27,23 @@
             "isDeviceAccessible": true
         }
     ],
+    "metroLinks": [
+        {
+          "accountNumber": "592205",
+          "accountReferenceId": "",
+          "metroCode": "MX",
+          "throughput": "10",
+          "throughputUnit": "Mbps"
+        },
+        {
+          "account_number": "606828",
+          "accountReferenceId": "",
+          "metroCode": "LD",
+          "throughput": "10",
+          "throughputUnit": "Mbps"
+        }
+      ],
+      "redundancyType": "Primary",
     "supportDetails": [
         {
             "name": "device link details",
