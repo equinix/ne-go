@@ -7,7 +7,7 @@ import (
 	"github.com/equinix/ne-go/internal/api"
 )
 
-//GetAccounts retrieves accounts and their details for a given metro code using Network Edge API
+// GetAccounts retrieves accounts and their details for a given metro code using Network Edge API
 func (c RestClient) GetAccounts(metroCode string) ([]Account, error) {
 	path := "/ne/v1/accounts/" + url.PathEscape(metroCode)
 	respBody := api.AccountResponse{}
@@ -23,10 +23,11 @@ func mapAccountsAPIToDomain(apiAccounts []api.Account) []Account {
 	transformed := make([]Account, len(apiAccounts))
 	for i := range apiAccounts {
 		transformed[i] = Account{
-			Name:   apiAccounts[i].Name,
-			Number: apiAccounts[i].Number,
-			UCMID:  apiAccounts[i].UCMID,
-			Status: apiAccounts[i].Status,
+			Name:      apiAccounts[i].Name,
+			Number:    apiAccounts[i].Number,
+			UCMID:     apiAccounts[i].UCMID,
+			Status:    apiAccounts[i].Status,
+			ProjectID: apiAccounts[i].ProjectID,
 		}
 	}
 	return transformed

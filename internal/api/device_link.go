@@ -7,6 +7,7 @@ type DeviceLinkGroup struct {
 	Status         *string                    `json:"status,omitempty"`
 	Devices        []DeviceLinkGroupDevice    `json:"linkDevices,omitempty"`
 	Links          []DeviceLinkGroupLink      `json:"links"`
+	ProjectID      *string                    `json:"projectId,omitempty"`
 	MetroLinks     []DeviceLinkGroupMetroLink `json:"metroLinks"`
 	RedundancyType *string                    `json:"redundancyType,omitempty"`
 }

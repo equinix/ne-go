@@ -15,28 +15,30 @@ import (
 )
 
 var testDevice = Device{
-	AdditionalBandwidth: Int(100),
-	TypeCode:            String("PA-VM"),
-	HostName:            String("myhostSRmy"),
-	IsBYOL:              Bool(true),
-	LicenseToken:        String("somelicensetokenaaaaazzzzz"),
-	LicenseFileID:       String("8d180057-8309-4c59-b645-f630f010ad43"),
-	CloudInitFileID:     String("9318885d-4b8c-48a5-9aa4-24387834ebae"),
-	MetroCode:           String("SV"),
-	Notifications:       []string{"test1@example.com", "test2@example.com"},
-	PackageCode:         String("VM100"),
-	TermLength:          Int(24),
-	Throughput:          Int(1),
-	ThroughputUnit:      String("Gbps"),
-	Name:                String("PaloAltoSRmy"),
-	ACLTemplateUUID:     String("4792d9ab-b8aa-49cc-8fe2-b56ced6c9c2f"),
-	AccountNumber:       String("1777643"),
-	OrderReference:      String("orderRef"),
-	PurchaseOrderNumber: String("PO123456789"),
-	InterfaceCount:      Int(10),
-	CoreCount:           Int(2),
-	Version:             String("10.09.05"),
-	IsSelfManaged:       Bool(true),
+	AdditionalBandwidth:   Int(100),
+	TypeCode:              String("PA-VM"),
+	HostName:              String("myhostSRmy"),
+	IsBYOL:                Bool(true),
+	LicenseToken:          String("somelicensetokenaaaaazzzzz"),
+	LicenseFileID:         String("8d180057-8309-4c59-b645-f630f010ad43"),
+	CloudInitFileID:       String("9318885d-4b8c-48a5-9aa4-24387834ebae"),
+	MetroCode:             String("SV"),
+	Notifications:         []string{"test1@example.com", "test2@example.com"},
+	PackageCode:           String("VM100"),
+	TermLength:            Int(24),
+	ProjectID:             String("68ccfd49-39b1-478e-957a-67c72f719d7a"),
+	DiverseFromDeviceUUID: String("ed7891bd-15b4-4f72-ac56-d96cfdacddcc"),
+	Throughput:            Int(1),
+	ThroughputUnit:        String("Gbps"),
+	Name:                  String("PaloAltoSRmy"),
+	ACLTemplateUUID:       String("4792d9ab-b8aa-49cc-8fe2-b56ced6c9c2f"),
+	AccountNumber:         String("1777643"),
+	OrderReference:        String("orderRef"),
+	PurchaseOrderNumber:   String("PO123456789"),
+	InterfaceCount:        Int(10),
+	CoreCount:             Int(2),
+	Version:               String("10.09.05"),
+	IsSelfManaged:         Bool(true),
 	VendorConfiguration: map[string]string{
 		"serialNumber": "12312312",
 		"controller1":  "1.1.1.1",
@@ -501,6 +503,8 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.TypeCode, req.DeviceTypeCode, "TypeCode matches")
 	termLengthStr := strconv.Itoa(*device.TermLength)
 	assert.Equal(t, &termLengthStr, req.TermLength, "TermLength matches")
+	assert.Equal(t, device.ProjectID, req.ProjectID, "Project Id matches")
+	assert.Equal(t, device.DiverseFromDeviceUUID, req.DiverseFromDeviceUUID, "Diverse from Device UUID matches")
 	if *device.IsBYOL {
 		assert.Equal(t, DeviceLicenseModeBYOL, StringValue(req.LicenseMode), "LicenseMode matches")
 	} else {

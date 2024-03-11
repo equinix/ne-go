@@ -13,9 +13,10 @@ import (
 )
 
 var testSSHPublicKey = SSHPublicKey{
-	Name:  String("testKey"),
-	Value: String("keyyyyyyyyyyyyyyyyyyyyyyyyy"),
-	Type:  String("RSA"),
+	Name:      String("testKey"),
+	Value:     String("keyyyyyyyyyyyyyyyyyyyyyyyyy"),
+	Type:      String("RSA"),
+	ProjectID: String("68ccfd49-39b1-478e-957a-67c72f719d7a"),
 }
 
 func TestGetSSHPublicKeys(t *testing.T) {
@@ -111,4 +112,5 @@ func verifySSHPublicKey(t *testing.T, apiKey api.SSHPublicKey, key SSHPublicKey)
 	assert.Equal(t, apiKey.KeyName, key.Name, "Name matches")
 	assert.Equal(t, apiKey.KeyValue, key.Value, "Value matches")
 	assert.Equal(t, apiKey.KeyType, key.Type, "Type matches")
+	assert.Equal(t, apiKey.ProjectID, key.ProjectID, "ProjectID matches")
 }

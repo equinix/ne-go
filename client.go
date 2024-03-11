@@ -232,56 +232,60 @@ func (e UpdateError) Error() string {
 
 // Account describes Network Edge customer account details
 type Account struct {
-	Name   *string
-	Number *string
-	Status *string
-	UCMID  *string
+	Name      *string
+	Number    *string
+	Status    *string
+	UCMID     *string
+	ProjectID *string
 }
 
 // Device describes Network Edge device
 type Device struct {
-	UUID                *string
-	Name                *string
-	TypeCode            *string
-	Status              *string
-	LicenseStatus       *string
-	MetroCode           *string
-	IBX                 *string
-	Region              *string
-	Throughput          *int
-	ThroughputUnit      *string
-	HostName            *string
-	PackageCode         *string
-	Version             *string
-	IsBYOL              *bool
-	LicenseToken        *string
-	LicenseFile         *string
-	CloudInitFile       *string
-	LicenseFileID       *string
-	CloudInitFileID     *string
-	ACLTemplateUUID     *string
-	MgmtAclTemplateUuid *string
-	SSHIPAddress        *string
-	SSHIPFqdn           *string
-	AccountNumber       *string
-	Notifications       []string
-	PurchaseOrderNumber *string
-	RedundancyType      *string
-	RedundantUUID       *string
-	TermLength          *int
-	AdditionalBandwidth *int
-	OrderReference      *string
-	InterfaceCount      *int
-	CoreCount           *int
-	IsSelfManaged       *bool
-	Connectivity        *string
-	WanInterfaceId      *string
-	Interfaces          []DeviceInterface
-	VendorConfiguration map[string]string
-	UserPublicKey       *DeviceUserPublicKey
-	ASN                 *int
-	ZoneCode            *string
-	ClusterDetails      *ClusterDetails
+	UUID                  *string
+	Name                  *string
+	TypeCode              *string
+	Status                *string
+	LicenseStatus         *string
+	MetroCode             *string
+	IBX                   *string
+	Region                *string
+	Throughput            *int
+	ThroughputUnit        *string
+	HostName              *string
+	PackageCode           *string
+	Version               *string
+	IsBYOL                *bool
+	LicenseToken          *string
+	LicenseFile           *string
+	CloudInitFile         *string
+	LicenseFileID         *string
+	CloudInitFileID       *string
+	ACLTemplateUUID       *string
+	MgmtAclTemplateUuid   *string
+	SSHIPAddress          *string
+	SSHIPFqdn             *string
+	AccountNumber         *string
+	Notifications         []string
+	PurchaseOrderNumber   *string
+	RedundancyType        *string
+	RedundantUUID         *string
+	TermLength            *int
+	AdditionalBandwidth   *int
+	OrderReference        *string
+	InterfaceCount        *int
+	CoreCount             *int
+	IsSelfManaged         *bool
+	Connectivity          *string
+	WanInterfaceId        *string
+	Interfaces            []DeviceInterface
+	VendorConfiguration   map[string]string
+	UserPublicKey         *DeviceUserPublicKey
+	ASN                   *int
+	ZoneCode              *string
+	ClusterDetails        *ClusterDetails
+	ProjectID             *string
+	DiverseFromDeviceUUID *string
+	DiverseFromDeviceName *string
 }
 
 // DeviceInterface describes Network Edge device interface
@@ -360,10 +364,11 @@ type BGPConfiguration struct {
 
 // SSHPublicKey describes Network Edge SSH user public key
 type SSHPublicKey struct {
-	UUID  *string
-	Name  *string
-	Value *string
-	Type  *string
+	UUID      *string
+	Name      *string
+	Value     *string
+	Type      *string
+	ProjectID *string
 }
 
 // ACLTemplate describes Network Edge device ACL template
@@ -376,6 +381,7 @@ type ACLTemplate struct {
 	DeviceACLStatus *string
 	InboundRules    []ACLTemplateInboundRule
 	DeviceDetails   []ACLTemplateDeviceDetails
+	ProjectID       *string
 }
 
 // ACLTemplateInboundRule describes inbound ACL rule that is part of
@@ -417,6 +423,7 @@ type DeviceLinkGroup struct {
 	UUID           *string
 	Name           *string
 	Subnet         *string
+	ProjectID      *string
 	Status         *string
 	Devices        []DeviceLinkGroupDevice
 	Links          []DeviceLinkGroupLink

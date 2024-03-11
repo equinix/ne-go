@@ -262,6 +262,7 @@ func verifyDeviceLinkGroup(t *testing.T, linkGroup DeviceLinkGroup, apiLinkGroup
 	assert.Equal(t, apiLinkGroup.Subnet, linkGroup.Subnet, "Subnet matches")
 	assert.Equal(t, apiLinkGroup.RedundancyType, linkGroup.RedundancyType, "Subnet matches")
 	assert.Equal(t, len(apiLinkGroup.Devices), len(linkGroup.Devices), "Length of []Devices matches")
+	assert.Equal(t, apiLinkGroup.ProjectID, linkGroup.ProjectID, "Project ID matches")
 	for i := range apiLinkGroup.Devices {
 		verifyDeviceLinkGroupDevice(t, linkGroup.Devices[i], apiLinkGroup.Devices[i])
 	}

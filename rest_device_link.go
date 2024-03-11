@@ -148,6 +148,7 @@ func mapDeviceLinkGroupAPIToDomain(apiLinkGroup api.DeviceLinkGroup) *DeviceLink
 	linkGroup.Subnet = apiLinkGroup.Subnet
 	linkGroup.Status = apiLinkGroup.Status
 	linkGroup.RedundancyType = apiLinkGroup.RedundancyType
+	linkGroup.ProjectID = apiLinkGroup.ProjectID
 	linkGroup.Devices = make([]DeviceLinkGroupDevice, len(apiLinkGroup.Devices))
 	for i := range apiLinkGroup.Devices {
 		linkGroup.Devices[i] = mapDeviceLinkGroupDeviceAPIToDomain(apiLinkGroup.Devices[i])
@@ -200,6 +201,7 @@ func mapDeviceLinkGroupDomainToAPI(linkGroup DeviceLinkGroup) api.DeviceLinkGrou
 	apiLinkGroup.GroupName = linkGroup.Name
 	apiLinkGroup.Subnet = linkGroup.Subnet
 	apiLinkGroup.RedundancyType = linkGroup.RedundancyType
+	apiLinkGroup.ProjectID = linkGroup.ProjectID
 	apiLinkGroup.Devices = make([]api.DeviceLinkGroupDevice, len(linkGroup.Devices))
 	for i := range linkGroup.Devices {
 		apiLinkGroup.Devices[i] = mapDeviceLinkGroupDeviceDomainToAPI(linkGroup.Devices[i])
