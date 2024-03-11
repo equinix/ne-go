@@ -45,6 +45,7 @@ type Device struct {
 	ProjectID             *string                `json:"projectId,omitempty"`
 	DiverseFromDeviceUUID *string                `json:"diverseFromDeviceUuid,omitempty"`
 	DiverseFromDeviceName *string                `json:"diverseFromDeviceName,omitempty"`
+	PrimaryDeviceUUID     *string                `json:"primaryDeviceUuid,omitempty"`
 }
 
 // DeviceRequest describes network edge device creation request
@@ -80,6 +81,7 @@ type DeviceRequest struct {
 	Connectivity          *string                     `json:"connectivity,omitempty"`
 	ProjectID             *string                     `json:"projectId,omitempty"`
 	DiverseFromDeviceUUID *string                     `json:"diverseFromDeviceUuid,omitempty"`
+	PrimaryDeviceUUID     *string                     `json:"primaryDeviceUuid,omitempty"`
 }
 
 // SecondaryDeviceRequest describes secondary device part of device creation request

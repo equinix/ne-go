@@ -28,6 +28,7 @@ var testDevice = Device{
 	TermLength:            Int(24),
 	ProjectID:             String("68ccfd49-39b1-478e-957a-67c72f719d7a"),
 	DiverseFromDeviceUUID: String("ed7891bd-15b4-4f72-ac56-d96cfdacddcc"),
+	PrimaryDeviceUUID:     String("8b028560-4a91-4b52-87ba-9fae0fcb538c"),
 	Throughput:            Int(1),
 	ThroughputUnit:        String("Gbps"),
 	Name:                  String("PaloAltoSRmy"),
@@ -505,6 +506,7 @@ func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, &termLengthStr, req.TermLength, "TermLength matches")
 	assert.Equal(t, device.ProjectID, req.ProjectID, "Project Id matches")
 	assert.Equal(t, device.DiverseFromDeviceUUID, req.DiverseFromDeviceUUID, "Diverse from Device UUID matches")
+	assert.Equal(t, device.PrimaryDeviceUUID, req.PrimaryDeviceUUID, "Primary Device UUID matches")
 	if *device.IsBYOL {
 		assert.Equal(t, DeviceLicenseModeBYOL, StringValue(req.LicenseMode), "LicenseMode matches")
 	} else {
