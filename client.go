@@ -426,7 +426,7 @@ type DeviceLinkGroup struct {
 	ProjectID      *string
 	Status         *string
 	Devices        []DeviceLinkGroupDevice
-	Links          []DeviceLinkGroupLink
+	Links          []DeviceLinkGroupLink // Deprecated: Use MetroLinks instead
 	MetroLinks     []DeviceLinkGroupMetroLink
 	RedundancyType *string
 }
