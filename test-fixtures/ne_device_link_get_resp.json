@@ -1,55 +1,55 @@
 {
-    "uuid": "59a02d41-041f-4c55-9b1c-6cb5f9a59bdc",
-    "groupName": "Test1",
-    "subnet": "10.0.0.0/27",
-    "status": "DEPROVISIONING",
-    "source": "PORTAL",
-    "createdBy": "test@test.com",
-    "createdDate": "2020-04-29T16:07:16.170Z",
-    "lastUpdatedBy": "test@test.com",
-    "lastUpdatedDate": "2020-11-06T17:15:29.691Z",
-    "projectId": "68ccfd49-39b1-478e-957a-67c72f719d7a",
-    "links": [],
-    "linkDevices": [
-        {
-            "deviceUuid": "1890db0e-5488-4b5b-8bd0-464809f3fdac",
-            "deviceName": "Test_Device",
-            "metroCode": "LD",
-            "metroName": "London",
-            "zoneCode": null,
-            "zoneName": null,
-            "deviceTypeCode": "CSR1000V",
-            "category": "ROUTER",
-            "ipAssigned": "10.0.0.2/27",
-            "interfaceId": 10,
-            "status": "DEPROVISIONING",
-            "deviceManagementType": "EQUINIX-CONFIGURED",
-            "networkScope": "DEVICE",
-            "isDeviceAccessible": true
-        }
-    ],
-    "metroLinks": [
-        {
-          "accountNumber": "592205",
-          "accountReferenceId": "",
-          "metroCode": "MX",
-          "throughput": "10",
-          "throughputUnit": "Mbps"
-        },
-        {
-          "account_number": "606828",
-          "accountReferenceId": "",
-          "metroCode": "LD",
-          "throughput": "10",
-          "throughputUnit": "Mbps"
-        }
-      ],
-      "redundancyType": "Primary",
-    "supportDetails": [
-        {
-            "name": "device link details",
-            "value": "http://url/nfv/i1/links?groupUuid=59a02d41-041f-4c55-9b1c-6cb5f9a59bdc",
-            "type": "url"
-        }
-    ]
+  "uuid": "59a02d41-041f-4c55-9b1c-6cb5f9a59bdc",
+  "groupName": "Test1",
+  "subnet": "10.0.0.0/27",
+  "status": "DEPROVISIONING",
+  "source": "PORTAL",
+  "createdBy": "test@test.com",
+  "createdDate": "2020-04-29T16:07:16.170Z",
+  "lastUpdatedBy": "test@test.com",
+  "lastUpdatedDate": "2020-11-06T17:15:29.691Z",
+  "projectId": "68ccfd49-39b1-478e-957a-67c72f719d7a",
+  "links": [],
+  "linkDevices": [
+    {
+      "deviceUuid": "1890db0e-5488-4b5b-8bd0-464809f3fdac",
+      "deviceName": "Test_Device",
+      "metroCode": "LD",
+      "metroName": "London",
+      "zoneCode": null,
+      "zoneName": null,
+      "deviceTypeCode": "CSR1000V",
+      "category": "ROUTER",
+      "ipAssigned": "10.0.0.2/27",
+      "interfaceId": 10,
+      "status": "DEPROVISIONING",
+      "deviceManagementType": "EQUINIX-CONFIGURED",
+      "networkScope": "DEVICE",
+      "isDeviceAccessible": true
+    }
+  ],
+  "metroLinks": [
+    {
+      "accountNumber": "592205",
+      "accountReferenceId": "",
+      "metroCode": "MX",
+      "throughput": "10",
+      "throughputUnit": "Mbps"
+    },
+    {
+      "account_number": "606828",
+      "accountReferenceId": "",
+      "metroCode": "LD",
+      "throughput": "10",
+      "throughputUnit": "Mbps"
+    }
+  ],
+  "redundancyType": "Primary",
+  "supportDetails": [
+    {
+      "name": "device link details",
+      "value": "http://url/nfv/i1/links?groupUuid=59a02d41-041f-4c55-9b1c-6cb5f9a59bdc",
+      "type": "url"
+    }
+  ]
 }
