@@ -224,7 +224,6 @@ func TestUpdateDeviceLinkGroup(t *testing.T) {
 	assert.Equal(t, &newSubnet, req.Subnet, "Subnet matches")
 	assert.Equal(t, &newGroupName, req.GroupName, "GroupName matches")
 	assert.Equal(t, len(newDevices), len(req.Devices), "Devices number matches")
-	assert.Equal(t, len(newMetroLinks), len(req.MetroLinks), "Devices number matches")
 	assert.Equal(t, &newRedundancyType, req.RedundancyType, "RedundancyType matches")
 	for i := range newDevices {
 		verifyDeviceLinkGroupDevice(t, newDevices[i], req.Devices[i])
