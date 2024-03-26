@@ -77,8 +77,9 @@ func TestCreateDeviceLinkGroup(t *testing.T) {
 		assert.Failf(t, "cannot read test response due to %s", err.Error())
 	}
 	testLinkGroup := DeviceLinkGroup{
-		Name:   String("testLinkGroup"),
-		Subnet: String("10.1.2.0/24"),
+		Name:           String("testLinkGroup"),
+		Subnet:         String("10.1.2.0/24"),
+		RedundancyType: String("Primary"),
 		Devices: []DeviceLinkGroupDevice{
 			{
 				DeviceID:    String("c9a5c40c-b90f-4156-8460-6cb5dc98f88d"),
@@ -116,6 +117,20 @@ func TestCreateDeviceLinkGroup(t *testing.T) {
 				DestinationZoneCode:  String("Zone1"),
 			},
 		},
+		MetroLinks: []DeviceLinkGroupMetroLink{
+			{
+				AccountNumber:  String("592205"),
+				Throughput:     String("50"),
+				ThroughputUnit: String("Mbps"),
+				MetroCode:      String("MX"),
+			},
+			{
+				AccountNumber:  String("10314"),
+				Throughput:     String("50"),
+				ThroughputUnit: String("Mbps"),
+				MetroCode:      String("LD"),
+			},
+		},
 	}
 	request := api.DeviceLinkGroup{}
 	testHc := &http.Client{}
@@ -147,6 +162,7 @@ func TestUpdateDeviceLinkGroup(t *testing.T) {
 	groupID := "test"
 	newGroupName := "newDLGroup"
 	newSubnet := "20.1.1.0/24"
+	newRedundancyType := "Primary"
 	newDevices := []DeviceLinkGroupDevice{
 		{
 			DeviceID:    String("c9a5c40c-b90f-4156-8460-6cb5dc98f88d"),
@@ -170,6 +186,15 @@ func TestUpdateDeviceLinkGroup(t *testing.T) {
 			DestinationZoneCode:  String("Zone1"),
 		},
 	}
+
+	newMetroLinks := []DeviceLinkGroupMetroLink{
+		{
+			AccountNumber:  String("22314"),
+			Throughput:     String("50"),
+			ThroughputUnit: String("Mbps"),
+			MetroCode:      String("SV"),
+		},
+	}
 	req := api.DeviceLinkGroup{}
 	testHc := &http.Client{}
 	httpmock.ActivateNonDefault(testHc)
@@ -187,9 +212,11 @@ func TestUpdateDeviceLinkGroup(t *testing.T) {
 	c := NewClient(context.Background(), baseURL, testHc)
 	err := c.NewDeviceLinkGroupUpdateRequest(groupID).
 		WithGroupName(newGroupName).
+		WithRedundancyType(newRedundancyType).
 		WithSubnet(newSubnet).
 		WithDevices(newDevices).
 		WithLinks(newLinks).
+		WithMetroLinks(newMetroLinks).
 		Execute()
 
 	//then
@@ -197,12 +224,17 @@ func TestUpdateDeviceLinkGroup(t *testing.T) {
 	assert.Equal(t, &newSubnet, req.Subnet, "Subnet matches")
 	assert.Equal(t, &newGroupName, req.GroupName, "GroupName matches")
 	assert.Equal(t, len(newDevices), len(req.Devices), "Devices number matches")
+	assert.Equal(t, &newRedundancyType, req.RedundancyType, "RedundancyType matches")
 	for i := range newDevices {
 		verifyDeviceLinkGroupDevice(t, newDevices[i], req.Devices[i])
 	}
 	assert.Equal(t, len(newLinks), len(req.Links), "Links number matches")
 	for i := range newLinks {
 		verifyDeviceLinkGroupLink(t, newLinks[i], req.Links[i])
+	}
+	assert.Equal(t, len(newMetroLinks), len(req.MetroLinks), "Metro Links number matches")
+	for i := range newMetroLinks {
+		verifyDeviceLinkGroupMetroLink(t, newMetroLinks[i], req.MetroLinks[i])
 	}
 }
 
@@ -227,6 +259,7 @@ func verifyDeviceLinkGroup(t *testing.T, linkGroup DeviceLinkGroup, apiLinkGroup
 	assert.Equal(t, apiLinkGroup.UUID, linkGroup.UUID, "UUID matches")
 	assert.Equal(t, apiLinkGroup.GroupName, linkGroup.Name, "GroupName matches")
 	assert.Equal(t, apiLinkGroup.Subnet, linkGroup.Subnet, "Subnet matches")
+	assert.Equal(t, apiLinkGroup.RedundancyType, linkGroup.RedundancyType, "RedundancyType matches")
 	assert.Equal(t, len(apiLinkGroup.Devices), len(linkGroup.Devices), "Length of []Devices matches")
 	assert.Equal(t, apiLinkGroup.ProjectID, linkGroup.ProjectID, "Project ID matches")
 	for i := range apiLinkGroup.Devices {
@@ -235,6 +268,10 @@ func verifyDeviceLinkGroup(t *testing.T, linkGroup DeviceLinkGroup, apiLinkGroup
 	assert.Equal(t, len(apiLinkGroup.Links), len(linkGroup.Links), "Length of []Links matches")
 	for i := range apiLinkGroup.Links {
 		verifyDeviceLinkGroupLink(t, linkGroup.Links[i], apiLinkGroup.Links[i])
+	}
+	assert.Equal(t, len(apiLinkGroup.MetroLinks), len(linkGroup.MetroLinks), "Length of []MetroLinks matches")
+	for i := range apiLinkGroup.MetroLinks {
+		verifyDeviceLinkGroupMetroLink(t, linkGroup.MetroLinks[i], apiLinkGroup.MetroLinks[i])
 	}
 }
 
@@ -254,4 +291,11 @@ func verifyDeviceLinkGroupLink(t *testing.T, linkGroupLink DeviceLinkGroupLink, 
 	assert.Equal(t, linkGroupLink.DestinationMetroCode, apiLinkGroupLink.DestinationMetroCode, "DestinationMetroCode matches")
 	assert.Equal(t, linkGroupLink.SourceZoneCode, apiLinkGroupLink.SourceZoneCode, "SourceZoneCode matches")
 	assert.Equal(t, linkGroupLink.DestinationZoneCode, apiLinkGroupLink.DestinationZoneCode, "DestinationZoneCode matches")
+}
+
+func verifyDeviceLinkGroupMetroLink(t *testing.T, linkGroupMetroLink DeviceLinkGroupMetroLink, apiLinkGroupMetroLink api.DeviceLinkGroupMetroLink) {
+	assert.Equal(t, linkGroupMetroLink.AccountNumber, apiLinkGroupMetroLink.AccountNumber, "AccountNumber matches")
+	assert.Equal(t, linkGroupMetroLink.Throughput, apiLinkGroupMetroLink.Throughput, "Throughput matches")
+	assert.Equal(t, linkGroupMetroLink.ThroughputUnit, apiLinkGroupMetroLink.ThroughputUnit, "ThroughputUnit matches")
+	assert.Equal(t, linkGroupMetroLink.MetroCode, apiLinkGroupMetroLink.MetroCode, "Metrocode matches")
 }

@@ -178,6 +178,8 @@ type DeviceLinkUpdateRequest interface {
 	WithSubnet(subnet string) DeviceLinkUpdateRequest
 	WithDevices(devices []DeviceLinkGroupDevice) DeviceLinkUpdateRequest
 	WithLinks(links []DeviceLinkGroupLink) DeviceLinkUpdateRequest
+	WithMetroLinks(metroLinks []DeviceLinkGroupMetroLink) DeviceLinkUpdateRequest
+	WithRedundancyType(redundancyType string) DeviceLinkUpdateRequest
 	Execute() error
 }
 
@@ -418,13 +420,15 @@ type DeviceACLDetails struct {
 
 // DeviceLinkGroup describes details of a device link group
 type DeviceLinkGroup struct {
-	UUID      *string
-	Name      *string
-	Subnet    *string
-	ProjectID *string
-	Status    *string
-	Devices   []DeviceLinkGroupDevice
-	Links     []DeviceLinkGroupLink
+	UUID           *string
+	Name           *string
+	Subnet         *string
+	ProjectID      *string
+	Status         *string
+	Devices        []DeviceLinkGroupDevice
+	Links          []DeviceLinkGroupLink // Deprecated: Use MetroLinks instead
+	MetroLinks     []DeviceLinkGroupMetroLink
+	RedundancyType *string
 }
 
 // DeviceLinkGroupDevice describes details of a device within device
@@ -447,6 +451,15 @@ type DeviceLinkGroupLink struct {
 	DestinationMetroCode *string
 	SourceZoneCode       *string
 	DestinationZoneCode  *string
+}
+
+// DeviceLinkGroupMetroLink describes metro details and throughput
+type DeviceLinkGroupMetroLink struct {
+	AccountNumber      *string
+	AccountReferenceId *string
+	MetroCode          *string
+	Throughput         *string
+	ThroughputUnit     *string
 }
 
 // ClusterDetails describes Network Edge cluster device details

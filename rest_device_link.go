@@ -9,12 +9,14 @@ import (
 )
 
 type restDeviceLinkUpdateRequest struct {
-	uuid      string
-	groupName *string
-	subnet    *string
-	devices   []DeviceLinkGroupDevice
-	links     []DeviceLinkGroupLink
-	c         RestClient
+	uuid           string
+	groupName      *string
+	subnet         *string
+	devices        []DeviceLinkGroupDevice
+	links          []DeviceLinkGroupLink
+	metroLinks     []DeviceLinkGroupMetroLink
+	redundancyType *string
+	c              RestClient
 }
 
 // GetDeviceLinkGroups retrieves list of existing device link groups
@@ -94,6 +96,16 @@ func (req *restDeviceLinkUpdateRequest) WithLinks(links []DeviceLinkGroupLink) D
 	return req
 }
 
+func (req *restDeviceLinkUpdateRequest) WithMetroLinks(metroLinks []DeviceLinkGroupMetroLink) DeviceLinkUpdateRequest {
+	req.metroLinks = metroLinks
+	return req
+}
+
+func (req *restDeviceLinkUpdateRequest) WithRedundancyType(redundancyType string) DeviceLinkUpdateRequest {
+	req.redundancyType = &redundancyType
+	return req
+}
+
 func (req *restDeviceLinkUpdateRequest) Execute() error {
 	reqBody := api.DeviceLinkGroupUpdateRequest{}
 	if StringValue(req.groupName) != "" {
@@ -102,9 +114,16 @@ func (req *restDeviceLinkUpdateRequest) Execute() error {
 	if StringValue(req.subnet) != "" {
 		reqBody.Subnet = req.subnet
 	}
+	if StringValue(req.redundancyType) != "" {
+		reqBody.RedundancyType = req.redundancyType
+	}
 	reqBody.Links = make([]api.DeviceLinkGroupLink, len(req.links))
 	for i := range req.links {
 		reqBody.Links[i] = mapDeviceLinkGroupLinkDomainToAPI(req.links[i])
+	}
+	reqBody.MetroLinks = make([]api.DeviceLinkGroupMetroLink, len(req.metroLinks))
+	for i := range req.metroLinks {
+		reqBody.MetroLinks[i] = mapDeviceLinkGroupMetroLinkDomainToAPI(req.metroLinks[i])
 	}
 	reqBody.Devices = make([]api.DeviceLinkGroupDevice, len(req.devices))
 	for i := range req.devices {
@@ -128,6 +147,7 @@ func mapDeviceLinkGroupAPIToDomain(apiLinkGroup api.DeviceLinkGroup) *DeviceLink
 	linkGroup.Name = apiLinkGroup.GroupName
 	linkGroup.Subnet = apiLinkGroup.Subnet
 	linkGroup.Status = apiLinkGroup.Status
+	linkGroup.RedundancyType = apiLinkGroup.RedundancyType
 	linkGroup.ProjectID = apiLinkGroup.ProjectID
 	linkGroup.Devices = make([]DeviceLinkGroupDevice, len(apiLinkGroup.Devices))
 	for i := range apiLinkGroup.Devices {
@@ -136,6 +156,10 @@ func mapDeviceLinkGroupAPIToDomain(apiLinkGroup api.DeviceLinkGroup) *DeviceLink
 	linkGroup.Links = make([]DeviceLinkGroupLink, len(apiLinkGroup.Links))
 	for i := range apiLinkGroup.Links {
 		linkGroup.Links[i] = mapDeviceLinkGroupLinkAPIToDomain(apiLinkGroup.Links[i])
+	}
+	linkGroup.MetroLinks = make([]DeviceLinkGroupMetroLink, len(apiLinkGroup.MetroLinks))
+	for i := range apiLinkGroup.MetroLinks {
+		linkGroup.MetroLinks[i] = mapDeviceLinkGroupMetroLinkAPIToDomain(apiLinkGroup.MetroLinks[i])
 	}
 	return &linkGroup
 }
@@ -162,10 +186,21 @@ func mapDeviceLinkGroupLinkAPIToDomain(apiLinkGroupLink api.DeviceLinkGroupLink)
 	}
 }
 
+func mapDeviceLinkGroupMetroLinkAPIToDomain(apiLinkGroupMetroLink api.DeviceLinkGroupMetroLink) DeviceLinkGroupMetroLink {
+	return DeviceLinkGroupMetroLink{
+		AccountNumber:      apiLinkGroupMetroLink.AccountNumber,
+		AccountReferenceId: apiLinkGroupMetroLink.AccountReferenceId,
+		MetroCode:          apiLinkGroupMetroLink.MetroCode,
+		Throughput:         apiLinkGroupMetroLink.Throughput,
+		ThroughputUnit:     apiLinkGroupMetroLink.ThroughputUnit,
+	}
+}
+
 func mapDeviceLinkGroupDomainToAPI(linkGroup DeviceLinkGroup) api.DeviceLinkGroup {
 	apiLinkGroup := api.DeviceLinkGroup{}
 	apiLinkGroup.GroupName = linkGroup.Name
 	apiLinkGroup.Subnet = linkGroup.Subnet
+	apiLinkGroup.RedundancyType = linkGroup.RedundancyType
 	apiLinkGroup.ProjectID = linkGroup.ProjectID
 	apiLinkGroup.Devices = make([]api.DeviceLinkGroupDevice, len(linkGroup.Devices))
 	for i := range linkGroup.Devices {
@@ -174,6 +209,10 @@ func mapDeviceLinkGroupDomainToAPI(linkGroup DeviceLinkGroup) api.DeviceLinkGrou
 	apiLinkGroup.Links = make([]api.DeviceLinkGroupLink, len(linkGroup.Links))
 	for i := range linkGroup.Links {
 		apiLinkGroup.Links[i] = mapDeviceLinkGroupLinkDomainToAPI(linkGroup.Links[i])
+	}
+	apiLinkGroup.MetroLinks = make([]api.DeviceLinkGroupMetroLink, len(linkGroup.MetroLinks))
+	for i := range linkGroup.MetroLinks {
+		apiLinkGroup.MetroLinks[i] = mapDeviceLinkGroupMetroLinkDomainToAPI(linkGroup.MetroLinks[i])
 	}
 	return apiLinkGroup
 }
@@ -197,5 +236,15 @@ func mapDeviceLinkGroupLinkDomainToAPI(linkGroupLink DeviceLinkGroupLink) api.De
 		DestinationMetroCode: linkGroupLink.DestinationMetroCode,
 		SourceZoneCode:       linkGroupLink.SourceZoneCode,
 		DestinationZoneCode:  linkGroupLink.DestinationZoneCode,
+	}
+}
+
+func mapDeviceLinkGroupMetroLinkDomainToAPI(metroLink DeviceLinkGroupMetroLink) api.DeviceLinkGroupMetroLink {
+	return api.DeviceLinkGroupMetroLink{
+		AccountNumber:      metroLink.AccountNumber,
+		AccountReferenceId: metroLink.AccountReferenceId,
+		MetroCode:          metroLink.MetroCode,
+		Throughput:         metroLink.Throughput,
+		ThroughputUnit:     metroLink.ThroughputUnit,
 	}
 }
