@@ -114,7 +114,7 @@ func (req *restDeviceLinkUpdateRequest) Execute() error {
 	if StringValue(req.subnet) != "" {
 		reqBody.Subnet = req.subnet
 	}
-	if StringValue(req.subnet) != "" {
+	if StringValue(req.redundancyType) != "" {
 		reqBody.RedundancyType = req.redundancyType
 	}
 	reqBody.Links = make([]api.DeviceLinkGroupLink, len(req.links))

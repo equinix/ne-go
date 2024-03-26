@@ -260,7 +260,7 @@ func verifyDeviceLinkGroup(t *testing.T, linkGroup DeviceLinkGroup, apiLinkGroup
 	assert.Equal(t, apiLinkGroup.UUID, linkGroup.UUID, "UUID matches")
 	assert.Equal(t, apiLinkGroup.GroupName, linkGroup.Name, "GroupName matches")
 	assert.Equal(t, apiLinkGroup.Subnet, linkGroup.Subnet, "Subnet matches")
-	assert.Equal(t, apiLinkGroup.RedundancyType, linkGroup.RedundancyType, "Subnet matches")
+	assert.Equal(t, apiLinkGroup.RedundancyType, linkGroup.RedundancyType, "RedundancyType matches")
 	assert.Equal(t, len(apiLinkGroup.Devices), len(linkGroup.Devices), "Length of []Devices matches")
 	assert.Equal(t, apiLinkGroup.ProjectID, linkGroup.ProjectID, "Project ID matches")
 	for i := range apiLinkGroup.Devices {
@@ -270,7 +270,7 @@ func verifyDeviceLinkGroup(t *testing.T, linkGroup DeviceLinkGroup, apiLinkGroup
 	for i := range apiLinkGroup.Links {
 		verifyDeviceLinkGroupLink(t, linkGroup.Links[i], apiLinkGroup.Links[i])
 	}
-	assert.Equal(t, len(apiLinkGroup.MetroLinks), len(linkGroup.MetroLinks), "Metro Links number matches")
+	assert.Equal(t, len(apiLinkGroup.MetroLinks), len(linkGroup.MetroLinks), "Length of []MetroLinks matches")
 	for i := range apiLinkGroup.MetroLinks {
 		verifyDeviceLinkGroupMetroLink(t, linkGroup.MetroLinks[i], apiLinkGroup.MetroLinks[i])
 	}
