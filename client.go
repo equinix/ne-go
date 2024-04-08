@@ -455,11 +455,10 @@ type DeviceLinkGroupLink struct {
 
 // DeviceLinkGroupMetroLink describes metro details and throughput
 type DeviceLinkGroupMetroLink struct {
-	AccountNumber      *string
-	AccountReferenceId *string
-	MetroCode          *string
-	Throughput         *string
-	ThroughputUnit     *string
+	AccountNumber  *string
+	MetroCode      *string
+	Throughput     *string
+	ThroughputUnit *string
 }
 
 // ClusterDetails describes Network Edge cluster device details
