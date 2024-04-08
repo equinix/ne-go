@@ -188,11 +188,10 @@ func mapDeviceLinkGroupLinkAPIToDomain(apiLinkGroupLink api.DeviceLinkGroupLink)
 
 func mapDeviceLinkGroupMetroLinkAPIToDomain(apiLinkGroupMetroLink api.DeviceLinkGroupMetroLink) DeviceLinkGroupMetroLink {
 	return DeviceLinkGroupMetroLink{
-		AccountNumber:      apiLinkGroupMetroLink.AccountNumber,
-		AccountReferenceId: apiLinkGroupMetroLink.AccountReferenceId,
-		MetroCode:          apiLinkGroupMetroLink.MetroCode,
-		Throughput:         apiLinkGroupMetroLink.Throughput,
-		ThroughputUnit:     apiLinkGroupMetroLink.ThroughputUnit,
+		AccountNumber:  apiLinkGroupMetroLink.AccountNumber,
+		MetroCode:      apiLinkGroupMetroLink.MetroCode,
+		Throughput:     apiLinkGroupMetroLink.Throughput,
+		ThroughputUnit: apiLinkGroupMetroLink.ThroughputUnit,
 	}
 }
 
@@ -241,10 +240,9 @@ func mapDeviceLinkGroupLinkDomainToAPI(linkGroupLink DeviceLinkGroupLink) api.De
 
 func mapDeviceLinkGroupMetroLinkDomainToAPI(metroLink DeviceLinkGroupMetroLink) api.DeviceLinkGroupMetroLink {
 	return api.DeviceLinkGroupMetroLink{
-		AccountNumber:      metroLink.AccountNumber,
-		AccountReferenceId: metroLink.AccountReferenceId,
-		MetroCode:          metroLink.MetroCode,
-		Throughput:         metroLink.Throughput,
-		ThroughputUnit:     metroLink.ThroughputUnit,
+		AccountNumber:  metroLink.AccountNumber,
+		MetroCode:      metroLink.MetroCode,
+		Throughput:     metroLink.Throughput,
+		ThroughputUnit: metroLink.ThroughputUnit,
 	}
 }

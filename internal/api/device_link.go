@@ -39,11 +39,10 @@ type DeviceLinkGroupLink struct {
 	DestinationZoneCode  *string `json:"destinationZoneCode,omitempty"`
 }
 type DeviceLinkGroupMetroLink struct {
-	AccountNumber      *string `json:"accountNumber,omitempty"`
-	AccountReferenceId *string `json:"accountReferenceID,omitempty"`
-	MetroCode          *string `json:"metroCode,omitempty"`
-	Throughput         *string `json:"throughput,omitempty"`
-	ThroughputUnit     *string `json:"throughputUnit,omitempty"`
+	AccountNumber  *string `json:"accountNumber,omitempty"`
+	MetroCode      *string `json:"metroCode,omitempty"`
+	Throughput     *string `json:"throughput,omitempty"`
+	ThroughputUnit *string `json:"throughputUnit,omitempty"`
 }
 
 type DeviceLinkGroupCreateResponse struct {
