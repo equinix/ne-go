@@ -27,6 +27,7 @@ var testDevice = Device{
 	PackageCode:           String("VM100"),
 	TermLength:            Int(24),
 	ProjectID:             String("68ccfd49-39b1-478e-957a-67c72f719d7a"),
+	Tier:                  Int(1),
 	DiverseFromDeviceUUID: String("ed7891bd-15b4-4f72-ac56-d96cfdacddcc"),
 	Throughput:            Int(1),
 	ThroughputUnit:        String("Gbps"),
@@ -469,6 +470,8 @@ func verifyDevice(t *testing.T, device Device, resp api.Device) {
 	assert.Equal(t, resp.OrderReference, device.OrderReference, "OrderReference matches")
 	assert.Equal(t, resp.InterfaceCount, device.InterfaceCount, "InterfaceCount matches")
 	assert.Equal(t, resp.Core.Core, device.CoreCount, "Core.Core matches")
+	assert.Equal(t, resp.Core.Tier, device.Tier, "Core.Tier matches")
+
 	if *resp.DeviceManagementType == DeviceManagementTypeEquinix {
 		assert.False(t, *device.IsSelfManaged, "DeviceManagementType matches")
 	} else {
@@ -498,6 +501,7 @@ func verifyDeviceInterface(t *testing.T, inf DeviceInterface, apiInf api.DeviceI
 
 func verifyDeviceRequest(t *testing.T, device Device, req api.DeviceRequest) {
 	assert.Equal(t, device.Throughput, req.Throughput, "Throughput matches")
+	assert.Equal(t, device.Tier, req.Tier, "Tier matches")
 	assert.Equal(t, device.ThroughputUnit, req.ThroughputUnit, "ThroughputUnit matches")
 	assert.Equal(t, device.MetroCode, req.MetroCode, "MetroCode matches")
 	assert.Equal(t, device.TypeCode, req.DeviceTypeCode, "TypeCode matches")

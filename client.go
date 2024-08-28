@@ -286,6 +286,7 @@ type Device struct {
 	ProjectID             *string
 	DiverseFromDeviceUUID *string
 	DiverseFromDeviceName *string
+	Tier                  *int
 }
 
 // DeviceInterface describes Network Edge device interface

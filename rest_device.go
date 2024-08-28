@@ -250,6 +250,9 @@ func mapDeviceAPIToDomain(apiDevice api.Device) *Device {
 	if apiDevice.Core != nil {
 		device.CoreCount = apiDevice.Core.Core
 	}
+	if apiDevice.Core != nil {
+		device.Tier = apiDevice.Core.Tier
+	}
 	if apiDevice.DeviceManagementType != nil {
 		if *apiDevice.DeviceManagementType == DeviceManagementTypeSelf {
 			device.IsSelfManaged = Bool(true)
@@ -364,6 +367,7 @@ func mapDeviceClusterNodeDetailDomainToAPI(clusterNodeDetail *ClusterNodeDetail)
 func createDeviceRequest(device Device) api.DeviceRequest {
 	req := api.DeviceRequest{}
 	req.Throughput = device.Throughput
+	req.Tier = device.Tier
 	req.ThroughputUnit = device.ThroughputUnit
 	req.MetroCode = device.MetroCode
 	req.DeviceTypeCode = device.TypeCode
