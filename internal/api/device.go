@@ -33,6 +33,7 @@ type Device struct {
 	OrderReference        *string                `json:"orderReference,omitempty"`
 	InterfaceCount        *int                   `json:"interfaceCount,omitempty"`
 	Core                  *DeviceCoreInformation `json:"core,omitempty"`
+	Tier                  *DeviceCoreInformation `json:"tier,omitempty"`
 	DeviceManagementType  *string                `json:"deviceManagementType,omitempty"`
 	SshInterfaceID        *string                `json:"sshInterfaceId,omitempty"`
 	Interfaces            []DeviceInterface      `json:"interfaces,omitempty"`
@@ -80,6 +81,7 @@ type DeviceRequest struct {
 	Connectivity          *string                     `json:"connectivity,omitempty"`
 	ProjectID             *string                     `json:"projectId,omitempty"`
 	DiverseFromDeviceUUID *string                     `json:"diverseFromDeviceUuid,omitempty"`
+	Tier                  *int                        `json:"tier,omitempty"`
 }
 
 // SecondaryDeviceRequest describes secondary device part of device creation request
@@ -133,6 +135,7 @@ type DeviceCoreInformation struct {
 	Core   *int    `json:"core,omitempty"`
 	Memory *int    `json:"memory,omitempty"`
 	Unit   *string `json:"unit,omitempty"`
+	Tier   *int    `json:"tier,omitempty"`
 }
 
 // DeviceRequestResponse describes response for device creation request
