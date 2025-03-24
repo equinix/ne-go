@@ -60,6 +60,15 @@ func (c RestClient) CreateRedundantDevice(primary Device, secondary Device) (*st
 	return respBody.UUID, respBody.SecondaryUUID, nil
 }
 
+func (c RestClient) AddSecondary(primaryUuid string, secondary Device) (*string, error) {
+	updateErr := UpdateError{}
+	secondaryUuid, err := c.addSecondaryDevice(primaryUuid, secondary)
+	if err != nil {
+		updateErr.AddChangeError(changeTypeUpdate, "secondary", secondary, err)
+	}
+	return secondaryUuid, nil
+}
+
 // GetDevice fetches details of a device with a given UUID
 func (c RestClient) GetDevice(uuid string) (*Device, error) {
 	path := "/ne/v1/devices/" + url.PathEscape(uuid)
@@ -121,6 +130,15 @@ func (c RestClient) NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest {
 func (c RestClient) DeleteDevice(uuid string) error {
 	path := "/ne/v1/devices/" + url.PathEscape(uuid)
 	req := c.R().SetQueryParam("deleteRedundantDevice", "true")
+	if err := c.Execute(req, http.MethodDelete, path); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c RestClient) DeleteSecondaryDevice(uuid string) error {
+	path := "/ne/v1/devices/" + url.PathEscape(uuid)
+	req := c.R().SetQueryParam("deleteRedundantDevice", "false")
 	if err := c.Execute(req, http.MethodDelete, path); err != nil {
 		return err
 	}
@@ -441,6 +459,28 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	return req
 }
 
+func addSecondaryDeviceRequest(primaryDeviceUuid string, secondary Device) api.AddSecondaryRequest {
+	req := api.AddSecondaryRequest{}
+	req.PrimaryDeviceUUID = &primaryDeviceUuid
+	secReq := api.SecondaryDeviceRequest{}
+	secReq.MetroCode = secondary.MetroCode
+	secReq.LicenseToken = secondary.LicenseToken
+	secReq.LicenseFileID = secondary.LicenseFileID
+	secReq.CloudInitFileID = secondary.CloudInitFileID
+	secReq.VirtualDeviceName = secondary.Name
+	secReq.Notifications = secondary.Notifications
+	secReq.HostNamePrefix = secondary.HostName
+	secReq.AccountNumber = secondary.AccountNumber
+	secReq.AdditionalBandwidth = secondary.AdditionalBandwidth
+	secReq.SshInterfaceID = secondary.WanInterfaceId
+	secReq.ACLTemplateUUID = secondary.ACLTemplateUUID
+	secReq.MgmtAclTemplateUUID = secondary.MgmtAclTemplateUuid
+	secReq.VendorConfig = secondary.VendorConfiguration
+	secReq.UserPublicKey = mapDeviceUserPublicKeyDomainToAPI(secondary.UserPublicKey)
+	req.Secondary = &secReq
+	return req
+}
+
 func (c RestClient) replaceDeviceACLTemplate(uuid string, wanAclTemplateUuid *string, mgmtAclTemplateUuid *string) error {
 	path := "/ne/v1/devices/" + url.PathEscape(uuid) + "/acl"
 	reqBody := api.DeviceACLTemplateRequest{
@@ -495,6 +535,19 @@ func (c RestClient) replaceDeviceFields(uuid string, fields map[string]interface
 		}
 	}
 	return nil
+}
+
+func (c RestClient) addSecondaryDevice(uuid string, secondary Device) (*string, error) {
+	//build logic for post secondary device
+	//uuid = primary device uuid
+	path := "/ne/v1/devices"
+	reqBody := addSecondaryDeviceRequest(uuid, secondary)
+	respBody := api.DeviceRequestResponse{}
+	req := c.R().SetBody(&reqBody).SetResult(&respBody)
+	if err := c.Execute(req, http.MethodPost, path); err != nil {
+		return nil, err
+	}
+	return respBody.SecondaryUUID, nil
 }
 
 func buildQueryParamValueString(values []string) string {
