@@ -157,6 +157,12 @@ type DeviceUpdateRequest struct {
 	ClusterName       *string  `json:"clusterName,omitempty"`
 }
 
+// AddSecondaryRequest Add Secondary Request
+type AddSecondaryRequest struct {
+	PrimaryDeviceUUID *string                 `json:"primaryDeviceUuid,omitempty"`
+	Secondary         *SecondaryDeviceRequest `json:"secondary,omitempty"`
+}
+
 // DeviceAdditionalBandwidthUpdateRequest describes network device additional bandwidth update request
 type DeviceAdditionalBandwidthUpdateRequest struct {
 	AdditionalBandwidth *int `json:"additionalBandwidth"`

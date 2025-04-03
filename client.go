@@ -102,12 +102,14 @@ type Client interface {
 
 	CreateDevice(device Device) (*string, error)
 	CreateRedundantDevice(primary Device, secondary Device) (*string, *string, error)
+	AddSecondary(primaryUuid string, secondary Device) (*string, error)
 	GetDevice(uuid string) (*Device, error)
 	GetDevices(statuses []string) ([]Device, error)
 	GetDeviceAdditionalBandwidthDetails(uuid string) (*DeviceAdditionalBandwidthDetails, error)
 	GetDeviceACLDetails(uuid string) (*DeviceACLDetails, error)
 	NewDeviceUpdateRequest(uuid string) DeviceUpdateRequest
 	DeleteDevice(uuid string) error
+	DeleteSecondaryDevice(uuid string) error
 
 	CreateSSHUser(username string, password string, device string) (*string, error)
 	GetSSHUsers() ([]SSHUser, error)
