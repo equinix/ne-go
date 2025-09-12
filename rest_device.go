@@ -446,6 +446,7 @@ func createRedundantDeviceRequest(primary Device, secondary Device) api.DeviceRe
 	secReq.Notifications = secondary.Notifications
 	secReq.HostNamePrefix = secondary.HostName
 	secReq.AccountNumber = secondary.AccountNumber
+	secReq.PurchaseOrderNumber = secondary.PurchaseOrderNumber
 	secReq.AdditionalBandwidth = secondary.AdditionalBandwidth
 	secReq.SshInterfaceID = secondary.WanInterfaceId
 	if secReq.SshInterfaceID == nil {

@@ -102,6 +102,7 @@ type SecondaryDeviceRequest struct {
 	MgmtAclTemplateUUID *string                     `json:"mgmtAclTemplateUuid,omitempty"`
 	VendorConfig        map[string]string           `json:"vendorConfig,omitempty"`
 	UserPublicKey       *DeviceUserPublicKeyRequest `json:"userPublicKey,omitempty"`
+	PurchaseOrderNumber *string                     `json:"purchaseOrderNumber,omitempty"`
 }
 
 // DeviceInterface describes device network interface

@@ -161,6 +161,7 @@ func TestCreateRedundantDevice(t *testing.T) {
 		Notifications:       []string{"secondary@secondary.com"},
 		HostName:            String("secondaryHostname"),
 		AccountNumber:       String("99999"),
+		PurchaseOrderNumber: String("po123"),
 		AdditionalBandwidth: Int(200),
 		ACLTemplateUUID:     String("4972e8d2-417f-4821-91a8-f4a61a6dcdc3"),
 		MgmtAclTemplateUuid: String("4972e8d2-417f-4821-91a8-f4a61a6dcdc3"),
@@ -552,6 +553,7 @@ func verifyRedundantDeviceRequest(t *testing.T, primary, secondary Device, req a
 	assert.ElementsMatch(t, secondary.Notifications, req.Secondary.Notifications, "Secondary Notifications matches")
 	assert.Equal(t, secondary.HostName, req.Secondary.HostNamePrefix, "Secondary HostName matches")
 	assert.Equal(t, secondary.AccountNumber, req.Secondary.AccountNumber, "Secondary AccountNumber matches")
+	assert.Equal(t, secondary.PurchaseOrderNumber, req.Secondary.PurchaseOrderNumber, "Secondary PurchaseOrderNumber matches")
 	assert.Equal(t, secondary.AdditionalBandwidth, req.Secondary.AdditionalBandwidth, "Secondary AdditionalBandwidth matches")
 	assert.Equal(t, secondary.ACLTemplateUUID, req.Secondary.ACLTemplateUUID, "Secondary ACLTemplateUUID matches")
 	assert.Equal(t, secondary.MgmtAclTemplateUuid, req.Secondary.MgmtAclTemplateUUID, "Secondary MgmtAclTemplateUuid matches")
