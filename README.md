@@ -25,11 +25,13 @@ and it is not providing full capabilities of Equinix Network Edge API
 ### Code
 
 1. Add ne-go module to import statement.
-   In below example, Equinix `oauth2-go` module is imported as well
+   In below example, Equinix `equinix-sdk-go` OAuth2 extension is imported as well
 
    ```go
    import (
-   "github.com/equinix/oauth2-go"
+   "net/http"
+
+   "github.com/equinix/equinix-sdk-go/extensions/equinixoauth2"
    "github.com/equinix/ne-go"
    )
    ```
@@ -43,12 +45,12 @@ and it is not providing full capabilities of Equinix Network Edge API
 3. Create oAuth configuration and oAuth enabled `http.Client`
 
     ```go
-    authConfig := oauth2.Config{
+    authConfig := equinixoauth2.Config{
       ClientID:     "someClientId",
       ClientSecret: "someSecret",
       BaseURL:      baseURL}
     ctx := context.Background()
-    authClient := authConfig.New(ctx)
+    authClient := &http.Client{Transport: authConfig.New()}
     ```
 
 4. Create NE REST client with a given `baseURL` and oauth's `http.Client`
